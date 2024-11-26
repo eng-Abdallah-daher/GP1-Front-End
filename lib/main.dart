@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import 'package:first/BillingPaymentPage.dart';
 import 'package:first/EmergencyTowingPage.dart';
@@ -315,3 +316,17 @@ void main() {
   runApp(MaterialApp(home: BillingPaymentPage(),));
   // runApp();
 }
+=======
+import 'package:flutter/material.dart';
+import 'package:first/map.dart';
+import 'package:first/forlogin.dart';
+import 'package:first/p1.dart';
+import 'package:first/p2.dart';
+import 'package:first/p3.dart';
+import 'package:first/p4.dart';
+import 'package:first/p5.dart';
+
+void main() {
+  runApp(p1());
+}
+>>>>>>> 858856f0c5c9b1d6558d3ac0faabc52668b82190
