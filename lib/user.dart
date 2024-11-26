@@ -1,22 +1,12 @@
- 
-
-import 'package:first/chats.dart';
-import 'package:first/forlogin.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/ownermainpage.dart';
-import 'package:first/searchpage.dart';
 import 'package:flutter/material.dart';
+import 'package:first/chats.dart';
+import 'package:first/glopalvars.dart';
+import 'package:first/searchpage.dart';
 import 'package:first/servicepage.dart';
 import 'package:first/morepage.dart';
 import 'package:first/sospage.dart';
 import 'package:first/map.dart';
 import 'package:first/posts.dart';
-
-void main() {
-  
-  runApp(CarServiceLoginApp());
-}
-
 class usermainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -402,4 +392,3 @@ class SectionBlock extends StatelessWidget {
     );
   }
 }
-

@@ -1,23 +1,12 @@
- 
-
+import 'package:first/adminmap.dart';
+import 'package:first/adminp1.dart';
+import 'package:first/adminp2.dart';
 import 'package:first/chats.dart';
-import 'package:first/forlogin.dart';
 import 'package:first/glopalvars.dart';
-import 'package:first/ownermainpage.dart';
-import 'package:first/searchpage.dart';
+import 'package:first/ownerpayment.dart';
 import 'package:flutter/material.dart';
-import 'package:first/servicepage.dart';
-import 'package:first/morepage.dart';
-import 'package:first/sospage.dart';
-import 'package:first/map.dart';
-import 'package:first/posts.dart';
 
-void main() {
-  
-  runApp(CarServiceLoginApp());
-}
-
-class usermainpage extends StatelessWidget {
+class adminmainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,22 +24,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = index;
 
-  bool flag = true;
   List<Widget> _pages = [
-    PostsApp(),
-    ServicesPage(),
-    SOSPage(),
-    MorePage(),
-    MapPage(),
+    UserRequestsPage(),
+    OwnerPaymentPage(),
+    AdminP2(),
+    ChatsPage(),
+    AddTowingServicePage(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      if (index == 0) {
-        flag = true;
-        setState(() {});
-        shownewposts();
-      }
       _selectedIndex = index;
     });
     setState(() {});
@@ -80,122 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildImageButton(String imagePath, String label, int index) {
-    return MaterialButton(
-      minWidth: 40,
-      onPressed: () {
-        _onItemTapped(index);
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Image.asset(
-            imagePath,
-            height: 29,
-            width: 29,
-            color: _selectedIndex == index ? blue : Colors.grey,
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              color: _selectedIndex == index ? blue : Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 234, 243, 250),
-        elevation: 5,
-        title: Text(
-          'CarMate',
-          style: TextStyle(
-            fontSize: 15,
-            color: black,
-            letterSpacing: 1.7,
-            shadows: [
-              Shadow(
-                color: black.withOpacity(0.2),
-                blurRadius: 3,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-        ),
         actions: [
-          Container(
-              width: 40,
-              height: 40,
-              decoration: _selectedIndex == 0
-                  ? BoxDecoration(
-                      color: blue,
-                      borderRadius: BorderRadius.circular(22),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 7,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    )
-                  : BoxDecoration(),
-              child: _selectedIndex == 0
-                  ? IconButton(
-                      icon: Icon(
-                        flag ? Icons.message : Icons.people_alt_sharp,
-                        size: 25,
-                        color: white,
-                      ),
-                      onPressed: () {
-                        flag = !flag;
-                        setState(() {});
-                      },
-                      splashRadius: 50,
-                      splashColor: white.withOpacity(0.5),
-                      highlightColor: white.withOpacity(0.3),
-                      padding: EdgeInsets.all(1),
-                    )
-                  : null),
-          SizedBox(width: 10),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: blue,
-              borderRadius: BorderRadius.circular(22),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 7,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: IconButton(
-              icon: Icon(
-                Icons.search,
-                size: 25,
-                color: white,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => usersearchPage(),
-                  ),
-                );
-              },
-              splashRadius: 50,
-              splashColor: white.withOpacity(0.5),
-              highlightColor: white.withOpacity(0.3),
-              padding: EdgeInsets.all(1),
-            ),
-          ),
           IconButton(
             icon: CircleAvatar(
               backgroundImage: AssetImage(global_user.profileImage!),
@@ -215,23 +87,37 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             onPressed: () {
-              setState(() {
-                _selectedIndex = 3;
-              });
-              setState(() {});
+             
             },
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 10,)
         ],
+        backgroundColor: Color.fromARGB(255, 234, 243, 250),
+        elevation: 5,
+        title: Text(
+          'CarMate',
+          style: TextStyle(
+            fontSize: 15,
+            color: black,
+            letterSpacing: 1.7,
+            shadows: [
+              Shadow(
+                color: black.withOpacity(0.2),
+                blurRadius: 3,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+        ),
       ),
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          flag ? PostsApp() : ChatsPage(),
-          ServicesPage(),
-          SOSPage(),
-          MorePage(),
-          MapPage(),
+          UserRequestsPage(),
+          OwnerPaymentPage(),
+          AdminP2(),
+          ChatsPage(),
+          AddTowingServicePage(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -246,15 +132,15 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _buildButton(Icons.home, 'Home', 0),
-                  _buildButton(Icons.build, 'Services', 1),
+                  _buildButton(Icons.assignment, 'Requests', 0),
+                  _buildButton(Icons.people, 'Users', 1),
                 ],
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _buildImageButton('images/sosheadset.png', 'SOS', 2),
-                  _buildImageButton('images/more.png', 'More', 3),
+                  _buildButton(Icons.manage_accounts_rounded, 'Manage', 2),
+                  _buildButton(Icons.mark_chat_read_sharp, 'Chats', 3),
                 ],
               ),
             ],
@@ -402,4 +288,3 @@ class SectionBlock extends StatelessWidget {
     );
   }
 }
-

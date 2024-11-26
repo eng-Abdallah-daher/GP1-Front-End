@@ -1,23 +1,16 @@
- 
-
+import 'package:first/DashboardPage.dart';
+import 'package:first/addpostpage.dart';
 import 'package:first/chats.dart';
-import 'package:first/forlogin.dart';
+import 'package:first/map.dart';
 import 'package:first/glopalvars.dart';
-import 'package:first/ownermainpage.dart';
+import 'package:first/ownerservicepage.dart';
+import 'package:first/profile_page.dart';
 import 'package:first/searchpage.dart';
 import 'package:flutter/material.dart';
-import 'package:first/servicepage.dart';
 import 'package:first/morepage.dart';
-import 'package:first/sospage.dart';
-import 'package:first/map.dart';
 import 'package:first/posts.dart';
 
-void main() {
-  
-  runApp(CarServiceLoginApp());
-}
-
-class usermainpage extends StatelessWidget {
+class ownermainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,22 +29,26 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = index;
 
   bool flag = true;
+  bool flag2 = false;
+  bool flag3 = false;
   List<Widget> _pages = [
     PostsApp(),
-    ServicesPage(),
-    SOSPage(),
+    OwnerServicesPage(),
+    DashboardPage(),
     MorePage(),
     MapPage(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
+      _selectedIndex = index;
       if (index == 0) {
         flag = true;
+        flag2 = false;
+        flag3 = false;
         setState(() {});
         shownewposts();
       }
-      _selectedIndex = index;
     });
     setState(() {});
   }
@@ -131,6 +128,44 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
               width: 40,
               height: 40,
+              decoration: !flag2
+                  ? (_selectedIndex == 0
+                      ? BoxDecoration(
+                          color: blue,
+                          borderRadius: BorderRadius.circular(22),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 7,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        )
+                      : BoxDecoration())
+                  : null,
+              child: flag2
+                  ? null
+                  : (_selectedIndex == 0
+                      ? IconButton(
+                          icon: Icon(
+                            flag ? Icons.message : Icons.people_alt_sharp,
+                            size: 25,
+                            color: white,
+                          ),
+                          onPressed: () {
+                            flag = !flag;
+                            setState(() {});
+                          },
+                          splashRadius: 50,
+                          splashColor: white.withOpacity(0.5),
+                          highlightColor: white.withOpacity(0.3),
+                          padding: EdgeInsets.all(1),
+                        )
+                      : null)),
+          SizedBox(width: 10),
+          Container(
+              width: 40,
+              height: 40,
               decoration: _selectedIndex == 0
                   ? BoxDecoration(
                       color: blue,
@@ -147,12 +182,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: _selectedIndex == 0
                   ? IconButton(
                       icon: Icon(
-                        flag ? Icons.message : Icons.people_alt_sharp,
+                        flag3 ? Icons.home_rounded : Icons.add_chart_sharp,
                         size: 25,
                         color: white,
                       ),
                       onPressed: () {
-                        flag = !flag;
+                        flag3 = !flag3;
                         setState(() {});
                       },
                       splashRadius: 50,
@@ -215,9 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             onPressed: () {
-              setState(() {
-                _selectedIndex = 3;
-              });
+              flag2 = !flag2;
               setState(() {});
             },
           ),
@@ -227,9 +260,18 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          flag ? PostsApp() : ChatsPage(),
-          ServicesPage(),
-          SOSPage(),
+          flag3
+              ? AddPostPage()
+              : !flag2
+                  ? (flag ? PostsApp() : ChatsPage())
+                  : ProfilePage(
+                      user: users
+                          .where(
+                            (element) => element.id == global_user.id,
+                          )
+                          .toList()[0]),
+          OwnerServicesPage(),
+          DashboardPage(),
           MorePage(),
           MapPage(),
         ],
@@ -253,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _buildImageButton('images/sosheadset.png', 'SOS', 2),
+                  _buildImageButton('images/store.png', 'Store', 2),
                   _buildImageButton('images/more.png', 'More', 3),
                 ],
               ),
@@ -402,4 +444,3 @@ class SectionBlock extends StatelessWidget {
     );
   }
 }
-
