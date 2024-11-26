@@ -1,200 +1,104 @@
-<<<<<<< HEAD
 
-import 'package:first/BillingPaymentPage.dart';
-import 'package:first/EmergencyTowingPage.dart';
-import 'package:first/GetEstimatePage.dart';
-import 'package:first/InventoryManagementPage.dart';
-import 'package:first/MaintenanceHistoryPage%20.dart';
-import 'package:first/OfferManagementPage.dart';
-import 'package:first/OffersNotificationsPage%20.dart';
-import 'package:first/ViewWorkshopRatingsPage%20.dart';
-import 'package:first/aboutuspage.dart';
-import 'package:first/chatss.dart';
-import 'package:first/empmng.dart';
+import 'package:first/chats.dart';
+import 'package:first/forlogin.dart';
 import 'package:first/glopalvars.dart';
-import 'package:first/maintanancereminder.dart';
-import 'package:first/maintanancerequestt.dart';
-import 'package:first/managebookings.dart';
-import 'package:first/morepage.dart';
-import 'package:first/offellist.dart';
-import 'package:first/posts.dart';
-import 'package:first/profile.dart';
-import 'package:first/repairstatus.dart';
-import 'package:first/requestcardelivary.dart';
-import 'package:first/search.dart';
-import 'package:first/sellpage.dart';
-import 'package:first/servicepage.dart';
-import 'package:first/sospage.dart';
+import 'package:first/ownermainpage.dart';
+import 'package:first/searchpage.dart';
 import 'package:flutter/material.dart';
+import 'package:first/servicepage.dart';
+import 'package:first/morepage.dart';
+import 'package:first/sospage.dart';
+import 'package:first/map.dart';
+import 'package:first/posts.dart';
 
-
-
-class Message {
-  final int id;
-  final int senderId;
-  final String content;
-  final DateTime createdAt;
-
-  Message({
-    required this.id,
-    required this.senderId,
-    required this.content,
-    required this.createdAt,
-  });
+void main() {
+  
+  runApp(LoginScreen());
 }
 
-class ChatPage extends StatefulWidget {
-  String chatPartnerName; 
-  String chatPartnerAvatar; 
-
-  ChatPage({required this.chatPartnerName, required this.chatPartnerAvatar});
-
+class usermainpage extends StatelessWidget {
   @override
-  _ChatPageState createState() => _ChatPageState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HomeScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }
 
-class _ChatPageState extends State<ChatPage> {
-  final List<Message> messages = [
-    Message(
-      id: 1,
-      senderId: 2,
-      content: "Hey there! How are you?",
-      createdAt: DateTime.now().subtract(Duration(minutes: 5)),
-    ),
-    Message(
-      id: 2,
-      senderId: 1,
-      content: "I'm good, thanks! What about you?",
-      createdAt: DateTime.now().subtract(Duration(minutes: 4)),
-    ),
-    Message(
-      id: 3,
-      senderId: 2,
-      content: "Just working on a project. It's going well!",
-      createdAt: DateTime.now().subtract(Duration(minutes: 3)),
-    ),
-    Message(
-      id: 4,
-      senderId: 1,
-      content: "That's great to hear! Need any help?",
-      createdAt: DateTime.now().subtract(Duration(minutes: 2)),
-    ),
-    Message(
-      id: 5,
-      senderId: 2,
-      content: "Actually, yes! I'm stuck on a Flutter issue.",
-      createdAt: DateTime.now().subtract(Duration(minutes: 1)),
-    ),
-    Message(
-      id: 6,
-      senderId: 1,
-      content: "I'd be happy to help! What's the issue?",
-      createdAt: DateTime.now(),
-    ),
-    Message(
-      id: 7,
-      senderId: 2,
-      content: "I'm trying to implement image picking.",
-      createdAt: DateTime.now(),
-    ),
-    Message(
-      id: 8,
-      senderId: 1,
-      content: "I can show you some code if you want!",
-      createdAt: DateTime.now(),
-    ),
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = index;
+
+  bool flag = true;
+  List<Widget> _pages = [
+    PostsApp(),
+    ServicesPage(),
+    SOSPage(),
+    MorePage(),
+    MapPage(),
   ];
 
-  final TextEditingController _controller = TextEditingController();
-  
-  final ScrollController _scrollController =
-      ScrollController(); 
-
-  @override
-  void initState() {
-    super.initState();
+  void _onItemTapped(int index) {
+    setState(() {
+      if (index == 0) {
+        flag = true;
+        setState(() {});
+        shownewposts();
+      }
+      _selectedIndex = index;
+    });
+    setState(() {});
   }
 
-  Future<void> _sendMessage(String messageText) async {
-    if (messageText.isNotEmpty) {
-      setState(() {
-        messages.add(Message(
-          id: messages.length + 1, 
-          senderId: 1, 
-          content: messageText,
-          createdAt: DateTime.now(),
-        ));
-        _controller.clear();
-      });
-      
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-    }
-  }
-
-  Future<void> _pickImage() async {
-    
-    
-    
-    
-    
-  }
-
-  String _formatTimestamp(DateTime timestamp) {
-    return '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}';
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose(); 
-    _scrollController.dispose(); 
-    super.dispose();
-  }
-
-  Widget _buildChatHeader() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue, Colors.blue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.6),
-            blurRadius: 10,
-            offset: Offset(0, 4),
+  Widget _buildButton(IconData icon, String label, int index) {
+    return MaterialButton(
+      minWidth: 40,
+      onPressed: () {
+        _onItemTapped(index);
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(
+            icon,
+            color: _selectedIndex == index ? blue : Colors.grey,
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              color: _selectedIndex == index ? blue : Colors.grey,
+            ),
           ),
         ],
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
       ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: AssetImage(widget.chatPartnerAvatar),
+    );
+  }
+
+  Widget _buildImageButton(String imagePath, String label, int index) {
+    return MaterialButton(
+      minWidth: 40,
+      onPressed: () {
+        _onItemTapped(index);
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset(
+            imagePath,
+            height: 29,
+            width: 29,
+            color: _selectedIndex == index ? blue : Colors.grey,
           ),
-          SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.chatPartnerName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Online',
-                style: TextStyle(color: Colors.greenAccent, fontSize: 16),
-              ),
-            ],
+          Text(
+            label,
+            style: TextStyle(
+              color: _selectedIndex == index ? blue : Colors.grey,
+            ),
           ),
         ],
       ),
@@ -205,128 +109,295 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.chatPartnerName + "'s Chat Page"),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: Column(
-        children: [
-          
-          _buildChatHeader(),
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController, 
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final message = messages[index];
-                final isUserMessage =
-                    message.senderId == 1; 
-
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  alignment: isUserMessage
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: isUserMessage
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: isUserMessage
-                              ? Colors.blueAccent
-                              : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: isUserMessage
-                              ? CrossAxisAlignment.end
-                              : CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              message.content,
-                              style: TextStyle(
-                                color:
-                                    isUserMessage ? Colors.white : Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              _formatTimestamp(message.createdAt),
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                    ],
-                  ),
-                );
-              },
-            ),
+        backgroundColor: Color.fromARGB(255, 234, 243, 250),
+        elevation: 5,
+        title: Text(
+          'CarMate',
+          style: TextStyle(
+            fontSize: 15,
+            color: black,
+            letterSpacing: 1.7,
+            shadows: [
+              Shadow(
+                color: black.withOpacity(0.2),
+                blurRadius: 3,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    child: TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        hintText: 'Type a message...',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
+        ),
+        actions: [
+          Container(
+              width: 40,
+              height: 40,
+              decoration: _selectedIndex == 0
+                  ? BoxDecoration(
+                      color: blue,
+                      borderRadius: BorderRadius.circular(22),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 7,
+                          offset: Offset(0, 4),
                         ),
+                      ],
+                    )
+                  : BoxDecoration(),
+              child: _selectedIndex == 0
+                  ? IconButton(
+                      icon: Icon(
+                        flag ? Icons.message : Icons.people_alt_sharp,
+                        size: 25,
+                        color: white,
                       ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.image),
-                  onPressed: _pickImage,
-                  color: Colors.blue,
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  color: Colors.blue,
-                  onPressed: () {
-                    _sendMessage(_controller.text);
-                  },
+                      onPressed: () {
+                        flag = !flag;
+                        setState(() {});
+                      },
+                      splashRadius: 50,
+                      splashColor: white.withOpacity(0.5),
+                      highlightColor: white.withOpacity(0.3),
+                      padding: EdgeInsets.all(1),
+                    )
+                  : null),
+          SizedBox(width: 10),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: blue,
+              borderRadius: BorderRadius.circular(22),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 7,
+                  offset: Offset(0, 4),
                 ),
               ],
             ),
+            child: IconButton(
+              icon: Icon(
+                Icons.search,
+                size: 25,
+                color: white,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => usersearchPage(),
+                  ),
+                );
+              },
+              splashRadius: 50,
+              splashColor: white.withOpacity(0.5),
+              highlightColor: white.withOpacity(0.3),
+              padding: EdgeInsets.all(1),
+            ),
           ),
+          IconButton(
+            icon: CircleAvatar(
+              backgroundImage: AssetImage(global_user.profileImage!),
+              radius: 22,
+              backgroundColor: white,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            onPressed: () {
+              setState(() {
+                _selectedIndex = 3;
+              });
+              setState(() {});
+            },
+          ),
+          SizedBox(width: 10),
         ],
+      ),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          flag ? PostsApp() : ChatsPage(),
+          ServicesPage(),
+          SOSPage(),
+          MorePage(),
+          MapPage(),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Color.fromARGB(255, 226, 235, 242),
+        shape: CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Container(
+          height: 60.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _buildButton(Icons.home, 'Home', 0),
+                  _buildButton(Icons.build, 'Services', 1),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _buildImageButton('images/sosheadset.png', 'SOS', 2),
+                  _buildImageButton('images/more.png', 'More', 3),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _onItemTapped(4);
+        },
+        child: CircleAvatar(
+          radius: 40,
+          backgroundImage: AssetImage('images/map.png'),
+          backgroundColor: Colors.transparent,
+        ),
+        backgroundColor: blue,
+      ),
+      resizeToAvoidBottomInset: false,
+    );
+  }
+
+  void shownewposts() {}
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 90, 172, 240),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            SectionBlock(
+              title: 'Exclusive Offers',
+              content: 'Get 20% off on your first car repair service.',
+              color: white,
+              icon: Icons.local_offer,
+            ),
+            SizedBox(height: 16),
+            SectionBlock(
+              title: 'Car Maintenance Tips',
+              content: 'Make sure to check your tire pressure monthly.',
+              color: white,
+              icon: Icons.tips_and_updates,
+            ),
+            SizedBox(height: 16),
+            SectionBlock(
+              title: 'Featured Services',
+              content: 'Comprehensive service at 10% off.',
+              color: white,
+              icon: Icons.star,
+            ),
+            SizedBox(height: 16),
+            SectionBlock(
+              title: 'Previous Requests',
+              content: 'Last gas station you visited: Quick Fuel Station.',
+              color: white,
+              icon: Icons.history,
+            ),
+            SizedBox(height: 16),
+            SectionBlock(
+              title: 'Maintenance Notifications',
+              content: 'Engine oil change due in 5 days.',
+              color: white,
+              icon: Icons.notifications,
+            ),
+            SizedBox(height: 16),
+            SectionBlock(
+              title: 'User Reviews',
+              content: 'Repair shop "Advanced" rated 4.5 out of 5.',
+              color: white,
+              icon: Icons.rate_review,
+            ),
+            SizedBox(height: 16),
+            SectionBlock(
+              title: 'Favorites',
+              content: 'Your favorite repair shops.',
+              color: white,
+              icon: Icons.favorite,
+            ),
+            SizedBox(height: 16),
+            SectionBlock(
+              title: 'Points',
+              content: 'Total points earned in the app.',
+              color: white,
+              icon: Icons.podcasts,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-void main() {
-  runApp(MaterialApp(home: BillingPaymentPage(),));
-  // runApp();
-}
-=======
-import 'package:flutter/material.dart';
-import 'package:first/map.dart';
-import 'package:first/forlogin.dart';
-import 'package:first/p1.dart';
-import 'package:first/p2.dart';
-import 'package:first/p3.dart';
-import 'package:first/p4.dart';
-import 'package:first/p5.dart';
 
-void main() {
-  runApp(p1());
+class SectionBlock extends StatelessWidget {
+  final String title;
+  final String content;
+  final Color color;
+  final IconData icon;
+
+  SectionBlock({
+    required this.title,
+    required this.content,
+    required this.color,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: color,
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Row(
+          children: <Widget>[
+            Icon(icon, size: 40, color: Color(0xFF5AACF0)),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    content,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
->>>>>>> 858856f0c5c9b1d6558d3ac0faabc52668b82190

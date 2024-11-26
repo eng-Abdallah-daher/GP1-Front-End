@@ -12,20 +12,30 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   http: ^0.13.0
+  flutter_local_notifications: ^17.2.3
   flutter_map: ^4.0.0
-  latlong2: ^0.8.1
-  geolocator: ^9.0.2
-  flutter_typeahead: ^4.0.0  # For search bar with autocomplete
-  speech_to_text: ^6.6.2     # For voice functionality
+  latlong2: ^0.8.1  # Downgraded to a compatible version
+  location: ^5.0.0
+  geolocator: ^9.0.2 # Updated to latest version
+  intl: ^0.19.0
+  flutter_typeahead: ^4.0.0
+  speech_to_text: ^7.0.0
   local_auth: ^2.3.0
-<<<<<<< HEAD
-  file_picker: ^8.1.4
-  url_launcher: ^6.3.1
-  image_picker: ^1.1.2
-  flutter_local_notifications: ^18.0.1
   flutter_colorpicker: ^1.1.0
-=======
->>>>>>> 858856f0c5c9b1d6558d3ac0faabc52668b82190
+  image_picker: ^1.1.2
+  file_picker: ^8.1.4
+  url_launcher: ^6.3.0
+  share_plus: ^10.0.2
+  qr_code_scanner: ^1.0.1  # This version is fine, but ensure compatibility
+  permission_handler: ^11.3.1
+  provider: ^6.1.2
+  flutter_reactive_ble: ^5.3.1
+  flutter_svg: ^2.0.9
+  fl_chart: ^0.69.0
+  google_maps_flutter: ^2.9.0
+  table_calendar: ^3.1.2
+  pdf: ^3.11.1
+
 
 dev_dependencies:
   flutter_test:
@@ -35,5 +45,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  assets:
-    - images/ # Add your image path here
+  assets: 
+    - images/ 
+    - assets/fonts/Roboto-Regular.ttf
