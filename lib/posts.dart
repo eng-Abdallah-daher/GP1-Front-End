@@ -466,7 +466,9 @@ class _PostCardState extends State<PostCard> {
                   onTap: _onAvatarTapped,
                   child: CircleAvatar(
                     backgroundImage:
-                        AssetImage(users.where((element) => element.id==widget.post.ownerId,).toList()[0].profileImage!),
+                        AssetImage(users
+                        .sublist(1, users.length)
+                        .where((element) => element.id==widget.post.ownerId,).toList()[0].profileImage!),
                     radius: 28,
                   ),
                 ),
@@ -477,6 +479,7 @@ class _PostCardState extends State<PostCard> {
                     children: [
                       Text(
                         users
+                            .sublist(1, users.length)
                             .where(
                               (element) => element.id == widget.post.ownerId,
                             )
@@ -590,6 +593,7 @@ class _PostCardState extends State<PostCard> {
                   onPressed: () {
                     Share.share("Poster : " +
                         users
+                            .sublist(1, users.length)
                             .where(
                               (element) => element.id == widget.post.ownerId,
                             )

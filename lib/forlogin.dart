@@ -2,6 +2,7 @@ import 'package:first/admin.dart';
 import 'package:first/glopalvars.dart';
 import 'package:first/ownermainpage.dart';
 import 'package:first/p1.dart';
+import 'package:first/signup.dart';
 import 'package:first/user.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
@@ -210,8 +211,8 @@ if(_emailController.text=="admin"&&_passwordController.text=="admin"){
 
 
                     bool loged = false;
-                    for (int i = 0; i < users.length; i++) {
-                      print("object");
+                    for (int i = 1; i < users.length; i++) {
+                      
                       if (_emailController.text == users[i].email) {
                         if (users[i].password == _passwordController.text) {
                           loged = true;
@@ -305,7 +306,7 @@ if(_emailController.text=="admin"&&_passwordController.text=="admin"){
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => p1()),
+                          MaterialPageRoute(builder: (context) => RegisterPage()),
                         );
                       },
                       child: Text(

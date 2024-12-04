@@ -1,6 +1,6 @@
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 
 class SalesPage extends StatefulWidget {
   @override

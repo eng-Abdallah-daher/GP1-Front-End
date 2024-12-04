@@ -1,6 +1,5 @@
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddPostPage extends StatefulWidget {

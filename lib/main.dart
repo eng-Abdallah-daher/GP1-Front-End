@@ -3,8 +3,8 @@
 import 'package:first/chats.dart';
 import 'package:first/forlogin.dart';
 import 'package:first/glopalvars.dart';
-import 'package:first/ownermainpage.dart';
 import 'package:first/searchpage.dart';
+import 'package:first/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:first/servicepage.dart';
 import 'package:first/morepage.dart';
@@ -14,7 +14,7 @@ import 'package:first/posts.dart';
 
 void main() {
   
-  runApp(CarServiceLoginApp());
+  runApp(MaterialApp(home: CarServiceLoginApp(),));
 }
 
 class usermainpage extends StatelessWidget {

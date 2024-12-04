@@ -1,3 +1,4 @@
+import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class p4 extends StatelessWidget {
@@ -52,10 +53,10 @@ class FinalVerificationPage extends StatefulWidget {
 class _FinalVerificationPageState extends State<FinalVerificationPage> {
   @override
   Widget build(BuildContext context) {
-    final String fullName = 'John Doe';
-    final String email = 'john.doe@example.com';
-    final String phone = '123-456-7890';
-    final String carPlate = 'XYZ 1234';
+    final String fullName = nameController.text;
+    final String email = emailController.text;;
+    final String phone = phoneController.text;
+    final String carPlate = carPlateNumberController.text;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -119,24 +120,7 @@ class _FinalVerificationPageState extends State<FinalVerificationPage> {
                   ),
                 ),
                 SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: () {
-                    print("Register button pressed");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _buttonColor,
-                    shadowColor: Colors.black45,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 18),
-                  ),
-                  child: Text(
-                    'Register',
-                    style: TextStyle(fontSize: 18, color: _textColor),
-                  ),
-                ),
+              
               ],
             ),
           ),

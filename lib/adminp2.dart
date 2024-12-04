@@ -17,7 +17,7 @@ class _AdminP2State extends State<AdminP2> {
   }
 
   void searchUsers(String query) {
-    final matchingUsers = users.where((user) {
+    final matchingUsers = users.sublist(1,users.length).where((user) {
       final lowerName = user.name.toLowerCase();
       final lowerQuery = query.toLowerCase();
       return lowerName.contains(lowerQuery);

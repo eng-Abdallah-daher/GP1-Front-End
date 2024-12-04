@@ -95,7 +95,7 @@ class OffersListPage extends StatelessWidget {
   }
 
   String getusernaembyid(int id) {
-    for (int i = 0; i < users.length; i++) {
+    for (int i = 1; i < users.length; i++) {
       if (users[i].id == id) {
         return users[i].name;
       }

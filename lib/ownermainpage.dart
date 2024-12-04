@@ -266,6 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? (flag ? PostsApp() : ChatsPage())
                   : ProfilePage(
                       user: users
+                          .sublist(1, users.length)
                           .where(
                             (element) => element.id == global_user.id,
                           )

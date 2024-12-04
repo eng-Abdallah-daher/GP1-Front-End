@@ -118,24 +118,8 @@ class NotificationsPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: () {
-                    print("Go to Home button pressed");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _buttonColor,
-                    shadowColor: Colors.black45,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 18),
-                  ),
-                  child: Text(
-                    'Go to Home',
-                    style: TextStyle(fontSize: 18, color: _textColor),
-                  ),
-                ),
+                
+              
               ],
             ),
           ),

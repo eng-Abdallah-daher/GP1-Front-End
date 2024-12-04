@@ -1,3 +1,4 @@
+import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class p3 extends StatelessWidget {
@@ -50,7 +51,7 @@ class TermsAndConditionsPage extends StatefulWidget {
 }
 
 class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
-  bool _acceptTerms = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,10 +105,10 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _acceptTerms,
+                      value: acceptTerms,
                       onChanged: (bool? value) {
                         setState(() {
-                          _acceptTerms = value ?? false;
+                          acceptTerms = value ?? false;
                         });
                       },
                     ),
@@ -135,23 +136,8 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _acceptTerms ? () {} : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _buttonColor,
-                    shadowColor: Colors.black45,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 18),
-                  ),
-                  child: Text(
-                    'Next',
-                    style: TextStyle(fontSize: 18, color: _textColor),
-                  ),
-                ),
+                SizedBox(height: 138),
+             
               ],
             ),
           ),

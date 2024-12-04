@@ -90,6 +90,7 @@ class _CommentsPageState extends State<CommentsPage> {
       children: [
         CircleAvatar(
           backgroundImage: AssetImage(users
+              .sublist(1, users.length)
               .where(
                 (element) => element.id == comment.commenterid,
               )
@@ -107,6 +108,7 @@ class _CommentsPageState extends State<CommentsPage> {
                   children: [
                     TextSpan(
                       text: users
+                          .sublist(1, users.length)
                           .where(
                             (element) => element.id == comment.commenterid,
                           )
@@ -219,7 +221,9 @@ bool islikedcomment(Comment comment){
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(users.where((element) => element.id== reply.commenterid,).toList()[0].profileImage!),
+            backgroundImage: AssetImage(users
+                .sublist(1, users.length)
+                .where((element) => element.id== reply.commenterid,).toList()[0].profileImage!),
             radius: 18,
           ),
           SizedBox(width: 10),
@@ -232,6 +236,7 @@ bool islikedcomment(Comment comment){
                     children: [
                       TextSpan(
                         text: users
+                            .sublist(1, users.length)
                             .where(
                               (element) => element.id == reply.commenterid,
                             )
@@ -396,7 +401,7 @@ void _showReplyDialog(Comment comment) {
               children: [
                 
                 Text(
-                  'Reply to ${users.where(
+                  'Reply to ${users.sublist(1, users.length).where(
                         (element) => element.id == comment.commenterid,
                       ).toList()[0].name}',
                   style: TextStyle(

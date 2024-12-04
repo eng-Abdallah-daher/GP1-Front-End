@@ -31,7 +31,7 @@ class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
         rate: rating,
       ));
       global_user.rates.add(widget.ownerid);
-      for (int i = 0; i < users.length; i++) {
+      for (int i = 1; i < users.length; i++) {
         if (users[i].id == widget.ownerid) {
           users[i].rates.add(rating);
           break;

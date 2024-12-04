@@ -12,9 +12,10 @@ TextEditingController emailController = TextEditingController();
 TextEditingController phoneController = TextEditingController();
 TextEditingController passwordController = TextEditingController();
 TextEditingController carPlateNumberController = TextEditingController();
-
+TextEditingController confirmpassword = TextEditingController();
+bool acceptTerms = false;
 String getnameofuser(int user_id) {
-  for (int i = 0; i < users.length; i++) {
+  for (int i = 1; i < users.length; i++) {
     if (users[i].id == user_id) {
       return users[i].name;
     }
@@ -40,7 +41,9 @@ List<Booking> bookings = [
       bookingid: 12,
       ownerid: 0)
 ];
-List<Complaint> complaints = [];
+List<Complaint> complaints = [
+  Complaint(description: "hhh", userName: "abd", ownerid: 2, rate: 1)
+];
 class PaymentRecord {
   final int userId;
   final int year;

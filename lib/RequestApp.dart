@@ -24,11 +24,11 @@ class PlacesPage extends StatefulWidget {
 class _PlacesPageState extends State<PlacesPage> {
   TextEditingController _searchController = TextEditingController();
 
-  List<User> filteredUsers = users;
+  List<User> filteredUsers = users.sublist(1, users.length);
 
   void _filterUsers(String query) {
     setState(() {
-      filteredUsers = users.where((user) {
+      filteredUsers = users.sublist(1, users.length).where((user) {
         return user.name.toLowerCase().contains(query.toLowerCase());
       }).toList();
     });

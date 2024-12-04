@@ -103,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            widget.user.id != global_user.id
+            ((widget.user.id != global_user.id)&&widget.user.role=="owner" )
                 ? _buildActionButtons()
                 : SizedBox(
                     height: 30,
@@ -181,7 +181,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {},
                   child: CircleAvatar(
                     backgroundImage:
-                        AssetImage(users.where((element) => element.id==widget.user.id,).toList()[0].profileImage!),
+                        AssetImage(users
+                        .sublist(1, users.length)
+                        .where((element) => element.id==widget.user.id,).toList()[0].profileImage!),
                     radius: 28,
                   ),
                 ),

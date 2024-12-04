@@ -74,8 +74,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 child: Column(
                   children: [
                     Image.asset(
-                      'images/logo5.png',
-                      width: 500,
+                      'images/map.png',
+                      width: 300,
                     ),
                     SizedBox(height: 8),
                     Text(
@@ -159,25 +159,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () {
-                  if (formKeyPage1.currentState?.validate() ?? false) {}
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _buttonColor,
-                  shadowColor: Colors.black45,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 18),
-                ),
-                child: Text(
-                  'Next',
-                  style: TextStyle(fontSize: 18, color: _textColor),
-                ),
-              ),
+              SizedBox(height: 150),
+             
             ],
           ),
         ),

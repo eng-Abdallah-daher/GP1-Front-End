@@ -53,8 +53,7 @@ class AccountInfoPage extends StatefulWidget {
 class _AccountInfoPageState extends State<AccountInfoPage> {
   final _formKey = GlobalKey<FormState>();
  
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+ 
 
 
   @override
@@ -84,7 +83,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Step 2: Account Information',
+                        'Step 2: Account Security Information',
                         style: TextStyle(
                           fontSize: 34,
                           color: _textColor,
@@ -128,7 +127,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                 ),
                 SizedBox(height: 16),
                 TextFormField(
-                  controller: _confirmPasswordController,
+                  controller: confirmpassword,
                   obscureText: true,
                   decoration: InputDecoration(
                     filled: true,
@@ -170,25 +169,8 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {}
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _buttonColor,
-                    shadowColor: Colors.black45,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 18),
-                  ),
-                  child: Text(
-                    'Next',
-                    style: TextStyle(fontSize: 18, color: _textColor),
-                  ),
-                ),
+                SizedBox(height: 204),
+               
               ],
             ),
           ),
