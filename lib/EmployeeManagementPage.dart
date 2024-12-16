@@ -9,15 +9,23 @@ class EmployeeManagementPage extends StatefulWidget {
 }
 
 class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
-  final List<Map<String, String>> availableSchedule = [
-    {'date': '2024-10-01', 'time': '09:00 AM', 'task': 'Oil Change'},
-    {'date': '2024-10-02', 'time': '11:30 AM', 'task': 'Tire Rotation'},
-    {'date': '2024-10-03', 'time': '02:00 PM', 'task': 'Brake Inspection'},
-  ];
+  
 
   TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
+  @override
+  void initState() {
+    super.initState();
+  m();
+  }
 
+  void m()async{
+     await getEmployees();
+    await getAssignedTasks();
+    setState(() {
+      
+    });
+  }
   @override
   Widget build(BuildContext context) {
     List<Employee> filteredEmployees = employees
@@ -139,7 +147,11 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                 itemCount: filteredEmployees.length,
                 itemBuilder: (context, index) {
                   final employee = filteredEmployees[index];
-                  return _buildEmployeeCard(context, employee);
+                  if(employee.ownerid==global_user.id){
+                    return _buildEmployeeCard(context, employee);
+                  }else{
+                    return SizedBox(height: 0,width: 0,);
+                  }
                 },
               ),
             ),
@@ -183,7 +195,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
             ),
           ),
           subtitle: Text(
-            'Position: ${employee.position}\nAssigned Tasks: ${employee.assignedTasks.length}',
+            'Position: ${employee.position}\nAssigned Tasks: ${employee.assignedTaskIds.length}',
             style: TextStyle(
               color: Colors.grey.shade600,
               fontSize: 16,
@@ -275,7 +287,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                         leading: Icon(Icons.calendar_today_rounded,
                             color: Colors.white),
                         title: Text(
-                          '${entry['date']} at ${entry['time']}',
+                          '${entry.date} at ${entry.time}',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -283,13 +295,15 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                           ),
                         ),
                         subtitle: Text(
-                          'Task: ${entry['task']}',
+                          'Task: ${entry.task}',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white70,
                           ),
                         ),
                         onTap: () {
+
+
                           _assignTaskToEmployee(employee, entry);
                           Navigator.of(context).pop();
                         },
@@ -325,17 +339,20 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
     );
   }
 
-  void _assignTaskToEmployee(Employee employee, Map<String, String> task) {
+ void _assignTaskToEmployee(Employee employee, AssignedTask task) {
     setState(() {
-      employee.assignedTasks.add(task);
-      availableSchedule.remove(task);
+      employee.assignedTaskIds.add(task);
+      addTask(employee.id, task);
+      removeTaskFromSchedule(task.taskId);
+      availableSchedule.removeWhere(
+          (scheduledTask) => scheduledTask.taskId == task.taskId);
     });
   }
 }
 
 class TaskDetailPage extends StatelessWidget {
   final Employee employee;
-  final List<Map<String, String>> availableSchedule;
+  List<AssignedTask> availableSchedule;
   final Function onTaskRemoved;
 
   TaskDetailPage({
@@ -367,7 +384,7 @@ class TaskDetailPage extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: employee.assignedTasks.isEmpty
+          child: employee.assignedTaskIds.isEmpty
               ? Center(
                   child: Text(
                     '${employee.name} has no tasks assigned.',
@@ -379,9 +396,9 @@ class TaskDetailPage extends StatelessWidget {
                   ),
                 )
               : ListView.builder(
-                  itemCount: employee.assignedTasks.length,
+                  itemCount: employee.assignedTaskIds.length,
                   itemBuilder: (context, index) {
-                    final task = employee.assignedTasks[index];
+                    final task = availableSchedule.where((element) => element.taskId== employee.assignedTaskIds[index],).toList()[0];
                     return Card(
                       elevation: 10,
                       shape: RoundedRectangleBorder(
@@ -410,7 +427,7 @@ class TaskDetailPage extends StatelessWidget {
                         child: ListTile(
                           contentPadding: EdgeInsets.all(20),
                           title: Text(
-                            '${task['date']} at ${task['time']}',
+                            '${task.date} at ${task.time}',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -418,7 +435,7 @@ class TaskDetailPage extends StatelessWidget {
                             ),
                           ),
                           subtitle: Text(
-                            'Task: ${task['task']}',
+                            'Task: ${task.task}',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey.shade700,
@@ -428,8 +445,25 @@ class TaskDetailPage extends StatelessWidget {
                             icon: Icon(Icons.delete, color: Colors.redAccent),
                             iconSize: 28,
                             onPressed: () {
-                              _removeTaskFromEmployee(employee, task);
+                          try{
+                                _removeTaskFromEmployee(employee, task);
                               onTaskRemoved();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Task removed successfully!'),
+        backgroundColor: Colors.blue,
+        duration: Duration(seconds: 2),
+      ),
+    );
+                          }catch(e){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Failed to remove the task!'),
+                                    backgroundColor: Colors.red,
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                          }
                               Navigator.of(context).pop();
                             },
                           ),
@@ -443,8 +477,12 @@ class TaskDetailPage extends StatelessWidget {
     );
   }
 
-  void _removeTaskFromEmployee(Employee employee, Map<String, String> task) {
-    employee.assignedTasks.remove(task);
+  void _removeTaskFromEmployee(Employee employee,AssignedTask task) {
+    removeTask(employee.id, task.taskId);
+      employee.assignedTaskIds.remove(task);
+  
     availableSchedule.add(task);
+    addTaskToSchedule(task);
+  
   }
 }

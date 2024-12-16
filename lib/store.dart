@@ -33,9 +33,15 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-
+m();
+  }
+  void m() async {
+    await getItems();
     fetchDataFromDatabase();
     filteredToolData = List.from(items);
+    setState(() {
+      
+    });
   }
 
   void fetchDataFromDatabase() {
@@ -125,7 +131,7 @@ class _MainPageState extends State<MainPage> {
                     itemBuilder: (context, index) {
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        child: Image.asset(
+                        child: Image.network(
                           tool.imagePaths[index],
                           fit: BoxFit.fitWidth,
                         ),
@@ -223,8 +229,10 @@ class _MainPageState extends State<MainPage> {
                             int.tryParse(quantityController.text) ?? 1;
                         if (finalQuantity > 0 &&
                             finalQuantity <= tool.availableQuantity) {
+                    try{
+                                addItemToCart(cart.cartId,tool,finalQuantity);
                           cart.addItem(tool, finalQuantity);
-
+updateItemQuantity(tool.id, tool.availableQuantity);
                           setState(() {});
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -233,10 +241,20 @@ class _MainPageState extends State<MainPage> {
                             ),
                           );
                           Navigator.of(context).pop();
+                    }catch(e) {
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Failed to add to cart: ${e.toString()}'),
+                                backgroundColor: Colors.red
+                          ),);
+                    }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Invalid quantity!'),
+                               backgroundColor: Colors.red
                             ),
                           );
                         }
@@ -509,7 +527,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ],
                 image: DecorationImage(
-                  image: AssetImage(
+                  image: NetworkImage(
                       tool.imagePaths[currentImageIndex[tool.name]!]),
                   fit: BoxFit.fitWidth,
                 ),

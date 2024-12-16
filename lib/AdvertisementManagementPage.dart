@@ -10,14 +10,28 @@ class OfferManagementPage extends StatefulWidget {
 }
 
 class _OfferManagementPageState extends State<OfferManagementPage> {
+    @override
+  void initState() {
+    super.initState();
+   
+  }
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController discountController = TextEditingController();
 
   DateTime? validUntil;
 
-  void addOffer() {
+  void addOffer2() {
     setState(() {
+
+     try{
+       addOffer(
+          global_user.id,
+          double.parse(discountController.text),
+          titleController.text,
+          descriptionController.text,
+          validUntil ?? DateTime.now().add(Duration(days: 30)));
       offers.add(Offer(
         title: titleController.text,
         description: descriptionController.text,
@@ -31,6 +45,21 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
       discountController.clear();
 
       validUntil = null;
+      
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Offer added successfully!"),
+          backgroundColor: Colors.green,
+        ));
+      
+
+     }catch(e){
+
+       
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Failed to add Offer!"),
+          backgroundColor: Colors.red,
+        ));
+     }
     });
   }
 
@@ -140,7 +169,7 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: ElevatedButton(
-                onPressed: addOffer,
+                onPressed: addOffer2,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,

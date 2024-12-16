@@ -1,7 +1,7 @@
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 
-class p5 extends StatelessWidget {
+class p6 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,7 +15,7 @@ class p5 extends StatelessWidget {
           accentColor: _accentColor,
         ),
       ),
-      home: FinalVerificationPage(),
+      home: NotificationsPage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -45,19 +45,9 @@ const MaterialColor _primarySwatch = MaterialColor(
   },
 );
 
-class FinalVerificationPage extends StatefulWidget {
-  @override
-  _FinalVerificationPageState createState() => _FinalVerificationPageState();
-}
-
-class _FinalVerificationPageState extends State<FinalVerificationPage> {
+class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final String fullName = nameController.text;
-    final String email = emailController.text;;
-    final String phone = phoneController.text;
-    final String carPlate = carPlateNumberController.text;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -70,18 +60,24 @@ class _FinalVerificationPageState extends State<FinalVerificationPage> {
           ),
           child: Padding(
             padding:
-                const EdgeInsets.only(top: 20, bottom: 37, right: 16, left: 16),
+                const EdgeInsets.only(top: 35, bottom: 38, right: 16, left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Center(
                   child: Column(
                     children: [
-                      Icon(Icons.local_gas_station_rounded,
-                          size: 200, color: _textColor),
-                      SizedBox(height: 16),
-                      Text(
-isuser ?'Step 5: Final Verification':'Step 6: Final Verification',
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: Image.asset(
+                          'images/logo6.png',
+                          width: 500,
+                        ),
+                      ),
+                      SizedBox(height: 3),
+                      Text(isuser ?
+                        'Step 6: Notifications':
+                        'Step 7: Notifications',
                         style: TextStyle(
                           fontSize: 34,
                           color: _textColor,
@@ -89,11 +85,11 @@ isuser ?'Step 5: Final Verification':'Step 6: Final Verification',
                           letterSpacing: 2,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 3),
                     ],
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 6),
                 Container(
                   padding: EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
@@ -104,7 +100,7 @@ isuser ?'Step 5: Final Verification':'Step 6: Final Verification',
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Review Your Information',
+                        'Registration Complete!',
                         style: TextStyle(
                           color: _textColor,
                           fontSize: 18,
@@ -112,50 +108,24 @@ isuser ?'Step 5: Final Verification':'Step 6: Final Verification',
                         ),
                       ),
                       SizedBox(height: 16),
-                      _buildInfoRow('Full Name:', fullName),
-                      _buildInfoRow('Email Address:', email),
-                      _buildInfoRow('Phone Number:', phone),
-                      _buildInfoRow('Car Plate Number:', carPlate),
+                      Text(
+                        'A confirmation email has been sent to your provided email address. Please check your inbox (and spam folder) for further instructions.',
+                        style: TextStyle(
+                          color: _textColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 SizedBox(height: 32),
+                
               
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: _textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                color: _textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

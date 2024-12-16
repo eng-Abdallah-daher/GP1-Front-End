@@ -14,9 +14,16 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
   @override
   void initState() {
     super.initState();
+ m();
+  }
+  void m() async {
+     await  getItems();
+  
     filteredTools =
         items.where((sale) => sale.ownerid == global_user.id).toList();
-  }
+           setState(() {});
+    }
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +76,7 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
           searchQuery = value;
           filteredTools = items
               .where((tool) =>
-                  tool.name.toLowerCase().contains(searchQuery.toLowerCase()))
+                  (tool.name.toLowerCase().contains(searchQuery.toLowerCase()))&&(tool.ownerid==global_user.id))
               .toList();
         });
       },
@@ -129,14 +136,13 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
     Navigator.of(context)
         .push(
       MaterialPageRoute(
-        builder: (context) => EditToolPage(index: index),
+        builder: (context) => EditToolPage(indexof: index),
       ),
     )
         .then((value) {
       setState(() {
         filteredTools = items
-            .where((tool) =>
-                tool.name.toLowerCase().contains(searchQuery.toLowerCase()))
+            .where((tool) =>(tool.name.toLowerCase().contains(searchQuery.toLowerCase()))&&(tool.ownerid==global_user.id))
             .toList();
       });
     });
@@ -201,7 +207,9 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
   }
 
   void _deleteTool(int index) {
-    setState(() {
+  try{
+      setState(() {
+      deleteAnItem(items[index].id);
       items.removeAt(index);
       filteredTools.removeAt(index);
     });
@@ -209,8 +217,19 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Tool deleted successfully!'),
+        backgroundColor: Colors.green,
         duration: Duration(seconds: 2),
       ),
     );
+  }catch (e) {
+
+     ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete tool. Please try again later.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+  }
   }
 }

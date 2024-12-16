@@ -1,54 +1,114 @@
-import 'dart:io';
+import 'dart:async';
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'dart:html' as html;
+import 'package:path_provider/path_provider.dart';
 class ChatPage extends StatefulWidget {
   Chat m;
-
   ChatPage({required this.m});
-
   @override
   _ChatPageState createState() => _ChatPageState(chat: m);
 }
 
 class _ChatPageState extends State<ChatPage> {
   Chat chat;
-
   _ChatPageState({required this.chat});
-
   final TextEditingController _controller = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   final ScrollController _scrollController = ScrollController();
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+   int i=0;
+    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
+     
+      try {
+        var newMessages = await fetchMessages( chat.id);
+      
+        setState(() {
+          chat.messages = newMessages;
+         
+          
+        });
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      } catch (e) {
+       
+      }
+    });
+  
   }
 
   Future<void> _sendMessage(String messageText) async {
     if (messageText.isNotEmpty) {
       setState(() {
         chat.messages.add(Message(
-          id: chat.messages.length + 1,
           senderId: global_user.id,
           content: messageText,
           createdAt: DateTime.now(),
         ));
+        chat.lastMessage = DateTime.now();
         _controller.clear();
       });
-
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     }
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+ 
+   Future<void> _pickImage() async {
+    String source="";
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      _sendMessage('Image: ${pickedFile.path}');
-    }
-  }
+      setState(() {
+        source = pickedFile.path;
+      });
 
+      if (kIsWeb) {
+        final reader = html.FileReader();
+
+        final bytes = await pickedFile.readAsBytes();
+        final fileData =
+            html.File([Uint8List.fromList(bytes)], pickedFile.name);
+
+        reader.readAsDataUrl(fileData);
+        reader.onLoadEnd.listen((_) async {
+          final fileUrl = reader.result as String;
+          await uploadImageAndGetOptimizedUrl(fileUrl);
+          source = urlofimage;
+              _sendMessage('Image: ${source}');
+        });
+      } else {
+        try {
+          final fileBytes = await pickedFile.readAsBytes();
+          final fileName = pickedFile.name;
+
+          final base64String = base64Encode(fileBytes);
+          print('Base64 Encoded String: $base64String');
+
+          final directory = await getApplicationDocumentsDirectory();
+          final targetDir = Directory('${directory.path}/images');
+          if (!await targetDir.exists()) {
+            await targetDir.create(recursive: true);
+          }
+
+          final targetFile = File('${targetDir.path}/$fileName');
+          await targetFile.writeAsBytes(fileBytes);
+
+          print('Image saved to: ${targetFile.path}');
+        } catch (e) {
+          print('Error saving image on Mobile: $e');
+        }
+      }
+    }
+    setState(() {});
+  }
   String _formatTimestamp(DateTime timestamp) {
     return '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}';
   }
@@ -57,6 +117,7 @@ class _ChatPageState extends State<ChatPage> {
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -85,7 +146,7 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           CircleAvatar(
             radius: 30,
-            backgroundImage: AssetImage((widget.m.u1.id == global_user.id)
+            backgroundImage: NetworkImage((widget.m.u1.id == global_user.id)
                 ? widget.m.u2.profileImage!
                 : widget.m.u1.profileImage!),
           ),
@@ -135,7 +196,6 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: (context, index) {
                 final message = chat.messages[index];
                 final isUserMessage = message.senderId == global_user.id;
-
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   alignment: isUserMessage
@@ -215,7 +275,20 @@ class _ChatPageState extends State<ChatPage> {
                   icon: Icon(Icons.send),
                   color: Colors.blue,
                   onPressed: () {
-                    _sendMessage(_controller.text);
+                    try {
+                      sendmsg(
+                          chatId: chat.id,
+                          senderId: global_user.id,
+                          text: _controller.text);
+                      _sendMessage(_controller.text);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Failed to send message!'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   },
                 ),
               ],

@@ -1,8 +1,19 @@
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 
-class OffersListPage extends StatelessWidget {
-  OffersListPage();
+
+class OffersListPage extends StatefulWidget {
+  @override
+  _OffersListPageState createState() => _OffersListPageState();
+}
+
+class _OffersListPageState extends State<OffersListPage> {
+  @override
+  void initState() {
+  
+    super.initState();
+   
+  }
 
   @override
   Widget build(BuildContext context) {

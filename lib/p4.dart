@@ -15,7 +15,7 @@ class p4 extends StatelessWidget {
           accentColor: _accentColor,
         ),
       ),
-      home: FinalVerificationPage(),
+      home: TermsAndConditionsPage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -45,19 +45,16 @@ const MaterialColor _primarySwatch = MaterialColor(
   },
 );
 
-class FinalVerificationPage extends StatefulWidget {
+class TermsAndConditionsPage extends StatefulWidget {
   @override
-  _FinalVerificationPageState createState() => _FinalVerificationPageState();
+  _TermsAndConditionsPageState createState() => _TermsAndConditionsPageState();
 }
 
-class _FinalVerificationPageState extends State<FinalVerificationPage> {
+class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
+
+
   @override
   Widget build(BuildContext context) {
-    final String fullName = nameController.text;
-    final String email = emailController.text;;
-    final String phone = phoneController.text;
-    final String carPlate = carPlateNumberController.text;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -69,19 +66,22 @@ class _FinalVerificationPageState extends State<FinalVerificationPage> {
             ),
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.only(top: 20, bottom: 37, right: 16, left: 16),
+            padding: const EdgeInsets.only(
+                top: 51, bottom: 155, right: 16, left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Center(
                   child: Column(
                     children: [
-                      Icon(Icons.local_gas_station_rounded,
-                          size: 200, color: _textColor),
+                      Image.asset(
+                        'images/logo4.png',
+                        height: 220,
+                      ),
                       SizedBox(height: 16),
                       Text(
-                        'Step 4: Final Verification',
+                        isuser ?'Step 4: Terms and Conditions':
+                        'Step 5: Terms and Conditions',
                         style: TextStyle(
                           fontSize: 34,
                           color: _textColor,
@@ -94,68 +94,55 @@ class _FinalVerificationPageState extends State<FinalVerificationPage> {
                   ),
                 ),
                 SizedBox(height: 40),
-                Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Review Your Information',
-                        style: TextStyle(
-                          color: _textColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      _buildInfoRow('Full Name:', fullName),
-                      _buildInfoRow('Email Address:', email),
-                      _buildInfoRow('Phone Number:', phone),
-                      _buildInfoRow('Car Plate Number:', carPlate),
-                    ],
+                Text(
+                  'Please read and accept the terms and conditions before proceeding.',
+                  style: TextStyle(
+                    color: _textColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 32),
-              
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: acceptTerms,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          acceptTerms = value ?? false;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: Text(
+                        'I accept the terms and conditions',
+                        style: TextStyle(
+                          color: _textColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    print("Terms and Conditions link pressed");
+                  },
+                  child: Text(
+                    'View Terms and Conditions',
+                    style: TextStyle(
+                      color: _accentColor,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 138),
+             
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: _textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                color: _textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

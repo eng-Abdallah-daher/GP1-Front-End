@@ -15,6 +15,8 @@ class _OwnerPaymentPageState extends State<OwnerPaymentPage> {
   @override
   void initState() {
     super.initState();
+
+
     filteredUsers = users
         .sublist(1, users.length)
         .where((user) => user.role == 'owner').toList();

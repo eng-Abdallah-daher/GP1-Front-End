@@ -8,6 +8,20 @@ class SalesPage extends StatefulWidget {
 }
 
 class _SalesPageState extends State<SalesPage> {
+
+     @override
+  void initState() {
+    super.initState();
+  m();
+  }
+  void m() async{
+      await getSales();
+   await getSalesRequests();
+   setState(() {
+     
+   });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -35,7 +49,8 @@ class _SalesPageState extends State<SalesPage> {
       body: Padding(
         padding: EdgeInsets.all(screenWidth * 0.04),
         child:
-            salesrequest.where((sale) => sale.ownerid == global_user.id).isEmpty
+            salesrequests
+                .where((sale) => sale.ownerid == global_user.id).isEmpty
                 ? Center(
                     child: Text(
                       'No sales recorded.',
@@ -57,13 +72,13 @@ class _SalesPageState extends State<SalesPage> {
                           mainAxisSpacing: screenHeight * 0.02,
                           childAspectRatio: 1.5,
                         ),
-                        itemCount: salesrequest.length,
+                        itemCount: salesrequests.length,
                         itemBuilder: (context, index) {
-                          if (salesrequest[index].ownerid == global_user.id) {
-                            return _buildSalesCard(context, salesrequest[index],
+                          if (salesrequests[index].ownerid == global_user.id) {
+                            return _buildSalesCard(context, salesrequests[index],
                                 screenWidth, screenHeight);
                           } else {
-                            return SizedBox();
+                            return SizedBox(height: 0,);
                           }
                         },
                       );
@@ -202,10 +217,14 @@ class _SalesPageState extends State<SalesPage> {
     );
   }
 
-  void _approveRequest(BuildContext context, Sale sale) {
-    setState(() {
-      salesrequest.remove(sale);
-      sales.add(sale);
+  void _approveRequest(BuildContext context, SaleRequest sale) {
+  try{
+      setState(() {
+deleteSalesRequest(sale.id);
+      salesrequests.remove(sale);
+      
+      addSale(ownerId: sale.ownerid, itemId: sale.itemid, quantity: sale.quantity, price: sale.price, date: sale.date);
+      sales.add(Sale(ownerid: sale.ownerid, itemid: sale.itemid, quantity: sale.quantity, price: sale.price, date: sale.date));
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -218,22 +237,50 @@ class _SalesPageState extends State<SalesPage> {
         duration: Duration(seconds: 2),
       ),
     );
-  }
-
-  void _rejectRequest(BuildContext context, Sale sale) {
-    setState(() {
-      salesrequest.remove(sale);
-    });
-
+  }catch(e){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Request for ${getitemnamebyid(sale.itemid)} rejected.',
+          'Failed to approve request for ${getitemnamebyid(sale.itemid)}.',
           style: TextStyle(fontSize: 16),
         ),
         backgroundColor: Colors.redAccent,
         duration: Duration(seconds: 2),
       ),
     );
+  }
+  }
+
+  void _rejectRequest(BuildContext context, SaleRequest sale) {
+    setState(() {
+try{
+        deleteSalesRequest(sale.id);
+      salesrequests.remove(sale);
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Request for ${getitemnamebyid(sale.itemid)} rejected.',
+            style: TextStyle(fontSize: 16),
+          ),
+          backgroundColor: Colors.blue,
+          duration: Duration(seconds: 2),
+        ),
+      );
+}catch(e){
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        'Failed to reject request for ${getitemnamebyid(sale.itemid)}.',
+        style: TextStyle(fontSize: 16),
+      ),
+      backgroundColor: Colors.redAccent,
+      duration: Duration(seconds: 2),
+    ),
+  );
+ 
+}
+    });
+
+  
   }
 }

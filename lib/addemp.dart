@@ -1,7 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:first/glopalvars.dart';
 
-class AddEmployeePage extends StatelessWidget {
+class AddEmployeePage extends StatefulWidget {
+  @override
+  _AddEmployeePageState createState() => _AddEmployeePageState();
+}
+
+class _AddEmployeePageState extends State<AddEmployeePage> {
+ 
+  @override
+  void initState() {
+
+    super.initState();
+m();
+  }
+  void m() async {
+     await getEmployees();
+     setState(() {});
+  }
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
 
@@ -28,7 +44,7 @@ class AddEmployeePage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
-                  image: AssetImage("images/emps.png"),
+                  image: NetworkImage("images/emps.png"),
                   fit: BoxFit.fitWidth,
                 ),
                 boxShadow: [
@@ -59,13 +75,25 @@ class AddEmployeePage extends StatelessWidget {
                 final position = _positionController.text.trim();
 
                 if (name.isNotEmpty && position.isNotEmpty) {
+try{
+
+employees.add(Employee(id: employees.length, name: name, position: position,ownerid: global_user.id));
+  addEmployee(employees.length, name, position);
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text("Employee $name added as $position!"),
+                      backgroundColor: Colors.blue,
                     ),
                   );
                   _nameController.clear();
                   _positionController.clear();
+}catch (e) {
+  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error: ${e.toString()}"),
+                    backgroundColor: Colors.red,),
+                    
+                  );}
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Please fill in all fields.")),

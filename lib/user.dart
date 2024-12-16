@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: CircleAvatar(
-              backgroundImage: AssetImage(global_user.profileImage!),
+              backgroundImage: NetworkImage(global_user.profileImage!),
               radius: 22,
               backgroundColor: white,
               child: Container(

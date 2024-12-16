@@ -331,10 +331,16 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
   @override
   void initState() {
     super.initState();
+ 
     _checkBiometrics();
   }
 
   Future<void> _checkBiometrics() async {
+      await  getbookings();
+    await getDeliveryRequests();
+    setState(() {
+      
+    });
     bool canCheckBiometrics;
     List<BiometricType>? availableBiometrics;
     try {
@@ -450,7 +456,10 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
   void _submitRequest() async {
     Booking? m = findCurrentBooking();
     if (m != null) {
+   try{
+       addDeliveryRequest(address: _addressController.text,instructions:_instructionsController.text,ownerId: m.ownerid,phone:_phoneController.text,userId:  global_user.id );
       deliveryRequests.add(DeliveryRequest(
+        requestid: deliveryRequests.length,
           ownerid: m.ownerid,
           userid: global_user.id,
           phone: _phoneController.text,
@@ -461,6 +470,14 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
         backgroundColor: Colors.blue,
         duration: Duration(seconds: 3),
       ));
+   }catch(e){
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('An error occurred while submitting your request. Please try again.'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 3),
+      ));
+     print(e);
+   }
     }
   }
 

@@ -7,6 +7,20 @@ class DeliveryRequestsPage extends StatefulWidget {
 }
 
 class _DeliveryRequestsPageState extends State<DeliveryRequestsPage> {
+
+
+  @override
+  void initState() {
+    super.initState();
+  m();
+  }
+void m()async{
+   await getDeliveryRequests();
+   setState(() {
+     
+   });
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -195,15 +209,25 @@ class _DeliveryRequestsPageState extends State<DeliveryRequestsPage> {
   }
 
   void _deleteRequest(int index) {
-    setState(() {
+    try{
+      setState(() {
+      deleteDeliveryRequest(deliveryRequests[index].requestid);
       deliveryRequests.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Request deleted successfully'),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
       ),
     );
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error deleting request: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _updateRequest(int index) {
@@ -317,7 +341,12 @@ class _DeliveryRequestsPageState extends State<DeliveryRequestsPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                setState(() {});
+                setState(() {
+
+
+try{
+  updateDeliveryRequest(request.requestid,newPhone,newAddress,newInstructions);
+
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -325,6 +354,17 @@ class _DeliveryRequestsPageState extends State<DeliveryRequestsPage> {
                     backgroundColor: Colors.green,
                   ),
                 );
+}catch(e){
+  
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Error updating request: $e'),
+      backgroundColor: Colors.red,
+    ),);
+  
+}
+});
+                 setState(() {});
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

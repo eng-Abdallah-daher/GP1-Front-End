@@ -2,7 +2,19 @@ import 'package:first/ComplaintsManagementPage.dart';
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 
-class ViewWorkshopRatingsPage extends StatelessWidget {
+class ViewWorkshopRatingsPage extends StatefulWidget {
+  @override
+  _ViewWorkshopRatingsPageState createState() =>
+      _ViewWorkshopRatingsPageState();
+}
+
+class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
+    @override
+  void initState()  {
+    super.initState();
+   
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

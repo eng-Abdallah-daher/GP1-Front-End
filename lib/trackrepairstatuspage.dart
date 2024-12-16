@@ -15,13 +15,16 @@ class _TrackRepairStatusPageState extends State<TrackRepairStatusPage> {
       FlutterLocalNotificationsPlugin();
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
+   
     _initializeNotifications();
     _startTimer();
   }
 
   void _initializeNotifications() async {
+
+     await getbookings();
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 

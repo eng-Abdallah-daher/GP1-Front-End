@@ -10,17 +10,37 @@ class _UpdatePersonalInfoPageState extends State<UpdatePersonalInfoPage> {
   final _formKey = GlobalKey<FormState>();
 
   String _name = '';
-  String _email = '';
+  
   String _phoneNumber = '';
-  String _password = '';
+  
 
   void _saveChanges() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+try{
+  
+updateUser(global_user.email, _name, _phoneNumber);
+
+global_user.name = _name;
+      global_user.phone = _phoneNumber;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Personal info updated successfully!')),
+        SnackBar(content: Text('Personal info updated successfully!'),
+        backgroundColor: Colors.blue,),
+        
       );
+
+}catch(e) {
+  ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update personal info. Please try again.'),
+        backgroundColor: Colors.red,),
+        
+      );
+  print(e);
+}
     }
+    setState(() {
+      
+    });
   }
 
   @override
@@ -41,6 +61,7 @@ class _UpdatePersonalInfoPageState extends State<UpdatePersonalInfoPage> {
               children: [
                 _buildTextField(
                   label: 'Name',
+                  
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your name';
@@ -50,20 +71,9 @@ class _UpdatePersonalInfoPageState extends State<UpdatePersonalInfoPage> {
                   onSaved: (value) {
                     _name = value!;
                   },
+                  
                 ),
-                SizedBox(height: 20),
-                _buildTextField(
-                  label: 'Email',
-                  validator: (value) {
-                    if (value == null || !value.contains('@')) {
-                      return 'Please enter a valid email address';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _email = value!;
-                  },
-                ),
+              
                 SizedBox(height: 20),
                 _buildTextField(
                   label: 'Phone Number',
@@ -77,20 +87,7 @@ class _UpdatePersonalInfoPageState extends State<UpdatePersonalInfoPage> {
                     _phoneNumber = value!;
                   },
                 ),
-                SizedBox(height: 20),
-                _buildTextField(
-                  label: 'Password',
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _password = value!;
-                  },
-                ),
+               
                 SizedBox(height: 40),
                 Center(
                   child: ElevatedButton(

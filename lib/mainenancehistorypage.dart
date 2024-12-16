@@ -2,7 +2,26 @@ import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class MaintenanceHistoryPage extends StatelessWidget {
+class MaintenanceHistoryPage extends StatefulWidget {
+  @override
+  _MaintenanceHistoryPageState createState() => _MaintenanceHistoryPageState();
+}
+
+class _MaintenanceHistoryPageState extends State<MaintenanceHistoryPage> {
+
+  @override
+  void initState(){
+   
+    super.initState();
+    m();
+  }
+  void m() async{
+    await getMaintenanceRecords();
+    await getMaintenanceRequests();
+    setState(() {
+      
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

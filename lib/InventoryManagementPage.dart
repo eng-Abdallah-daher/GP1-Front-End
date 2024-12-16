@@ -4,7 +4,10 @@ import 'package:first/SellPage.dart';
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'dart:html' as html;
+import 'package:path_provider/path_provider.dart';
 class InventoryManagementPage extends StatefulWidget {
   @override
   _InventoryManagementPageState createState() =>
@@ -12,6 +15,20 @@ class InventoryManagementPage extends StatefulWidget {
 }
 
 class _InventoryManagementPageState extends State<InventoryManagementPage> {
+
+  @override
+  void initState() {
+    
+    super.initState();
+  m();
+  }
+  void m() async {
+      await getItems();
+    await getSales();
+    setState(() {
+      
+    });
+  }
   final TextEditingController nameController = TextEditingController();
 
   final TextEditingController DescriptionController = TextEditingController();
@@ -22,14 +39,61 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-  void pickImage(int index) async {
+  // void pickImage(int index) async {
+  //   final XFile? pickedFile =
+  //       await _picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       selectedImages[index] = File(pickedFile.path);
+  //     });
+  //   }
+  // }
+    void pickImage(int index) async {
+    final ImagePicker _picker = ImagePicker();
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        selectedImages[index] = File(pickedFile.path);
-      });
+     
+setState(() {
+   selectedImages[index] = File(pickedFile.path);
+});
+      if (kIsWeb) {
+        final reader = html.FileReader();
+
+        final bytes = await pickedFile.readAsBytes();
+        final fileData =
+            html.File([Uint8List.fromList(bytes)], pickedFile.name);
+
+        reader.readAsDataUrl(fileData);
+        reader.onLoadEnd.listen((_) async {
+          final fileUrl = reader.result as String;
+          await uploadImageAndGetOptimizedUrl(fileUrl);
+          selectedImages[index] = File(urlofimage);
+        });
+      } else {
+        try {
+          final fileBytes = await pickedFile.readAsBytes();
+          final fileName = pickedFile.name;
+
+          final base64String = base64Encode(fileBytes);
+          print('Base64 Encoded String: $base64String');
+
+          final directory = await getApplicationDocumentsDirectory();
+          final targetDir = Directory('${directory.path}/images');
+          if (!await targetDir.exists()) {
+            await targetDir.create(recursive: true);
+          }
+
+          final targetFile = File('${targetDir.path}/$fileName');
+          await targetFile.writeAsBytes(fileBytes);
+
+          print('Image saved to: ${targetFile.path}');
+        } catch (e) {
+          print('Error saving image on Mobile: $e');
+        }
+      }
     }
+    setState(() {});
   }
 
   void addItem() {
@@ -38,13 +102,19 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
         DescriptionController.text.isNotEmpty &&
         priceController.text.isNotEmpty &&
         selectedImages.every((image) => image != null)) {
-      setState(() {
+try{
+        setState(() {
+addNewItem(global_user.id, items.length, nameController.text,
+            double.parse(priceController.text), DescriptionController.text,
+            selectedImages.map((file) => file!.path).toList(),
+            int.parse(quantityController.text));
+        
         items.add(Item(
           ownerid: global_user.id,
           id: items.length,
           description: DescriptionController.text,
           imagePaths: selectedImages.map((file) => file!.path).toList(),
-          publisherId: global_user.id,
+         
           name: nameController.text,
           availableQuantity: int.parse(quantityController.text),
           price: double.parse(priceController.text),
@@ -60,7 +130,15 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Item added successfully!'),
+        backgroundColor: Colors.green,
       ));
+}catch(r){
+  print(r);
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text('An error occurred while adding the item. Please try again.'),
+    backgroundColor: Colors.red,
+  ));
+}
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Please fill out all fields and select 3 images!'),
@@ -68,14 +146,23 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
     }
   }
 
-  void deleteItem(int index) {
-    setState(() {
-      items.removeAt(index);
+  void deleteItem(Item item) {
+   try{
+     setState(() {
+      deleteAnItem(item.id);
+       items.remove(item);
     });
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Item deleted successfully!'),
     ));
+   }catch(e){
+    
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('An error occurred while deleting the item. Please try again.'),
+      backgroundColor: Colors.red,
+    ));
+   }
   }
 
   void showSellDialog(Item item) {
@@ -183,45 +270,63 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
                           int quantityToSell =
                               int.tryParse(sellQuantityController.text) ?? 0;
 
-                          if (quantityToSell > 0) {
-                            if (quantityToSell >= item.availableQuantity) {
-                              setState(() {
-                                items.remove(item);
-                                sales.add(Sale(
-                                    ownerid: item.ownerid,
-                                    itemid: item.id,
-                                    price: item.price,
-                                    quantity: item.availableQuantity,
-                                    date: DateTime.now()));
-                              });
-                              Navigator.of(context).pop();
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content:
-                                    Text('Sold ${item.name}! Item removed.'),
-                              ));
+                         try {
+                           if (quantityToSell > 0) {
+                              if (quantityToSell >= item.availableQuantity) {
+                                setState(() {
+                                  addSale(
+                                      ownerId: item.ownerid,
+                                      itemId: item.id,
+                                      quantity: item.availableQuantity,
+                                      price: item.price,
+                                      date: DateTime.now());
+                                      
+                                  deleteItem(item);
+                               
+
+                                  sales.add(Sale(
+                                      ownerid: item.ownerid,
+                                      itemid: item.id,
+                                      price: item.price,
+                                      quantity: item.availableQuantity,
+                                      date: DateTime.now()));
+                                });
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content:
+                                      Text('Sold ${item.name}! Item removed.'),
+                                ));
+                              } else {
+                                setState(() {
+                                  item.availableQuantity -= quantityToSell;
+                                  sales.add(Sale(
+                                      ownerid: item.ownerid,
+                                      itemid: item.id,
+                                      price: item.price,
+                                      quantity: quantityToSell,
+                                      date: DateTime.now()));
+                                });
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Text(
+                                      'Sold $quantityToSell ${item.name}(s)!'),
+                                    backgroundColor: Colors.green
+                                ));
+                              }
                             } else {
-                              setState(() {
-                                item.availableQuantity -= quantityToSell;
-                                sales.add(Sale(
-                                    ownerid: item.ownerid,
-                                    itemid: item.id,
-                                    price: item.price,
-                                    quantity: quantityToSell,
-                                    date: DateTime.now()));
-                              });
-                              Navigator.of(context).pop();
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
-                                content: Text(
-                                    'Sold $quantityToSell ${item.name}(s)!'),
+                                content: Text('Invalid quantity to sell.'),backgroundColor: Colors.red,
                               ));
                             }
-                          } else {
+                         }catch (e){
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('Invalid quantity to sell.'),
+                              backgroundColor: Colors.red,
                             ));
-                          }
+                         }
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.lightBlue[200],
@@ -434,7 +539,10 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
                         margin: EdgeInsets.symmetric(vertical: 10),
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () => pickImage(i),
+                          onPressed: () {
+                           setState(() { pickImage(i);
+                             });
+                          },
                           icon: Icon(Icons.image, color: Colors.white),
                           label: Text(
                             'Choose Image ${i + 1}',
@@ -469,8 +577,8 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
                               ),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Image.file(
-                              selectedImages[i]!,
+                            child: Image.network(
+                              selectedImages[i]!.path,
                               height: 150,
                               width: 150,
                               fit: BoxFit.cover,
@@ -589,7 +697,7 @@ class _InventoryManagementPageState extends State<InventoryManagementPage> {
                                 ),
                                 trailing: IconButton(
                                   icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () => deleteItem(index),
+                                  onPressed: () => deleteItem(items[index]),
                                 ),
                               ),
                             ),

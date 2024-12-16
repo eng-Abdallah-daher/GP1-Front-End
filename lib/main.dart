@@ -1,8 +1,16 @@
  
 
+import 'package:first/InventoryManagementPage.dart';
+import 'package:first/addemp.dart';
+import 'package:first/addpostpage.dart';
+import 'package:first/chatpage.dart';
 import 'package:first/chats.dart';
+import 'package:first/commentpage.dart';
+import 'package:first/forgotpasswordpage.dart';
 import 'package:first/forlogin.dart';
 import 'package:first/glopalvars.dart';
+import 'package:first/ownermainpage.dart';
+import 'package:first/pagetouploadimages.dart';
 import 'package:first/searchpage.dart';
 import 'package:first/signup.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +20,16 @@ import 'package:first/sospage.dart';
 import 'package:first/map.dart';
 import 'package:first/posts.dart';
 
-void main() {
-  
-  runApp(MaterialApp(home: CarServiceLoginApp(),));
+void main() async{
+
+// await addTask(4,AssignedTask(ownerId: "2", taskId: "0", date: "1", time: "time", task: "task"));
+// await getAssignedTasks();
+// await getItems();
+await getusers();
+await getAllChats();
+await getItems();
+await getposts();
+  runApp(MaterialApp(home: usermainpage(),));
 }
 
 class usermainpage extends StatelessWidget {
@@ -89,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset(
+          Image.network(
             imagePath,
             height: 29,
             width: 29,
@@ -198,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: CircleAvatar(
-              backgroundImage: AssetImage(global_user.profileImage!),
+              backgroundImage: NetworkImage(global_user.profileImage!),
               radius: 22,
               backgroundColor: white,
               child: Container(

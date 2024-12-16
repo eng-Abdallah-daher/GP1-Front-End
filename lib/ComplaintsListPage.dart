@@ -1,8 +1,25 @@
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 
-class ComplaintsListPage extends StatelessWidget {
-  ComplaintsListPage();
+class ComplaintsListPage extends StatefulWidget {
+  @override
+  _ComplaintsListPageState createState() => _ComplaintsListPageState();
+}
+
+class _ComplaintsListPageState extends State<ComplaintsListPage> {
+  @override
+  void initState() {
+    
+    super.initState();
+  m();
+  }
+  void m() async{
+     await getcomplaints();
+     setState(() {
+       
+     });
+  }
+
 
   @override
   Widget build(BuildContext context) {

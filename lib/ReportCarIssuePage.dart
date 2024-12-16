@@ -1,14 +1,14 @@
-import 'dart:io';
+
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ReportCarIssuePage extends StatefulWidget {
+class ReportCarIssuePag extends StatefulWidget {
   @override
   _ReportCarIssuePageState createState() => _ReportCarIssuePageState();
 }
 
-class _ReportCarIssuePageState extends State<ReportCarIssuePage> {
+class _ReportCarIssuePageState extends State<ReportCarIssuePag> {
   final _issueController = TextEditingController();
   String _selectedIssueType = "Engine Problem";
   bool _locationSharing = false;
@@ -33,6 +33,7 @@ class _ReportCarIssuePageState extends State<ReportCarIssuePage> {
       }
     });
   }
+  
 
   void _submitReport() {
     showDialog(
@@ -222,8 +223,8 @@ class _ReportCarIssuePageState extends State<ReportCarIssuePage> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.file(
-                        File(image.path),
+                      child: Image.network(
+                        image.path,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -336,6 +337,6 @@ class _ReportCarIssuePageState extends State<ReportCarIssuePage> {
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: ReportCarIssuePage(),
+    home: ReportCarIssuePag(),
   ));
 }

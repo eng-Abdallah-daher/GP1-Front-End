@@ -26,8 +26,15 @@ class _MaintenanceReminderPageState extends State<MaintenanceReminderPage> {
   @override
   void initState() {
     super.initState();
+  m();
+  }
+  void m()async{
+     await  getMaintenanceRecords();
     MaintenanceRecord m = findMostRecentRecord(maintenanceRecords);
     _lastMaintenanceController.text = m.getFormattedDate();
+    setState(() {
+      
+    });
   }
 
   @override
@@ -117,17 +124,27 @@ class _MaintenanceReminderPageState extends State<MaintenanceReminderPage> {
                         }
                         return null;
                       }
-
+try{
+addMaintenanceRecord(userId: global_user.id, date: _nextReminderDate!, description: mileage);
                       maintenanceRecords.add(MaintenanceRecord(
                           date: _nextReminderDate!,
                           description: mileage,
                           userid: global_user.id));
+
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Reminder Set Successfully!'),
                           backgroundColor: Colors.blue.shade800,
                         ),
-                      );
+                      );}catch(e){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Failed to set reminder. Please try again.'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     }
                   },
                   icon: Icon(Icons.check_circle_outline, color: white),

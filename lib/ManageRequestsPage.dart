@@ -3,11 +3,26 @@ import 'package:flutter/material.dart';
 
 
 class ManageRequestsPage extends StatefulWidget {
+
+  
   @override
   _ManageRequestsPageState createState() => _ManageRequestsPageState();
 }
 
 class _ManageRequestsPageState extends State<ManageRequestsPage> {
+
+    @override
+  void initState() {
+    super.initState();
+m();
+  }
+  void m() async{
+       await getbookings();
+    await getMaintenanceRequests();
+    setState(() {
+      
+    });
+  }
   DateTime addDaysAndHours(DateTime date, int days, int hours) {
     DateTime updatedDate = date.add(Duration(days: days));
 
@@ -49,7 +64,7 @@ class _ManageRequestsPageState extends State<ManageRequestsPage> {
                   ),
                 ),
                 Text(
-                  "Date: ${m.time.toLocal()}".split(' ')[0],
+                  "Date: ${m.time}".split(' ')[0],
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[600],
@@ -172,10 +187,9 @@ class _ManageRequestsPageState extends State<ManageRequestsPage> {
     return accp;
   }
 
-  void _acceptRequest(maintenancerequest request, DateTime after) async {
-    setState(() {});
-
-    bookings.add(Booking(
+  void _acceptRequest(maintenancerequest request, DateTime after) {
+   
+      bookings.add(Booking(
         userid: request.user_id,
         bookingid: bookings.length,
         ownerid: request.owner_id,
@@ -183,13 +197,37 @@ class _ManageRequestsPageState extends State<ManageRequestsPage> {
         appointmentDate: after,
         appointment: request.time,
         status: "Confirmed"));
+     
+addBooking(request.user_id, bookings.length-1, request.owner_id, after  , request.time, getnameofuser(request.user_id), "Confirmed");
+ 
     _removeRequest(request);
+    setState(() {});
   }
 
   void _removeRequest(maintenancerequest request) {
-    setState(() {
+  try{
+      setState(() {
+      
       maintenancerequests.remove(request);
+      deleteMaintenanceRequest(request.requestid);
     });
+     ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Request deleted successfully!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }catch(e){
+       ScaffoldMessenger.of(context).showSnackBar(
+       SnackBar(
+          content: Text('Failed to delete request. Please try again.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+  
+  }
   }
 
   @override
@@ -270,8 +308,11 @@ class _ManageRequestsPageState extends State<ManageRequestsPage> {
                           Icons.check_circle,
                           Colors.green.shade700,
                           'Accept',
-                          () => showRequestDialog(
-                              context, getnameofuser(request.user_id), request),
+                          () {
+                            print(request.time);
+                            showRequestDialog(
+                              context, getnameofuser(request.user_id), request);
+                          },
                         ),
                         _buildIconButton(
                           Icons.delete,

@@ -13,6 +13,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+    @override
+  void initState() {
+    super.initState();
+
+  getposts();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {},
                   child: CircleAvatar(
                     backgroundImage:
-                        AssetImage(users
+                        NetworkImage(users
                         .sublist(1, users.length)
                         .where((element) => element.id==widget.user.id,).toList()[0].profileImage!),
                     radius: 28,
@@ -215,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                child: Image.asset(
+                child: Image.network(
                   post.postImage,
                   fit: BoxFit.cover,
                   width: double.infinity,
@@ -264,8 +271,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         setState(() {
                           isLiked = !isLiked;
                           if (isLiked) {
-                            post.likes.add(Like(userId: global_user.id));
-                            post.likeCount = post.likes.length;
+                                    try {
+                              addLikeToPost(post.id, global_user.id);
+                            post.likes
+                                  .add(Like(userId: global_user.id));
+                             post.likeCount =post.likes.length;
+                            } catch (e) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Failed to like the post'),
+                                backgroundColor: Colors.red,
+                              ));
+                            }
                           } else {
                             for (int i = 0; i < post.likes.length; i++) {
                               if (post.likes[i].userId == global_user.id) {
@@ -423,7 +440,7 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: Colors.white,
           child: CircleAvatar(
             radius: 50,
-            backgroundImage: AssetImage(widget.user.profileImage!),
+            backgroundImage: NetworkImage(widget.user.profileImage!),
           ),
         ),
       ],
@@ -603,6 +620,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         return;
                       }
                     }
+
+                   try{
+                     createChat(chats.length, global_user.id, widget.user.id);
                     chats.add(Chat(
                         lastMessage: DateTime.now(),
                         id: chats.length,
@@ -616,6 +636,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             ChatPage(m: chats[chats.length - 1]),
                       ),
                     );
+                   }catch(e){
+                       ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to create a chat'),backgroundColor:Colors.red,),
+                      );
+                   }
                   }
                 },
                 child: Padding(

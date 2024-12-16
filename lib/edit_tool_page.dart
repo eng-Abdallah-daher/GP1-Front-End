@@ -1,17 +1,39 @@
 import 'package:flutter/material.dart';
 import 'glopalvars.dart';
 
-class EditToolPage extends StatelessWidget {
-  final int index;
+class EditToolPage extends StatefulWidget {
+  final int indexof; 
+
+
+  EditToolPage({Key? key, required this.indexof}) : super(key: key);
+
+  @override
+  _EditToolPageState createState() => _EditToolPageState();
+}
+
+class _EditToolPageState extends State<EditToolPage> {
+ 
+  @override
+  void initState() {
+    super.initState();
+   m();
+  }
+  void m() async{
+    await getItems();
+setState(() {
+  
+});
+  }
+  
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
 
-  EditToolPage({Key? key, required this.index}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
-    Item tool = items[index];
+    Item tool = items[widget.indexof];
     nameController.text = tool.name;
     priceController.text = tool.price.toString();
     quantityController.text = tool.availableQuantity.toString();
@@ -50,7 +72,7 @@ class EditToolPage extends StatelessWidget {
               _buildElevatedButton(
                 title: 'Save Changes',
                 onPressed: () {
-                  _editTool(context);
+                  _editTool(context,tool);
                 },
               ),
             ],
@@ -60,7 +82,7 @@ class EditToolPage extends StatelessWidget {
     );
   }
 
-  void _editTool(BuildContext context) {
+  void _editTool(BuildContext context,Item item) {
     String toolName = nameController.text.trim();
     String toolPriceText = priceController.text.trim();
     String toolQuantityText = quantityController.text.trim();
@@ -82,13 +104,26 @@ class EditToolPage extends StatelessWidget {
       _showMessage(context, 'Please enter a valid quantity.');
       return;
     }
-
+    
+try{
+  updateItem(item.id,nameController.text, toolQuantity, toolPrice);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Tool updated successfully!'),
+        backgroundColor: Colors.blue,
         duration: Duration(seconds: 2),
       ),
     );
+}catch (e) {
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Failed to update tool. Please try again.'),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ),
+  );
+}
     Navigator.of(context).pop();
   }
 

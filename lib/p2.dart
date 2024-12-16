@@ -15,7 +15,7 @@ class p2 extends StatelessWidget {
           accentColor: _accentColor,
         ),
       ),
-      home: AccountInfoPage(),
+      home: PersonalInfoPage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -45,20 +45,16 @@ const MaterialColor _primarySwatch = MaterialColor(
   },
 );
 
-class AccountInfoPage extends StatefulWidget {
+class PersonalInfoPage extends StatefulWidget {
   @override
-  _AccountInfoPageState createState() => _AccountInfoPageState();
+  _PersonalInfoPageState createState() => _PersonalInfoPageState();
 }
 
-class _AccountInfoPageState extends State<AccountInfoPage> {
-  final _formKey = GlobalKey<FormState>();
- 
- 
-
-
+class _PersonalInfoPageState extends State<PersonalInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _primaryColor,
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
@@ -68,111 +64,80 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
               end: Alignment.bottomRight,
             ),
           ),
-          child: Padding(
-            padding:
-                const EdgeInsets.only(top: 16, bottom: 77, right: 16, left: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'images/logo3.png',
-                        height: 220,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Step 2: Account Security Information',
-                        style: TextStyle(
-                          fontSize: 34,
-                          color: _textColor,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Provide your personal information',
-                        style: TextStyle(
-                          color: _textColor.withOpacity(0.7),
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 30),
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: _textFieldFillColor,
-                    hintText: 'Password',
-                    prefixIcon: Icon(Icons.lock, color: _iconColor),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          padding:
+              const EdgeInsets.only(top: 40, bottom: 30, right: 16, left: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'images/map.png',
+                      width: 300,
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters long';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: confirmpassword,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: _textFieldFillColor,
-                    hintText: 'Confirm Password',
-                    prefixIcon: Icon(Icons.lock, color: _iconColor),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    SizedBox(height: 8),
+                    Text(
+                      'Step 2: Public Personal Information',
+                      style: TextStyle(
+                        fontSize: 34,
+                        color: _textColor,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-                    if (value != passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: carPlateNumberController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: _textFieldFillColor,
-                    hintText: 'Car Plate Number ',
-                    prefixIcon: Icon(Icons.directions_car, color: _iconColor),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    Text(
+                      'Provide your personal information',
+                      style: TextStyle(
+                        color: _textColor.withOpacity(0.7),
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your car plate number';
-                    }
-
-                    return null;
-                  },
+                  ],
                 ),
-                SizedBox(height: 204),
-               
-              ],
-            ),
+              ),
+              SizedBox(height: 40),
+              TextFormField(
+                controller: descriptionController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: _textFieldFillColor,
+                  hintText: 'Description',
+                  prefixIcon: Icon(Icons.description, color: _iconColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your description';
+                  }
+                 
+                  return null;
+                },
+              ),  SizedBox(height: 16),
+               TextFormField(
+                controller: locationController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: _textFieldFillColor,
+                  hintText: 'Location',
+                  prefixIcon: Icon(Icons.location_on_outlined, color: _iconColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your Location';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 150),
+            ],
           ),
         ),
       ),

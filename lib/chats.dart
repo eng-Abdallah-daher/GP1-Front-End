@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:first/chatpage.dart';
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
@@ -9,33 +10,27 @@ class ChatsPage extends StatefulWidget {
 
 class _ChatsPageState extends State<ChatsPage> {
   final TextEditingController _searchController = TextEditingController();
-
+  Timer? _timer;
   String searchQuery = "";
-
-  List<Chat> filteredusers = getuserchats();
+  List<Chat> filteredUsers = getuserchats();
 
   @override
   void initState() {
     super.initState();
 
+    
     _searchController.addListener(() {
       setState(() {
         searchQuery = _searchController.text.toLowerCase();
-        List<Chat> filt = getuserchats();
-        List<Chat> p = [];
-        for (int i = 0; i < filt.length; i++) {
-          if (filt[i].u1.id == global_user.id) {
-            if (filt[i].u2.name.contains(searchQuery)) {
-              p.add(filt[i]);
-            }
-          }
-          if (filt[i].u2.id == global_user.id) {
-            if (filt[i].u1.name.contains(searchQuery)) {
-              p.add(filt[i]);
-            }
-          }
-        }
-        filteredusers = p;
+        filterChats();
+      });
+    });
+
+    
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) async {
+      await getAllChats();
+      setState(() {
+        filterChats(); 
       });
     });
   }
@@ -43,7 +38,21 @@ class _ChatsPageState extends State<ChatsPage> {
   @override
   void dispose() {
     _searchController.dispose();
+    _timer?.cancel(); 
     super.dispose();
+  }
+
+  
+  void filterChats() {
+    List<Chat> allChats = getuserchats();
+    filteredUsers = allChats.where((chat) {
+      if (chat.u1.id == global_user.id) {
+        return chat.u2.name.toLowerCase().contains(searchQuery);
+      } else if (chat.u2.id == global_user.id) {
+        return chat.u1.name.toLowerCase().contains(searchQuery);
+      }
+      return false;
+    }).toList();
   }
 
   @override
@@ -51,16 +60,14 @@ class _ChatsPageState extends State<ChatsPage> {
     return Scaffold(
       body: Column(
         children: [
+          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 gradient: LinearGradient(
-                  colors: [
-                    Colors.blue[200]!,
-                    Colors.blue[100]!,
-                  ],
+                  colors: [Colors.blue[200]!, Colors.blue[100]!],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -92,11 +99,13 @@ class _ChatsPageState extends State<ChatsPage> {
               ),
             ),
           ),
+          
           Expanded(
             child: ListView.builder(
-              itemCount: filteredusers.length,
+              itemCount: filteredUsers.length,
               itemBuilder: (context, index) {
-                final chat = filteredusers[index];
+                final chat = filteredUsers[index];
+                final isCurrentUser = chat.u1.id == global_user.id;
 
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -128,21 +137,20 @@ class _ChatsPageState extends State<ChatsPage> {
                           builder: (context) => ChatPage(m: chat),
                         ),
                       );
-                      setState(() {});
                     },
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     leading: CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage((chat.u1.id == global_user.id)
-                          ? chat.u2.profileImage!
-                          : chat.u1.profileImage!),
+                      backgroundImage: NetworkImage(
+                        isCurrentUser
+                            ? chat.u2.profileImage!
+                            : chat.u1.profileImage!,
+                      ),
                       backgroundColor: blueAccent,
                     ),
                     title: Text(
-                      (chat.u1.id == global_user.id)
-                          ? chat.u2.name
-                          : chat.u1.name,
+                      isCurrentUser ? chat.u2.name : chat.u1.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
@@ -151,22 +159,17 @@ class _ChatsPageState extends State<ChatsPage> {
                     ),
                     subtitle: Text(
                       chat.messages.isEmpty
-                          ? "👋"
-                          : chat.messages[chat.messages.length - 1].senderId ==
-                                  global_user.id
-                              ? 'Me:${chat.messages[chat.messages.length - 1].content}'
-                              : chat.messages[chat.messages.length - 1].content,
+                          ? "👋 No messages yet"
+                          : chat.messages.last.senderId == global_user.id
+                              ? 'Me: ${chat.messages.last.content}'
+                              : chat.messages.last.content,
                       style: TextStyle(
                         fontSize: 14,
-                        color: chat.messages.length == 0
+                        color: chat.messages.isEmpty
                             ? Colors.black
                             : Colors.white70,
                       ),
                       overflow: TextOverflow.ellipsis,
-                    ),
-                    trailing: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [],
                     ),
                   ),
                 );
@@ -179,7 +182,3 @@ class _ChatsPageState extends State<ChatsPage> {
     );
   }
 }
-
-void main() => runApp(MaterialApp(
-      home: ChatsPage(),
-    ));

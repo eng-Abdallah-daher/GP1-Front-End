@@ -104,7 +104,7 @@ class _usersearchPageState extends State<usersearchPage> {
                         ),
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundImage: AssetImage(user.profileImage!),
+                            backgroundImage: NetworkImage(user.profileImage!),
                             radius: 25,
                           ),
                           title: Text(

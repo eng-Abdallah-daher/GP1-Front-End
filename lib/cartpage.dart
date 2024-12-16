@@ -152,17 +152,47 @@ class _CartPageState extends State<CartPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Checkout successful!')),
                         );
-                        for (int i = 0; i < cart.localitems.length; i++) {
-                          print(cart.localitems[i].ownerid);
-                          salesrequest.add(Sale(
+                      try{
+                          for (int i = 0; i < cart.localitems.length; i++) {
+                        addSaleRequest(SaleRequest(
+                            id: salesrequests.length,
+                              ownerid: cart.localitems[i].ownerid,
+                              itemid: cart.localitems[i].id,
+                              quantity: cart.localitems[i].availableQuantity,
+                              price: cart.localitems[i].price,
+                              date: DateTime.now()));
+                          salesrequests.add(SaleRequest(
+                            id: salesrequests.length,
                               ownerid: cart.localitems[i].ownerid,
                               itemid: cart.localitems[i].id,
                               quantity: cart.localitems[i].availableQuantity,
                               price: cart.localitems[i].price,
                               date: DateTime.now()));
                         }
-                        cart.localitems = [];
-                        Navigator.of(context).pop();
+
+
+                        for (int i = 0; i < cart.localitems.length; i++) {
+                            removeItemFromCart(
+                                cartId: cart.cartId,
+                                itemId: cart.localitems[i].id);
+                          }
+
+                          cart.localitems = [];
+                          updateTotal();
+
+                          Navigator.of(context).pop();
+                      }catch(e){
+                        
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to checkout cart!'),
+                                backgroundColor: Colors.red),
+                         
+                        );
+                        return;
+                      }
+
+
+                        
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Your cart is empty!')),
@@ -243,7 +273,7 @@ class _CartPageState extends State<CartPage> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
+                  child: Image.network(
                     item.imagePaths[0],
                     height: 150,
                     width: 150,
@@ -273,11 +303,15 @@ class _CartPageState extends State<CartPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: Icon(Icons.abc, color: Colors.redAccent),
+                              icon: Icon(Icons.remove, color: Colors.redAccent),
                               onPressed: () {
-                                for (int i = 0; i < items.length; i++) {
+                               try{
+                                 for (int i = 0; i < items.length; i++) {
                                   if (items[i].id == item.id) {
+                                       updateItemQuantity(items[i].id,
+                                        items[i].availableQuantity + 1);
                                     items[i].availableQuantity++;
+                                 
                                     break;
                                   }
                                 }
@@ -287,12 +321,25 @@ class _CartPageState extends State<CartPage> {
                                       i < cart.localitems.length;
                                       i++) {
                                     if (cart.localitems[i].id == item.id) {
+                                      removeItemFromCart(cartId: cart.cartId, itemId: item.id);
                                       cart.localitems.removeAt(i);
                                       break;
                                     }
                                   }
                                 }
                                 updateTotal();
+                               }catch(e){
+                                 ScaffoldMessenger.of(context)
+                                   .showSnackBar(
+                                     SnackBar(
+                                       content: Text(
+                                           'Failed to update stock!'),
+                                       backgroundColor: Colors.red,
+                                     ),
+                                  );
+                                  return;
+ 
+                               }
                               },
                             ),
                             Text(
@@ -316,8 +363,22 @@ class _CartPageState extends State<CartPage> {
                                                 'Cannot exceed available stock!')),
                                       );
                                     } else {
+                                     try{
+                                        updateItemQuantity(items[i].id,
+                                          items[i].availableQuantity - 1);
                                       items[i].availableQuantity--;
+                                     
                                       item.availableQuantity++;
+                                     }catch(e){
+                                       ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                              content: Text(
+                                                  'Failed to update stock!'),
+                                                  backgroundColor: Colors.red,
+                                              ),
+                                       );
+                                     }
                                     }
                                     break;
                                   }
@@ -337,6 +398,7 @@ class _CartPageState extends State<CartPage> {
                   onPressed: () {
                     for (int i = 0; i < items.length; i++) {
                       if (items[i].id == item.id) {
+                        updateItemQuantity(items[i].id, items[i].availableQuantity+item.availableQuantity);
                         items[i].availableQuantity += item.availableQuantity;
                         break;
                       }

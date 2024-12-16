@@ -15,7 +15,7 @@ class p3 extends StatelessWidget {
           accentColor: _accentColor,
         ),
       ),
-      home: TermsAndConditionsPage(),
+      home: AccountInfoPage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -45,12 +45,15 @@ const MaterialColor _primarySwatch = MaterialColor(
   },
 );
 
-class TermsAndConditionsPage extends StatefulWidget {
+class AccountInfoPage extends StatefulWidget {
   @override
-  _TermsAndConditionsPageState createState() => _TermsAndConditionsPageState();
+  _AccountInfoPageState createState() => _AccountInfoPageState();
 }
 
-class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
+class _AccountInfoPageState extends State<AccountInfoPage> {
+  final _formKey = GlobalKey<FormState>();
+ 
+ 
 
 
   @override
@@ -66,8 +69,8 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(
-                top: 51, bottom: 155, right: 16, left: 16),
+            padding:
+                const EdgeInsets.only(top: 16, bottom: 77, right: 16, left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -75,12 +78,12 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                   child: Column(
                     children: [
                       Image.asset(
-                        'images/logo4.png',
+                        'images/logo3.png',
                         height: 220,
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Step 3: Terms and Conditions',
+                        'Step 3: Account Security Information',
                         style: TextStyle(
                           fontSize: 34,
                           color: _textColor,
@@ -89,55 +92,85 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                         ),
                       ),
                       SizedBox(height: 8),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 40),
-                Text(
-                  'Please read and accept the terms and conditions before proceeding.',
-                  style: TextStyle(
-                    color: _textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: acceptTerms,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          acceptTerms = value ?? false;
-                        });
-                      },
-                    ),
-                    Expanded(
-                      child: Text(
-                        'I accept the terms and conditions',
+                      Text(
+                        'Provide your personal information',
                         style: TextStyle(
-                          color: _textColor,
+                          color: _textColor.withOpacity(0.7),
                           fontSize: 16,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {
-                    print("Terms and Conditions link pressed");
-                  },
-                  child: Text(
-                    'View Terms and Conditions',
-                    style: TextStyle(
-                      color: _accentColor,
-                      decoration: TextDecoration.underline,
-                    ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 138),
-             
+                SizedBox(height: 30),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: _textFieldFillColor,
+                    hintText: 'Password',
+                    prefixIcon: Icon(Icons.lock, color: _iconColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters long';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: confirmpassword,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: _textFieldFillColor,
+                    hintText: 'Confirm Password',
+                    prefixIcon: Icon(Icons.lock, color: _iconColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: carPlateNumberController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: _textFieldFillColor,
+                    hintText: 'Car Plate Number ',
+                    prefixIcon: Icon(Icons.directions_car, color: _iconColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your car plate number';
+                    }
+
+                    return null;
+                  },
+                ),
+                SizedBox(height: 204),
+               
               ],
             ),
           ),

@@ -7,6 +7,17 @@ class AddBookingPage extends StatefulWidget {
 }
 
 class _AddBookingPageState extends State<AddBookingPage> {
+
+  @override
+  void initState() {
+   
+    super.initState();
+    m();
+  }
+  void m() async {
+    await getbookings();
+    setState(() {});
+  }
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _customerNameController = TextEditingController();
   DateTime? _selectedDate;
@@ -152,15 +163,35 @@ class _AddBookingPageState extends State<AddBookingPage> {
       onPressed: () {
         if (_formKey.currentState!.validate() && _selectedDate != null) {
           setState(() {
-            bookings.add(Booking(
-              appointment: DateTime.now(),
-              userid: -1,
-              bookingid: bookings.length,
-              ownerid: global_user.id,
-              customerName: _customerNameController.text,
-              appointmentDate: _selectedDate!,
-              status: _status,
+           try{
+               bookings.add(Booking(
+                appointment: DateTime.now(),
+                userid: -1,
+                bookingid: bookings.length,
+                ownerid: global_user.id,
+                customerName: _customerNameController.text,
+                appointmentDate: _selectedDate!,
+                status: _status,
+              ));
+             addBooking(
+-1, bookings.length, global_user.id, _selectedDate!,
+                DateTime.now(), _customerNameController.text, _status
+            );
+         
+
+            _customerNameController.clear();
+            _selectedDate = null;
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Booking added successfully.'),
+              backgroundColor: Colors.green,
             ));
+           }catch(e){
+             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Failed to add booking. Please try again.'),
+                backgroundColor: Colors.redAccent,
+              ));
+ 
+           }
           });
           Navigator.pop(context);
           Navigator.pop(context);

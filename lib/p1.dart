@@ -1,3 +1,4 @@
+
 import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 
@@ -159,8 +160,56 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   return null;
                 },
               ),
+              SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Radio<String>(
+                    value: 'owner',
+                    groupValue: selectedRole,
+                    onChanged: (String? value) {
+                      setState(() {
+                        isuser=false;
+                        selectedRole = value!;
+                      });
+                    },
+                    activeColor: Colors.orangeAccent,
+                  ),
+                  Text(
+                    'Owner',
+                    style: TextStyle(
+                      color: selectedRole == 'owner'
+                          ? Colors.orangeAccent
+                          : Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Radio<String>(
+                    value: 'user',
+                    groupValue: selectedRole,
+                    onChanged: (String? value) {
+                      setState(() {
+                        isuser=true;
+                        selectedRole = value!;
+                      });
+                    },
+                    activeColor: Colors.orangeAccent,
+                  ),
+                  Text(
+                    'User',
+                    style: TextStyle(
+                      color: selectedRole == 'user'
+                          ? Colors.orangeAccent
+                          : Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 150),
-             
             ],
           ),
         ),

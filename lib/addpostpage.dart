@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:first/glopalvars.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:html' as html;
+import 'package:path_provider/path_provider.dart';
 
 class AddPostPage extends StatefulWidget {
   @override
@@ -8,6 +13,16 @@ class AddPostPage extends StatefulWidget {
 }
 
 class _AddPostPageState extends State<AddPostPage> {
+
+@override
+  void initState(){
+    
+    super.initState();
+   
+getposts();
+
+  }
+
   final TextEditingController _postController = TextEditingController();
   String? _selectedImage;
   bool _isHovering = false;
@@ -18,15 +33,63 @@ class _AddPostPageState extends State<AddPostPage> {
     'images/logo5.png',
     'images/logo6.png',
   ];
-
+  // void _pickImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _selectedImage = pickedFile.path;
+  //     });
+  //   }
+  // }
   void _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _selectedImage = pickedFile.path;
       });
+
+      if (kIsWeb) {
+        final reader = html.FileReader();
+
+        final bytes = await pickedFile.readAsBytes();
+        final fileData =
+            html.File([Uint8List.fromList(bytes)], pickedFile.name);
+
+        reader.readAsDataUrl(fileData);
+        reader.onLoadEnd.listen((_) async {
+          final fileUrl = reader.result as String;
+          await uploadImageAndGetOptimizedUrl(fileUrl);
+        _selectedImage=urlofimage;
+        });
+      } else {
+        try {
+          final fileBytes = await pickedFile.readAsBytes();
+          final fileName = pickedFile.name;
+
+          final base64String = base64Encode(fileBytes);
+          print('Base64 Encoded String: $base64String');
+
+          final directory = await getApplicationDocumentsDirectory();
+          final targetDir = Directory('${directory.path}/images');
+          if (!await targetDir.exists()) {
+            await targetDir.create(recursive: true);
+          }
+
+          final targetFile = File('${targetDir.path}/$fileName');
+          await targetFile.writeAsBytes(fileBytes);
+
+          print('Image saved to: ${targetFile.path}');
+        } catch (e) {
+          print('Error saving image on Mobile: $e');
+        }
+      }
     }
+    setState(() {
+      
+    });
   }
 
   void _selectSuggestedImage(String imagePath) {
@@ -35,9 +98,14 @@ class _AddPostPageState extends State<AddPostPage> {
     });
   }
 
-  void _showMessage(String message) {
+  void _showMessage(String message,Color color) {
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+        .showSnackBar(SnackBar(content: Text(message),
+        backgroundColor: color,
+        
+        )
+        
+        );
   }
 
   @override
@@ -60,7 +128,7 @@ class _AddPostPageState extends State<AddPostPage> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: _selectedImage != null
-                          ? Image.asset(
+                          ? Image.network(
                               _selectedImage!,
                               fit: BoxFit.cover,
                               width: double.infinity,
@@ -154,7 +222,7 @@ class _AddPostPageState extends State<AddPostPage> {
                                 child: Stack(
                                   children: [
                                     
-                                    Image.asset(
+                                    Image.network(
                                       imagePath,
                                       width: 60, 
                                       height: 60, 
@@ -274,31 +342,36 @@ class _AddPostPageState extends State<AddPostPage> {
                 onPressed: () {
                   
                   if (_postController.text.isEmpty) {
-                    _showMessage('Please enter text for your post');
+                    _showMessage('Please enter text for your post',Colors.red);
                     return;
                   }
 
                   
                   if (_selectedImage == null) {
-                    _showMessage('Please select or upload an image');
+                    _showMessage('Please select or upload an image',Colors.red);
                     return;
                   }
+                try{
 
-                  _showMessage('Post added successfully!');
-
-                  print('Post Details:');
-                  print('Text: ${_postController.text}');
-                  print('Image Path: ${_selectedImage ?? "No image selected"}');
+                
+                    addPost(DateTime.now(), posts.length, _postController.text,
+                      global_user.id, _selectedImage.toString());
                   posts.add(Post(
                       id: posts.length,
                       ownerId: global_user.id,
                       description: _postController.text,
                       postImage: _selectedImage.toString(),
                       createdAt: DateTime.now()));
+
+          _showMessage('Post added successfully!',Colors.green);
                   _postController.clear();
                   setState(() {
                     _selectedImage = null;
                   });
+                }catch(e){
+print(e);
+                  _showMessage('Failed to post!',Colors.red);
+                }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors

@@ -11,6 +11,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:first/changepassword.dart';
 import 'package:first/notifactionsettings.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'dart:html' as html;
+import 'package:path_provider/path_provider.dart';
 
 class Mor extends StatelessWidget {
   @override
@@ -28,17 +32,70 @@ class MorePage extends StatefulWidget {
 }
 
 class _MorePageState extends State<MorePage> {
+
+    @override
+  void initState() {
+    super.initState();
+    
+  }
   File? _image;
 
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  // Future<void> _pickImage() async {
+  //   final ImagePicker _picker = ImagePicker();
+  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _image = File(pickedFile.path);
+  //     });
+  //   }
+  // }
+    Future<void>  _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
       });
+    
+      if (kIsWeb) {
+        final reader = html.FileReader();
+
+        final bytes = await pickedFile.readAsBytes();
+        final fileData =
+            html.File([Uint8List.fromList(bytes)], pickedFile.name);
+
+        reader.readAsDataUrl(fileData);
+        reader.onLoadEnd.listen((_) async {
+          final fileUrl = reader.result as String;
+          await uploadImageAndGetOptimizedUrl(fileUrl);
+           _image = File(urlofimage);
+        });
+      } else {
+        try {
+          final fileBytes = await pickedFile.readAsBytes();
+          final fileName = pickedFile.name;
+
+          final base64String = base64Encode(fileBytes);
+          print('Base64 Encoded String: $base64String');
+
+          final directory = await getApplicationDocumentsDirectory();
+          final targetDir = Directory('${directory.path}/images');
+          if (!await targetDir.exists()) {
+            await targetDir.create(recursive: true);
+          }
+
+          final targetFile = File('${targetDir.path}/$fileName');
+          await targetFile.writeAsBytes(fileBytes);
+
+          print('Image saved to: ${targetFile.path}');
+        } catch (e) {
+          print('Error saving image on Mobile: $e');
+        }
+      }
     }
+    setState(() {});
   }
 
   Widget _buildUserInfoSection() {
@@ -63,12 +120,15 @@ class _MorePageState extends State<MorePage> {
       child: Row(
         children: [
           GestureDetector(
-            onTap: _pickImage,
+            onTap: (){
+              _pickImage();
+              global_user.profileImage=_image!.path;
+            },
             child: CircleAvatar(
               radius: 40,
               backgroundImage: _image != null
-                  ? FileImage(_image!)
-                  : AssetImage(global_user.profileImage!) as ImageProvider,
+                  ? NetworkImage(_image!.path)
+                  : NetworkImage(global_user.profileImage!) as ImageProvider,
             ),
           ),
           SizedBox(width: 16),
@@ -203,6 +263,8 @@ for(int i=0;i<chats.length;i++){
   
 }
 if(!loged){
+try{
+    createChat(chats.length, global_user.id, users[0].id);
   chats.add(Chat(lastMessage: DateTime.now(), id: chats.length, messages: [], u1: global_user, u2: users[0]));
                  
                   Navigator.push(
@@ -212,6 +274,13 @@ if(!loged){
                          ChatPage(m: chats[chats.length-1])
                       ),
                     );
+}catch(e){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      "failed to create a new chat!"),backgroundColor: Colors.red,),
+                            );
+}
                 
 }
 

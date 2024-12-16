@@ -15,8 +15,21 @@ class _DashboardPageState extends State<DashboardPage> {
   List<Map<String, dynamic>> topSellingTools = [];
   @override
   void initState() {
-    topSellingTools = getTopSellingTools();
+   
+ getItems();
+  
+   
     super.initState();
+    m();
+  }
+  void m () async{
+      
+
+    await getSales();
+    topSellingTools = getTopSellingTools();
+    setState(() {
+      
+    });
   }
 
   @override
@@ -64,10 +77,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       Expanded(
                         child: _buildSummaryCard(
                           'Total Tools',
-                          items
-                              .where((sale) => sale.ownerid == global_user.id)
+                          items.where((element) => element.ownerid==global_user.id).where((sale) => sale.ownerid == global_user.id)
                               .length
                               .toString(),
+                            
                           Icons.build,
                           Colors.blue,
                         ),

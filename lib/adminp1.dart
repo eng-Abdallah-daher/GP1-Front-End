@@ -44,18 +44,31 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
   }
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
-
-    for (int i = 0; i < userRequests.length; i++) {
+m();
+   
+  }
+  void m() async{
+   await getUserSignUpRequests();
+     for (int i = 0; i < userRequests.length; i++) {
       fetchPlaceDetails(i);
     }
+    setState(() {
+      
+    });
   }
 
   void _acceptRequest(int index) {
+
+
+    
     UserSignUpRequest acceptedRequest = userRequests[index];
+    addUser(users.length,userRequests[index].name, userRequests[index].email, userRequests[index].phone, userRequests[index].password,"", userRequests[index].description, "owner",
+        userRequests[index].location);
 
     setState(() {
+      deleteUserSignUpRequest(acceptedRequest.requestid);
       userRequests.removeAt(index);
     });
 
@@ -255,6 +268,8 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
           textColor: Colors.yellowAccent,
           onPressed: () {
             setState(() {
+
+              
               userRequests.add(deletedRequest);
               deletedRequests.remove(deletedRequest);
             });

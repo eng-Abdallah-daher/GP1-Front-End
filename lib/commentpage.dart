@@ -14,8 +14,15 @@ class CommentsPage extends StatefulWidget {
 }
 
 class _CommentsPageState extends State<CommentsPage> {
-  final TextEditingController commentController = TextEditingController();
 
+
+  final TextEditingController commentController = TextEditingController();
+@override
+  void initState() {
+    
+    super.initState();
+    
+  }
   final String commenterAvatar = global_user.profileImage!;
   final String commenterName = global_user.name; 
 
@@ -89,7 +96,7 @@ class _CommentsPageState extends State<CommentsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CircleAvatar(
-          backgroundImage: AssetImage(users
+          backgroundImage: NetworkImage(users
               .sublist(1, users.length)
               .where(
                 (element) => element.id == comment.commenterid,
@@ -153,6 +160,7 @@ bool islikedcomment(Comment comment){
                   for (var postComment in post.comments) {
                     if (comment.commentid == postComment.commentid) {
                       postComment.likes.add(Like(userId: global_user.id));
+
                     }
                   }
                 }
@@ -221,7 +229,7 @@ bool islikedcomment(Comment comment){
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(users
+            backgroundImage: NetworkImage(users
                 .sublist(1, users.length)
                 .where((element) => element.id== reply.commenterid,).toList()[0].profileImage!),
             radius: 18,
@@ -306,7 +314,7 @@ bool islikedcomment(Comment comment){
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(commenterAvatar),
+            backgroundImage: NetworkImage(commenterAvatar),
             radius: 20,
           ),
           SizedBox(width: 10),
@@ -342,6 +350,7 @@ bool islikedcomment(Comment comment){
   void _addComment() {
     if (commentController.text.isNotEmpty) {
       setState(() {
+       
         widget.post.comments.add (
           
           Comment(

@@ -36,17 +36,40 @@ class _AddTowingServicePageState extends State<AddTowingServicePage> {
 
   void _addTowingService(String name, String address, String phone) {
     if (_selectedLatLng != null) {
-      setState(() {
-        towingServices.add(
-          TowingService(
-            name: name,
-            address: address,
-            phone: phone,
-            latitude: _selectedLatLng!.latitude,
-            longitude: _selectedLatLng!.longitude,
-          ),
-        );
-      });
+    setState(() {
+      try {
+          addTowingService(
+            TowingService(
+              id: towingServices.length,
+              name: name,
+              address: address,
+              phone: phone,
+              latitude: _selectedLatLng!.latitude,
+              longitude: _selectedLatLng!.longitude,
+            ),
+          );
+          towingServices.add(
+            TowingService(
+              id: towingServices.length,
+              name: name,
+              address: address,
+              phone: phone,
+              latitude: _selectedLatLng!.latitude,
+              longitude: _selectedLatLng!.longitude,
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Towing Service Added Successfully"),
+            backgroundColor: Colors.blue,
+          ));
+          
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Failed to Add Towing Service: $e"),
+            backgroundColor: Colors.red,
+          ));
+        }
+    });
     }
   }
 

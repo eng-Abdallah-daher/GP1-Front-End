@@ -9,6 +9,19 @@ class OwnerDeliveryRequestsPage extends StatefulWidget {
 }
 
 class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
+ 
+  @override
+  void initState() {
+    super.initState();
+    m();
+  }
+  void m()async{
+    await getDeliveryRequests();
+    setState(() {
+      
+    });
+  }
+
   String _selectedStatusFilter = 'All';
 
   @override
@@ -113,13 +126,27 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
                 if (request.status != 'Completed')
                   ElevatedButton.icon(
                     onPressed: () {
-                      setState(() {
+                     try{
+                       setState(() {
                         if (request.status == 'Pending') {
+                          updateDeliveryRequestStatus(request.requestid,'Confirmed');
                           request.status = 'Confirmed';
                         } else if (request.status == 'Confirmed') {
+                              updateDeliveryRequestStatus(
+                              request.requestid, 'Completed');
                           request.status = 'Completed';
                         }
                       });
+                     }catch(e){
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Failed to update delivery request'),
+                            backgroundColor: Colors.red,
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                     }
                     },
                     icon: Icon(
                       request.status == 'Pending'

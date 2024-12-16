@@ -13,8 +13,15 @@ class _DeleteEmployeePageState extends State<DeleteEmployeePage> {
   @override
   void initState() {
     super.initState();
-    filteredEmployees = List.from(employees);
+    m();
   }
+void m() async{
+   await getEmployees();
+    filteredEmployees = List.from(employees);
+    setState(() {
+      
+    });
+}
 
   void _searchEmployee(String query) {
     setState(() {
@@ -79,18 +86,30 @@ class _DeleteEmployeePageState extends State<DeleteEmployeePage> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          employees.remove(filteredEmployees[index]);
-                          filteredEmployees.removeAt(index);
-                        });
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Employee deleted successfully!"),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.green,
-                          ),
-                        );
+                        try {
+                          setState(() {
+                            removeEmployee(filteredEmployees[index].id);
+                            employees.remove(filteredEmployees[index]);
+                            filteredEmployees.removeAt(index);
+                          });
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Employee deleted successfully!"),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  "Error deleting employee: ${e.toString()}"),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -180,15 +199,30 @@ class _DeleteEmployeePageState extends State<DeleteEmployeePage> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        setState(() {});
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Employee updated successfully!"),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.green,
-                          ),
-                        );
+                        setState(() {
+                     try{
+                           updateEmployee(employee.id, _nameController.text,
+                              _positionController.text);
+                          employee.name = _nameController.text;
+                          employee.position = _positionController.text;
+
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Employee updated successfully!"),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                     }catch(e){
+                     ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  "Failed to update the employee!"),
+                                  backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,));
+                     }
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,

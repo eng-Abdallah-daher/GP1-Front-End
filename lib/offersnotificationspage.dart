@@ -8,6 +8,12 @@ class OffersNotificationsPage extends StatefulWidget {
 }
 
 class _OffersNotificationsPageState extends State<OffersNotificationsPage> {
+    @override
+  void initState() {
+    super.initState();
+   
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,6 +173,7 @@ class _OffersNotificationsPageState extends State<OffersNotificationsPage> {
             TextButton(
               onPressed: () {
                 setState(() {
+                  
                   offers.remove(offer);
                 });
                 _claimOffer(context, offer);
@@ -225,6 +232,7 @@ class _OffersNotificationsPageState extends State<OffersNotificationsPage> {
         textColor: white,
         onPressed: () {
           setState(() {
+            addOffer(offer.posterid, offer.discount, offer.title, offer.title, offer.validUntil);
             offers.add(offer);
           });
         },

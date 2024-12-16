@@ -12,6 +12,19 @@ class ComplaintsManagementPage extends StatefulWidget {
 }
 
 class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
+
+  @override
+  void initState() {
+    
+    super.initState();
+   m();
+  }
+  void m() async{
+    await  getcomplaints();
+    setState(() {
+      
+    });
+  }
   final TextEditingController descriptionController = TextEditingController();
 
   int rating = 0;
@@ -24,6 +37,9 @@ class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
 
   void addComplaint() {
     setState(() {
+try{
+addRating(descriptionController.text,global_user.name,widget.ownerid,rating);
+addRate(global_user.id, widget.ownerid);
       complaints.add(Complaint(
         description: descriptionController.text,
         userName: global_user.name,
@@ -33,20 +49,34 @@ class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
       global_user.rates.add(widget.ownerid);
       for (int i = 1; i < users.length; i++) {
         if (users[i].id == widget.ownerid) {
+          addRate(
+              widget.ownerid, rating);
           users[i].rates.add(rating);
+
           break;
         }
       }
+         ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Complaint submitted successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pop(context);
 
       descriptionController.clear();
 
-      rating = 0;
+      rating = 0;}catch(e){
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to submit complaint, please try again later'),
+          backgroundColor: Colors.red,
+        ),);
+      }
+    
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Complaint submitted successfully!')),
-    );
+   
   }
 
   @override

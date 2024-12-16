@@ -67,8 +67,32 @@ class _EditBookingPageState extends State<EditBookingPage> {
 
   void _saveChanges() {
     setState(() {
+
+  try{
+        updateBooking(widget.booking.bookingid,_nameController.text,_selectedDateTime);
       widget.booking.customerName = _nameController.text;
       widget.booking.appointmentDate = _selectedDateTime;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Booking updated successfully!'),
+            backgroundColor: Colors.blue,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+
+
+      } catch(e){
+        
+         ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to update booking. Please try again later.'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 2),));
+  }
+
+
     });
     Navigator.pop(context, true);
   }

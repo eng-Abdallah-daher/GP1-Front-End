@@ -8,6 +8,20 @@ class SalesManagementPage extends StatefulWidget {
 }
 
 class _SalesManagementPageState extends State<SalesManagementPage> {
+
+    @override
+  void initState()  {
+    super.initState();
+   m();
+  }
+  void m() async {
+    await  getItems();
+  await  getSales();
+  setState(() {
+    
+  });
+  }
+
   String? selectedTool;
   int quantity = 1;
   String? errorMessage;
@@ -158,9 +172,11 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                     if (selectedTool != null &&
                         quantity > 0 &&
                         errorMessage == null) {
-                      final tool =
+                   try{
+                       final tool =
                           items.firstWhere((tool) => tool.name == selectedTool);
                       setState(() {
+                        addSale(ownerId: global_user.id, itemId: tool.id, quantity: quantity, price: quantity * tool.price, date: DateTime.now());
                         sales.add(Sale(
                             ownerid: global_user.id,
                             itemid: tool.id,
@@ -169,8 +185,9 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                             date: DateTime.now()));
 
                         tool.availableQuantity -= quantity;
-
+updateItemQuantity(tool.id, tool.availableQuantity);
                         if (tool.availableQuantity == 0) {
+                          deleteAnItem(tool.id);
                           items.remove(tool);
                         }
 
@@ -182,6 +199,15 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                         );
                         index = 2;
                       });
+                   }catch(e) {
+               
+                    
+                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                         content: Text('Failed to add sale. Please try again.'),
+                         backgroundColor: Colors.red,
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(10.0),)));
+                   }
                     } else {
                       setState(() {
                         errorMessage = 'Please correct the errors above.';

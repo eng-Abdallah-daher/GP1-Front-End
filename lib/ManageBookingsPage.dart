@@ -15,12 +15,19 @@ class _ManageBookingsPageState extends State<ManageBookingsPage> {
 
   @override
   void initState() {
+
+    
     super.initState();
-
-    // Filter bookings to only show those owned by the current user
-  filteredBookings=bookings;
+ m();
   }
-
+void m() async{
+getSales();
+    await getbookings();
+    filteredBookings = bookings;
+    setState(() {
+      
+    });
+}
   void _filterBookings(String query) {
     setState(() {
       searchQuery = query;
@@ -369,8 +376,10 @@ class _ManageBookingsPageState extends State<ManageBookingsPage> {
                         final cost =
                             double.tryParse(_costController.text.trim());
                         if (cost != null && cost >= 0) {
-                          setState(() {
+                       try{
+                           setState(() {
                             booking.status = 'Completed';
+                            addSale(ownerId: global_user.id, itemId: -1, quantity: 0, price: cost, date: DateTime(1,1,1));
                         sales.add(Sale(ownerid: global_user.id, itemid: -1, quantity: 0, price: cost, date: DateTime(1,1,1)));
                           });
                           Navigator.of(context).pop();
@@ -380,6 +389,16 @@ class _ManageBookingsPageState extends State<ManageBookingsPage> {
                               backgroundColor: Colors.green.shade700,
                             ),
                           );
+                       }catch(e){
+
+                         ScaffoldMessenger.of(context).showSnackBar(
+                           SnackBar(
+                             content: Text('Error adding sale. Please try again.'),
+                             backgroundColor: Colors.red.shade700,
+                           ),
+                         );
+  
+                       }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

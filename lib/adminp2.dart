@@ -30,9 +30,28 @@ class _AdminP2State extends State<AdminP2> {
   }
 
   void toggleService(User user) {
+
+
+
     setState(() {
+    try{
+        updateUserActiveStatus(user.email, !user.isServiceActive);
       user.isServiceActive = !user.isServiceActive;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(user.isServiceActive ? "Service activated" : "Service Deactivated"),
+          backgroundColor: Colors.blue,
+        ));
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Failed to update service status: $e"),
+        backgroundColor: Colors.red,
+      ));
+    }
+      
     });
+
+
+    
   }
 
   @override
@@ -116,7 +135,7 @@ class _AdminP2State extends State<AdminP2> {
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundImage: AssetImage(user.profileImage!),
+                              backgroundImage: NetworkImage(user.profileImage!),
                               radius: 35,
                               backgroundColor: Colors
                                   .blueAccent.shade100, 
@@ -246,8 +265,6 @@ class _AdminP2State extends State<AdminP2> {
   void showUpdateDialog(User user) {
     final TextEditingController nameController =
         TextEditingController(text: user.name);
-    final TextEditingController emailController =
-        TextEditingController(text: user.email);
     final TextEditingController phoneController =
         TextEditingController(text: user.phone);
 
@@ -281,12 +298,7 @@ class _AdminP2State extends State<AdminP2> {
                   labelText: "Name",
                   icon: Icons.person,
                 ),
-                SizedBox(height: 12),
-                CustomTextField(
-                  controller: emailController,
-                  labelText: "Email",
-                  icon: Icons.email,
-                ),
+
                 SizedBox(height: 12),
                 CustomTextField(
                   controller: phoneController,
@@ -319,9 +331,24 @@ class _AdminP2State extends State<AdminP2> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
+
+               try{
+                   updateUser(user.email, nameController.text,phoneController.text);
                   user.name = nameController.text;
-                  user.email = emailController.text;
                   user.phone = phoneController.text;
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("User Updated Successfully"),
+                      backgroundColor: Colors.blue,
+                    ));
+                  
+                }catch(e){  
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Failed to Update User"),
+                    backgroundColor: Colors.red,
+                  ));
+ 
+               }
+                  
                 });
                 Navigator.pop(context);
               },
@@ -407,10 +434,22 @@ class _AdminP2State extends State<AdminP2> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          setState(() {
+                          try{
+                            setState(() {
+                            deleteUser(user.email);
                             users.remove(user);
-                            filteredUsers = users;
+                            filteredUsers = users..sublist(1, users.length).toList();
                           });
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text("User Deleted Successfully"),
+                                  backgroundColor: Colors.blue,
+                                ));
+                          }catch(Exception){
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text("Failed to Delete User"),
+                                  backgroundColor: Colors.red,
+                                ));
+                          }
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(

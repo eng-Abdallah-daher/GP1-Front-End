@@ -3,11 +3,9 @@ import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:first/profile_page.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:first/p3.dart';
 
-void main() {
-  runApp(PostsApp());
-}
+
+
 
 class PostsApp extends StatelessWidget {
   @override
@@ -30,8 +28,15 @@ class _PostsPageState extends State<PostsPage> {
   @override
   void initState() {
     super.initState();
+  m();
+     
   }
-
+void m() async{
+  await getposts();
+  setState(() {
+    
+  });
+}
   void _removePost(int index) {
     setState(() {
       posts.removeAt(index);
@@ -466,7 +471,7 @@ class _PostCardState extends State<PostCard> {
                   onTap: _onAvatarTapped,
                   child: CircleAvatar(
                     backgroundImage:
-                        AssetImage(users
+                        NetworkImage(users
                         .sublist(1, users.length)
                         .where((element) => element.id==widget.post.ownerId,).toList()[0].profileImage!),
                     radius: 28,
@@ -512,7 +517,7 @@ class _PostCardState extends State<PostCard> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                child: Image.asset(
+                child: Image.network(
                   widget.post.postImage,
                   fit: BoxFit.cover,
                   width: double.infinity,
@@ -548,35 +553,54 @@ class _PostCardState extends State<PostCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
+          Row(
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        is_liked()
-                            ? Icons.thumb_up
-                            : Icons.thumb_up_alt_outlined,
-                        color: isLiked ? blue : Colors.grey,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          isLiked = !isLiked;
-                          if (isLiked) {
-                            widget.post.likes.add(Like(userId: global_user.id));
-                            widget.post.likeCount = widget.post.likes.length;
-                          } else {
-                            for (int i = 0; i < widget.post.likes.length; i++) {
-                              if (widget.post.likes[i].userId ==
-                                  global_user.id) {
-                                widget.post.likes.removeAt(i);
+                    GestureDetector(
+                      onLongPress: () {
+                        _showReactionsMenu(context);
+                      },
+                      child: IconButton(
+                        icon: Icon(
+                          is_liked()
+                              ? Icons.thumb_up
+                              : Icons.thumb_up_alt_outlined,
+                          color: isLiked ? blue : Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isLiked = !isLiked;
+                            if (isLiked) {
+                              try {
+                                addLikeToPost(widget.post.id, global_user.id);
+                                widget.post.likes
+                                    .add(Like(userId: global_user.id));
                                 widget.post.likeCount =
                                     widget.post.likes.length;
-
-                                break;
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Failed to like the post'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            } else {
+                              for (int i = 0;
+                                  i < widget.post.likes.length;
+                                  i++) {
+                                if (widget.post.likes[i].userId ==
+                                    global_user.id) {
+                                  deletelike(widget.post.id);
+                                  widget.post.likes.removeAt(i);
+                                  widget.post.likeCount =
+                                      widget.post.likes.length;
+                                  break;
+                                }
                               }
                             }
-                          }
-                        });
-                      },
+                          });
+                        },
+                      ),
                     ),
                     Text(
                       '${widget.post.likeCount} Likes',
@@ -584,6 +608,7 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ],
                 ),
+
                 Text(
                   '${widget.post.comments.length} Comments',
                   style: TextStyle(color: black),
@@ -675,5 +700,101 @@ class _PostCardState extends State<PostCard> {
         ],
       ),
     );
+
+
+  }
+
+
+void _showReactionsMenu(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            padding: EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildReactionItem(
+                    context, 'like', Icons.thumb_up, 'Like', blue),
+                _buildReactionItem(
+                    context, 'love', Icons.favorite, 'Love', Colors.red),
+                _buildReactionItem(
+                    context, 'haha', Icons.tag_faces, 'Haha', Colors.yellow),
+                _buildReactionItem(
+                    context, 'wow', Icons.face, 'Wow', Colors.purple),
+                _buildReactionItem(context, 'sad', Icons.sentiment_dissatisfied,
+                    'Sad', Colors.blueGrey),
+                _buildReactionItem(context, 'angry',
+                    Icons.sentiment_very_dissatisfied, 'Angry', Colors.red),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildReactionItem(BuildContext context, String value, IconData icon,
+      String label, Color color) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context); 
+        _handleReaction(value); 
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Icon(
+              icon,
+              color: color,
+              size: 30,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleReaction(String reaction) {
+    setState(() {
+      print(reaction);
+      
+      if (reaction == 'like') {
+        
+      } else if (reaction == 'love') {
+        
+      } else if (reaction == 'haha') {
+        
+      } else if (reaction == 'wow') {
+        
+      } else if (reaction == 'sad') {
+        
+      } else if (reaction == 'angry') {
+        
+      }
+    });
   }
 }

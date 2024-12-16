@@ -22,6 +22,19 @@ class PlacesPage extends StatefulWidget {
 }
 
 class _PlacesPageState extends State<PlacesPage> {
+
+    @override
+  void initState() {
+    super.initState();
+   
+m();
+  }
+  void m() async {
+       await getMaintenanceRequests();
+       setState(() {
+         
+       });
+  }
   TextEditingController _searchController = TextEditingController();
 
   List<User> filteredUsers = users.sublist(1, users.length);
@@ -291,6 +304,8 @@ class _SelectTimePageState extends State<SelectTimePage> {
               child: ElevatedButton(
                 onPressed: () {
                   if (_selectedDateTime != null) {
+                   try{
+                     addMaintenanceRequest(ownerId:widget.user.id,userId: global_user.id,time: _selectedDateTime,requestId: maintenancerequests.length );
                     maintenancerequests.add(maintenancerequest(
                         requestid: maintenancerequests.length,
                         owner_id: widget.user.id,
@@ -303,6 +318,14 @@ class _SelectTimePageState extends State<SelectTimePage> {
                         ),
                       ),
                     );
+                   }catch(e){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Error submitting request: ${e.toString()}"),backgroundColor: Colors.red,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                   }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

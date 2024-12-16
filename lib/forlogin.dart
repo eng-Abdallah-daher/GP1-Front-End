@@ -1,7 +1,8 @@
 import 'package:first/admin.dart';
+import 'package:first/forgotpasswordpage.dart';
 import 'package:first/glopalvars.dart';
 import 'package:first/ownermainpage.dart';
-import 'package:first/p1.dart';
+
 import 'package:first/signup.dart';
 import 'package:first/user.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+     getusers();
     _checkBiometrics();
   }
 
@@ -193,7 +195,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      print("Reset Password button pressed");
+                        Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Forgot_Password()),
+                      );
                     },
                     child: Text(
                       'Forgot Password?',
@@ -204,13 +210,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
+                      bool loged = false;
 if(_emailController.text=="admin"&&_passwordController.text=="admin"){
   global_user=users[0];
   Navigator.push(context, MaterialPageRoute(builder: (context) => adminmainpage()));
+loged=true;
 }
 
 
-                    bool loged = false;
+                 
                     for (int i = 1; i < users.length; i++) {
                       
                       if (_emailController.text == users[i].email) {
