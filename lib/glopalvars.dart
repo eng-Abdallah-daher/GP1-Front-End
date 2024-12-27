@@ -6,12 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-String urlofimage="";
+
+String urlofimage = "";
 User global_user = users[3];
 Cart cart = carts[0];
 String selectedRole = 'user';
 bool isuser = true;
-List<File?> marketImages = [File("https://res.cloudinary.com/dkass9jnq/image/upload/f_auto,q_auto/temp_image?_a=BAMCkGa40"), null, null];
+List<File?> marketImages = [
+ null,
+  null,
+  null
+];
 final GlobalKey<FormState> formKeyPage1 = GlobalKey<FormState>();
 final GlobalKey<FormState> formKeyPage2 = GlobalKey<FormState>();
 TextEditingController nameController = TextEditingController();
@@ -116,16 +121,17 @@ class PaymentHistory {
 }
 
 class Complaint {
+  int id;
   String description;
   String userName;
   int ownerid;
   int rate;
-  Complaint({
-    required this.description,
-    required this.userName,
-    required this.ownerid,
-    required this.rate,
-  });
+  Complaint(
+      {required this.id,
+      required this.description,
+      required this.userName,
+      required this.ownerid,
+      required this.rate});
 }
 
 class Booking {
@@ -224,7 +230,8 @@ class User {
   String? locatoin;
   List<int> rates;
   bool isServiceActive;
-
+double latitude;
+double longitude;
   User({
     required this.id,
     required this.name,
@@ -238,9 +245,13 @@ class User {
     this.locatoin,
     required this.rates,
     this.isServiceActive = true,
+    required this.longitude,
+    required this.latitude,
   });
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      longitude: json['longitude'] ?? '' ,
+      latitude: json['latitude'] ?? '',
       id: int.tryParse(json['id']?.toString() ?? '0') ?? 0,
       name: json['name'] ?? '',
       phone: json['phone'] ?? '',
@@ -293,6 +304,8 @@ class User {
       'locatoin': locatoin,
       'rates': rates,
       'isServiceActive': isServiceActive,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }
@@ -347,7 +360,9 @@ class Sale {
   double price;
   DateTime date;
   int ownerid;
+  int id;
   Sale({
+    required this.id,
     required this.ownerid,
     required this.itemid,
     required this.quantity,
@@ -366,8 +381,10 @@ class Offer {
   double discount;
   DateTime validUntil;
   int posterid;
+  int id;
 
   Offer({
+    required this.id,
     required this.title,
     required this.description,
     required this.discount,
@@ -645,6 +662,7 @@ class Cart {
 MaintenanceRecord findMostRecentRecord(List<MaintenanceRecord> records) {
   if (records.isEmpty) {
     return MaintenanceRecord(
+      id: -1,
       date: DateTime.now(),
       description: "description",
       userid: -1,
@@ -661,9 +679,13 @@ List<MaintenanceRecord> maintenanceRecords = [];
 class MaintenanceRecord {
   final DateTime date;
   final String description;
-  final userid;
+  final int userid;
+  int id;
   MaintenanceRecord(
-      {required this.date, required this.description, required this.userid});
+      {required this.date,
+      required this.description,
+      required this.userid,
+      required this.id});
   String getFormattedDate() {
     return DateFormat('d-M-yyyy').format(date);
   }
@@ -865,6 +887,29 @@ Future<void> addBooking(
     print('Error adding booking: $e');
   }
 }
+Future<void> addCart() async {
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/carts';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      print('Booking added successfully: ${jsonDecode(response.body)}');
+    } else {
+      print('Failed to add booking: ${response.statusCode} - ${response.body}');
+    }
+  } catch (e) {
+    print('Error adding booking: $e');
+  }
+}
 
 Future<void> addPost(DateTime createdAt, int id, String description,
     int ownerId, String postImage) async {
@@ -910,6 +955,7 @@ Future<void> addOffer(int posterId, double discount, String title,
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
+        "id": offers[offers.length - 1].id + 1,
         "posterId": posterId,
         "discount": discount,
         "title": title,
@@ -929,7 +975,7 @@ Future<void> addOffer(int posterId, double discount, String title,
 }
 
 Future<void> addRating(
-    String description, String userName, int ownerId, int rate) async {
+    int id, String description, String userName, int ownerId, int rate) async {
   const String apiUrl = 'http://localhost:3000/api/ratings';
 
   try {
@@ -939,6 +985,7 @@ Future<void> addRating(
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
+        "id": id,
         "description": description,
         "userName": userName,
         "ownerId": ownerId,
@@ -983,17 +1030,18 @@ Future<void> addRate(int userId, int rate) async {
   }
 }
 
-Future<void> addSale({
-  required int ownerId,
-  required int itemId,
-  required int quantity,
-  required double price,
-  required DateTime date,
-}) async {
+Future<void> addSale(
+    {required int ownerId,
+    required int itemId,
+    required int quantity,
+    required double price,
+    required DateTime date,
+    required int id}) async {
   const String baseUrl = 'http://localhost:3000/api';
   final String url = '$baseUrl/sales';
 
   final Map<String, dynamic> requestBody = {
+    'id': id,
     'ownerid': ownerId,
     'itemid': itemId,
     'quantity': quantity,
@@ -1041,34 +1089,10 @@ Future<void> deleteAnItem(int itemId) async {
     print('Error deleting item: $error');
   }
 }
-Future<void> deletelike(int postid) async {
-  const String baseUrl = 'http://localhost:3000/api/posts/deletelike';
-  
-
-  try {
-    final response = await http.delete(
-      Uri.parse(baseUrl),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: {
-"postId":postid,
-"userId":global_user.id
-      }
-    );
-
-    if (response.statusCode == 200) {
-      print('Like deleted successfully');
-    } else {
-      print('Failed to delete Like: ${response.body}');
-    }
-  } catch (error) {
-    print('Error deleting like: $error');
-  }
-}
 
 Future<void> addMaintenanceRecord({
   required int userId,
+  required int id,
   required DateTime date,
   required String description,
 }) async {
@@ -1082,6 +1106,7 @@ Future<void> addMaintenanceRecord({
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
+        'id': maintenanceRecords.length,
         'userid': userId,
         'date': date.toIso8601String(),
         'description': description,
@@ -1181,6 +1206,7 @@ Future<void> addMaintenanceRequest({
 }
 
 Future<void> addDeliveryRequest({
+  required int id,
   required int userId,
   required int ownerId,
   required String phone,
@@ -1195,6 +1221,7 @@ Future<void> addDeliveryRequest({
       'Content-Type': 'application/json',
     },
     body: jsonEncode({
+      "id": id,
       'userid': userId,
       'ownerid': ownerId,
       'phone': phone,
@@ -1379,11 +1406,16 @@ Future<void> addUserSignUpRequest(
   String location,
   double latitude,
   double longitude,
-  List<String> images,
+ 
 ) async {
   final String baseUrl = "http://localhost:3000/api/usersignuprequests";
   final Uri url = Uri.parse(baseUrl);
+List<String> images=[
+  marketImages[0]!.path,
+  marketImages[1]!.path,
+  marketImages[2]!.path,
 
+];
   final Map<String, dynamic> requestData = {
     'id': id,
     'name': name,
@@ -1412,7 +1444,7 @@ Future<void> addUserSignUpRequest(
 }
 
 Future<void> updateUserActiveStatus(String email, bool status) async {
-  final String baseUrl = "https://gp1-ghqa.onrender.com/api/users";
+  final String baseUrl = "http://localhost:3000/api/users";
   final String endpoint = "/$email/activestatus";
 
   final response = await http.put(
@@ -1871,8 +1903,11 @@ Future<List<Message>> fetchMessages(int chatId) async {
   }
 }
 
-Future<void> addUser(
+Future<void> addUser (
     int id,
+    double latitude,
+    double longitude,
+
     String name,
     String email,
     String phone,
@@ -1894,7 +1929,10 @@ Future<void> addUser(
     'description': des,
     'location': location,
     'rates': [],
-    'isServiceActive': true
+    'isServiceActive': true,
+    'latitude' :latitude,
+    'longitude' : longitude,
+   
   };
 
   try {
@@ -1907,6 +1945,8 @@ Future<void> addUser(
     );
 
     if (response.statusCode == 200) {
+      await getCarts();
+      addCart();
     } else {}
   } catch (error) {}
 }
@@ -1948,6 +1988,8 @@ Future<void> getusers() async {
           Map<String, dynamic> userJson = jsonData['data'][i];
 
           users.add(User(
+            latitude: double.parse(userJson['latitude'].toString()),
+            longitude:double.parse(userJson['longitude'].toString()),
             id: int.parse(userJson['id'].toString()),
             name: userJson['name'],
             phone: userJson['phone'],
@@ -1989,6 +2031,7 @@ Future<void> getcomplaints() async {
           Map<String, dynamic> complaintJson = jsonData['data'][i];
 
           complaints.add(Complaint(
+            id: complaints.length,
             description: complaintJson['description'],
             userName: complaintJson['userName'],
             ownerid: complaintJson['ownerid'],
@@ -2022,9 +2065,12 @@ Future<void> getposts() async {
           Map<String, dynamic> postJson = jsonData['data'][i];
 
           List<Like> likes = [];
+
           if (postJson['likes'] is List<dynamic>) {
-            for (var like in postJson['likes']) {
-              likes.add(Like(userId: like['userId']));
+            for (var likeUserId in postJson['likes']) {
+              if (likeUserId is int) {
+                likes.add(Like(userId: likeUserId));
+              }
             }
           }
 
@@ -2247,6 +2293,7 @@ Future<List<Sale>> getSales() async {
       if (jsonData['data'] is List) {
         for (var saleData in jsonData['data']) {
           Sale sale = Sale(
+            id: saleData['id'],
             ownerid: saleData['ownerid'],
             itemid: saleData['itemid'],
             quantity: saleData['quantity'],
@@ -2284,6 +2331,7 @@ Future<List<Offer>> getOffers() async {
       if (jsonData['data'] is List) {
         for (var offerData in jsonData['data']) {
           Offer offer = Offer(
+            id: offerData['id'],
             title: offerData['title'],
             description: offerData['description'],
             discount: offerData['discount'],
@@ -2363,7 +2411,7 @@ Future<void> getDeliveryRequests() async {
           var requestData = jsonData['data'][i];
 
           DeliveryRequest request = DeliveryRequest(
-            requestid: i + 1,
+            requestid: int.tryParse(requestData['id'].toString()) ?? 0,
             userid: int.tryParse(requestData['userid'].toString()) ?? 0,
             ownerid: int.tryParse(requestData['ownerid'].toString()) ?? 0,
             phone: requestData['phone'] ?? '',
@@ -2522,6 +2570,7 @@ Future<void> getMaintenanceRecords() async {
       if (jsonData is List) {
         for (var recordData in jsonData) {
           MaintenanceRecord record = MaintenanceRecord(
+            id: recordData['id'],
             date: DateTime.parse(recordData['date']),
             description: recordData['description'],
             userid: recordData['userid'],
@@ -2544,8 +2593,6 @@ Future<void> getMaintenanceRecords() async {
   }
 }
 
-
-
 Future<void> uploadImageAndGetOptimizedUrl(String base64Image) async {
   final url = Uri.parse('http://localhost:3000/upload');
   final body = jsonEncode({'imageData': base64Image});
@@ -2556,10 +2603,9 @@ Future<void> uploadImageAndGetOptimizedUrl(String base64Image) async {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-     
-      urlofimage=responseData['optimizedUrl'];
-     print(urlofimage);
-     
+
+      urlofimage = responseData['optimizedUrl'];
+      print(urlofimage);
     } else {
       throw Exception(
           'Failed to upload image. Status code: ${response.statusCode}');
@@ -2567,5 +2613,195 @@ Future<void> uploadImageAndGetOptimizedUrl(String base64Image) async {
   } catch (error) {
     print('Error uploading image: $error');
     throw Exception('Error uploading image');
+  }
+}
+
+Future<void> removeLikeFromPost(int postId, int userId) async {
+  final url =
+      Uri.parse('http://localhost:3000/api/posts/likes/$postId/$userId');
+  try {
+    final response = await http.delete(
+      url,
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('Success: ${data['message']}');
+      print('Response Data: ${data['data']}');
+    } else {
+      final error = jsonDecode(response.body);
+      print('Error: ${error['message']}');
+    }
+  } catch (e) {
+    print('Error making request: $e');
+  }
+}
+
+Future<void> addCommentToPost(int postId, Comment commentData) async {
+  final url = Uri.parse('http://localhost:3000/api/posts/$postId/comment');
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "commentid": commentData.commentid,
+        "commenterid": commentData.commenterid,
+        "text": commentData.text,
+        "timestamp": commentData.timestamp.toIso8601String(),
+        "isLiked": commentData.isLiked,
+        "replies": commentData.replies
+            .map((reply) => {
+                  "commentid": reply.commentid,
+                  "commenterid": reply.commenterid,
+                  "text": reply.text,
+                  "timestamp": reply.timestamp.toIso8601String(),
+                  "isLiked": reply.isLiked,
+                })
+            .toList(),
+        "likes": commentData.likes
+            .map((like) => {
+                  "userId": like.userId,
+                })
+            .toList(),
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('Success: ${data['message']}');
+      print('Response Data: ${data['data']}');
+    } else {
+      final error = jsonDecode(response.body);
+      print('Error: ${error['message']}');
+    }
+  } catch (e) {
+    print('Error making request: $e');
+  }
+}
+
+Future<void> removeCommentFromPost(int postId, int commentId) async {
+  final url =
+      Uri.parse('http://localhost:3000/api/posts/$postId/comments/$commentId');
+
+  try {
+    final response = await http.delete(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('Success: ${data['message']}');
+      print('Response Data: ${data['data']}');
+    } else {
+      final error = jsonDecode(response.body);
+      print('Error: ${error['message']}');
+    }
+  } catch (e) {
+    print('Error making request: $e');
+  }
+}
+
+Future<void> updateComment(int postId, int commentId, String newText) async {
+  final String url =
+      'http://localhost:3000/api/posts/$postId/comments/$commentId';
+  final response = await http.put(
+    Uri.parse(url),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'text': newText,
+    }),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to update comment');
+  }
+}
+
+Future<void> addReply(int postId, int commentId, Comment reply) async {
+  Post post = posts
+      .where(
+        (element) => element.id == postId,
+      )
+      .toList()[0];
+  final url = Uri.parse(
+      'http://localhost:3000/api/posts/$postId/comments/$commentId/replies');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'commentid': post.comments
+                .where(
+                  (element) => element.commentid == commentId,
+                )
+                .toList()[0]
+                .replies
+                .isEmpty
+            ? 0
+            : post.comments
+                    .where(
+                      (element) => element.commentid == commentId,
+                    )
+                    .toList()[0]
+                    .replies[post.comments
+                            .where(
+                              (element) => element.commentid == commentId,
+                            )
+                            .toList()[0]
+                            .replies
+                            .length -
+                        1]
+                    .commentid +
+                1,
+        'commenterid': reply.commenterid,
+        'text': reply.text,
+        'timestamp': reply.timestamp.toIso8601String(),
+        'isLiked': reply.isLiked,
+        'likes': [],
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Reply added successfully');
+    } else {
+      print('Failed to add reply: ${response.body}');
+    }
+  } catch (e) {
+    print('Error adding reply: $e');
+  }
+}
+
+
+Future<void> editReply(int postId, int commentId, int replyId, String newText) async {
+  final url = Uri.parse('http://localhost:3000/api/posts/$postId/comments/$commentId/replies/$replyId');
+  
+  try {
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'newText': newText,
+      }),
+    );
+    
+    if (response.statusCode == 200) {
+      print('Reply updated successfully');
+    } else {
+      print('Failed to update reply: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
   }
 }

@@ -37,8 +37,9 @@ class _ChatsPageState extends State<ChatsPage> {
 
   @override
   void dispose() {
+     _timer?.cancel(); 
     _searchController.dispose();
-    _timer?.cancel(); 
+   
     super.dispose();
   }
 

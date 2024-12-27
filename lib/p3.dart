@@ -149,26 +149,27 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                   },
                 ),
                 SizedBox(height: 16),
-                TextFormField(
-                  controller: carPlateNumberController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: _textFieldFillColor,
-                    hintText: 'Car Plate Number ',
-                    prefixIcon: Icon(Icons.directions_car, color: _iconColor),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+             if(selectedRole=="owner")
+                  TextFormField(
+                    controller: carPlateNumberController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: _textFieldFillColor,
+                      hintText: 'Car Plate Number ',
+                      prefixIcon: Icon(Icons.directions_car, color: _iconColor),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ),
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your car plate number';
-                    }
+                    keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your car plate number';
+                      }
 
-                    return null;
-                  },
-                ),
+                      return null;
+                    },
+                  ),
                 SizedBox(height: 204),
                
               ],

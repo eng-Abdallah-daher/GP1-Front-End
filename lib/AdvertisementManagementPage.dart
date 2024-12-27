@@ -33,6 +33,7 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
           descriptionController.text,
           validUntil ?? DateTime.now().add(Duration(days: 30)));
       offers.add(Offer(
+        id: offers[offers.length-1].id+1,
         title: titleController.text,
         description: descriptionController.text,
         discount: double.parse(discountController.text),

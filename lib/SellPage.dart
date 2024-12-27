@@ -223,8 +223,8 @@ class _SalesPageState extends State<SalesPage> {
 deleteSalesRequest(sale.id);
       salesrequests.remove(sale);
       
-      addSale(ownerId: sale.ownerid, itemId: sale.itemid, quantity: sale.quantity, price: sale.price, date: sale.date);
-      sales.add(Sale(ownerid: sale.ownerid, itemid: sale.itemid, quantity: sale.quantity, price: sale.price, date: sale.date));
+      addSale(id: sales[sales.length - 1].id + 1,ownerId: sale.ownerid, itemId: sale.itemid, quantity: sale.quantity, price: sale.price, date: sale.date);
+      sales.add(Sale(id: sales[sales.length - 1].id + 1,ownerid: sale.ownerid, itemid: sale.itemid, quantity: sale.quantity, price: sale.price, date: sale.date));
     });
 
     ScaffoldMessenger.of(context).showSnackBar(

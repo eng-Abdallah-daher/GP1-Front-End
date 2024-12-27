@@ -1,3 +1,4 @@
+import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -155,7 +156,57 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _findNearby(String amenity) async {
-    if (currentLocation != null) {
+  if(amenity=='fixer'){
+    LatLng l=LatLng(users.where((element) => element.role=="owner",).toList()[0].latitude, users
+              .where(
+                (element) => element.role == "owner",
+              )
+              .toList()[0]
+              .longitude);
+    double min=double.maxFinite;
+    int index=0;
+    for(int i = 0; i <users.length;i++) {
+      if(users[i].role =="owner"){
+        LatLng location=LatLng(users[i].latitude, users[i].longitude);
+  double distance = _calculateDistance(currentLocation!, location);
+  if(min<distance){
+    min=distance;
+index=i;
+  }
+     setState(() {
+            markers = [
+              Marker(
+                width: 80.0,
+                height: 80.0,
+                point: currentLocation!,
+                builder: (ctx) => Icon(
+                  Icons.my_location,
+                  color: Colors.blue,
+                  size: 40,
+                ),
+              ),
+               Marker(
+                width: 80.0,
+                height: 80.0,
+                point: l!,
+                builder: (ctx) => Icon(
+                  Icons.car_repair,
+                  color: Colors.green,
+                  size: 40,
+                ),
+              ),
+              
+              ];
+              
+              });
+      }
+    }
+
+
+
+  }
+  else{
+      if (currentLocation != null) {
       final response = await http.get(Uri.parse(
           'https://overpass-api.de/api/interpreter?data=[out:json];node[amenity=$amenity](around:5000,${currentLocation!.latitude},${currentLocation!.longitude});out;'));
 
@@ -209,10 +260,9 @@ class _MapScreenState extends State<MapScreen> {
                     _scaffoldKey.currentState?.openDrawer();
                   },
                   child: Icon(
-                    amenity == 'fuel'
-                        ? Icons.local_gas_station
-                        : Icons.restaurant,
-                    color: amenity == 'fuel' ? Colors.red : Colors.green,
+                    Icons.local_gas_station,
+                        
+                    color:  Colors.red ,
                     size: 40,
                   ),
                 ),
@@ -222,6 +272,7 @@ class _MapScreenState extends State<MapScreen> {
         }
       }
     }
+  }
   }
 
   double _calculateDistance(LatLng start, LatLng end) {
@@ -568,11 +619,11 @@ class _MapScreenState extends State<MapScreen> {
           ),
           SizedBox(height: 10),
           FloatingActionButton(
-            heroTag: 'findRestaurants',
+            heroTag: 'findNearestWorkingStation',
             onPressed: () {
-              _findNearby('restaurant');
+              _findNearby('fixer');
             },
-            child: Icon(Icons.restaurant),
+            child: Icon(Icons.car_repair),
           ),
           SizedBox(height: 10),
           FloatingActionButton(

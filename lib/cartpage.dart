@@ -155,14 +155,14 @@ class _CartPageState extends State<CartPage> {
                       try{
                           for (int i = 0; i < cart.localitems.length; i++) {
                         addSaleRequest(SaleRequest(
-                            id: salesrequests.length,
+                            id: salesrequests[salesrequests.length-1].id+1,
                               ownerid: cart.localitems[i].ownerid,
                               itemid: cart.localitems[i].id,
                               quantity: cart.localitems[i].availableQuantity,
                               price: cart.localitems[i].price,
                               date: DateTime.now()));
                           salesrequests.add(SaleRequest(
-                            id: salesrequests.length,
+                            id: salesrequests[salesrequests.length - 1].id +1,
                               ownerid: cart.localitems[i].ownerid,
                               itemid: cart.localitems[i].id,
                               quantity: cart.localitems[i].availableQuantity,

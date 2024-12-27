@@ -379,8 +379,8 @@ getSales();
                        try{
                            setState(() {
                             booking.status = 'Completed';
-                            addSale(ownerId: global_user.id, itemId: -1, quantity: 0, price: cost, date: DateTime(1,1,1));
-                        sales.add(Sale(ownerid: global_user.id, itemid: -1, quantity: 0, price: cost, date: DateTime(1,1,1)));
+                            addSale(id: sales[sales.length - 1].id + 1,ownerId: global_user.id, itemId: -1, quantity: 0, price: cost, date: DateTime(1,1,1));
+                        sales.add(Sale(id: sales[sales.length - 1].id + 1,ownerid: global_user.id, itemid: -1, quantity: 0, price: cost, date: DateTime(1,1,1)));
                           });
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(

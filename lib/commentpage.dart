@@ -159,6 +159,7 @@ bool islikedcomment(Comment comment){
                 for (var post in posts) {
                   for (var postComment in post.comments) {
                     if (comment.commentid == postComment.commentid) {
+                      
                       postComment.likes.add(Like(userId: global_user.id));
 
                     }
@@ -168,6 +169,7 @@ bool islikedcomment(Comment comment){
                 for (var post in posts) {
                   for (var postComment in post.comments) {
                     if (comment.commentid == postComment.commentid) {
+                      removeLikeFromPost(widget.post.id,global_user.id);
                       postComment.likes
                           .removeWhere((like) => like.userId == global_user.id);
                     }
@@ -217,12 +219,12 @@ bool islikedcomment(Comment comment){
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, left: 50.0),
       child: Column(
-        children: comment.replies.map((reply) => _buildReply(reply)).toList(),
+        children: comment.replies.map((reply) => _buildReply(reply,comment)).toList(),
       ),
     );
   }
 
-  Widget _buildReply(Comment reply) {
+  Widget _buildReply(Comment reply,Comment com) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
       child: Row(
@@ -261,7 +263,7 @@ bool islikedcomment(Comment comment){
                 ),
                 SizedBox(height: 4),
                 _buildReplyMeta(reply),
-                (reply.commenterid == global_user.id) ? _buildReplyActions(reply) : Container()
+                (reply.commenterid == global_user.id) ? _buildReplyActions(reply,com) : Container()
               ],
             ),
           ),
@@ -294,12 +296,12 @@ bool islikedcomment(Comment comment){
     );
   }
 
-  Widget _buildReplyActions(Comment reply) {
+  Widget _buildReplyActions(Comment reply,Comment com) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-            onPressed: () => _showEditReplyDialog(reply),
+            onPressed: () => _showEditReplyDialog(reply,com),
             child: Text('Edit', style: TextStyle(color: blue))),
         TextButton(
             onPressed: () => _deleteReply(reply),
@@ -348,24 +350,61 @@ bool islikedcomment(Comment comment){
   }
 
   void _addComment() {
+
+
     if (commentController.text.isNotEmpty) {
       setState(() {
-       
-        widget.post.comments.add (
+    if(widget.post.comments.isNotEmpty){
+         addCommentToPost(
+            widget.post.id,
+            Comment(
+              commentid: widget.post.comments[widget.post.comments.length - 1]
+                      .commentid +
+                  1,
+              likes: List.empty(),
+              commenterid: global_user.id,
+              text: commentController.text,
+              timestamp: DateTime.now(),
+              isLiked: false,
+            ),
+          );
           
-          Comment(
-            commentid:19,
-            likes: List.empty(),
-            commenterid: global_user.id,
-          
-            text: commentController.text,
-            timestamp: DateTime.now(), 
-            isLiked: false, 
-          ),
-        );
-   
-        commentController.clear(); 
-            
+          widget.post.comments.add(
+            Comment(
+              commentid: widget.post.comments[widget.post.comments.length - 1]
+                      .commentid +
+                  1,
+              likes: List.empty(),
+              commenterid: global_user.id,
+              text: commentController.text,
+              timestamp: DateTime.now(),
+              isLiked: false,
+            ),
+          );
+    }else{
+         addCommentToPost(
+            widget.post.id,
+            Comment(
+              commentid:0,
+              likes: List.empty(),
+              commenterid: global_user.id,
+              text: commentController.text,
+              timestamp: DateTime.now(),
+              isLiked: false,
+            ),
+          );
+          widget.post.comments.add(
+            Comment(
+              commentid: 0,
+              likes: List.empty(),
+              commenterid: global_user.id,
+              text: commentController.text,
+              timestamp: DateTime.now(),
+              isLiked: false,
+            ),
+          );
+    }
+        commentController.clear();     
       });
           
     }
@@ -482,10 +521,20 @@ void _showReplyDialog(Comment comment) {
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async{
                         if (replyController.text.isNotEmpty) {
-                          setState(() {
-                            comment.replies.add(
+                         
+                         await addReply(widget.post.id, comment.commentid,Comment(
+                                commentid: -1,
+                                likes: List.empty(),
+                                commenterid: global_user.id,
+                               
+                                text: replyController.text,
+                                timestamp: DateTime.now(),
+                                isLiked: false,
+                              ),);
+                            setState(() { 
+                              comment.replies.add(
                               Comment(
                                 commentid: 192,
                                 likes: List.empty(),
@@ -496,6 +545,7 @@ void _showReplyDialog(Comment comment) {
                                 isLiked: false,
                               ),
                             );
+                            widget.post.commentCount++;
                           });
                           Navigator.of(context)
                               .pop();
@@ -620,8 +670,6 @@ void _showEditCommentDialog(Comment comment) {
                         ),
                       ),
                     ),
-
-                    
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: white.withOpacity(0.8),
@@ -634,6 +682,7 @@ void _showEditCommentDialog(Comment comment) {
                       onPressed: () {
                         if (editController.text.isNotEmpty) {
                           setState(() {
+                            updateComment(widget.post.id, comment.commentid, editController.text);
                             comment.text =
                                 editController.text; 
                           });
@@ -658,7 +707,7 @@ void _showEditCommentDialog(Comment comment) {
       },
     );
   }
-void _showEditReplyDialog(Comment reply) {
+void _showEditReplyDialog(Comment reply,Comment com) {
     final TextEditingController editController =
         TextEditingController(text: reply.text);
     showDialog(
@@ -769,7 +818,9 @@ void _showEditReplyDialog(Comment reply) {
                       ),
                       onPressed: () {
                         if (editController.text.isNotEmpty) {
+                        editReply(widget.post.id,com.commentid, reply.commentid,  editController.text);
                           setState(() {
+                            
                             reply.text =
                                 editController.text; 
                           });
@@ -797,6 +848,7 @@ void _showEditReplyDialog(Comment reply) {
 
   void _deleteComment(Comment comment) {
     setState(() {
+      removeCommentFromPost(widget.post.id, comment.commentid);
       widget.post.comments.remove(comment); 
     });
   }

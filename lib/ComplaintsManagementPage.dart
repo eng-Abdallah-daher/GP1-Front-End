@@ -38,9 +38,10 @@ class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
   void addComplaint() {
     setState(() {
 try{
-addRating(descriptionController.text,global_user.name,widget.ownerid,rating);
+addRating(complaints.length,descriptionController.text,global_user.name,widget.ownerid,rating);
 addRate(global_user.id, widget.ownerid);
       complaints.add(Complaint(
+        id:complaints.length,
         description: descriptionController.text,
         userName: global_user.name,
         ownerid: widget.ownerid,

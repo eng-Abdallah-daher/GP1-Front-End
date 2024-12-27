@@ -44,27 +44,32 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-m();
-   
+    m();
   }
-  void m() async{
-   await getUserSignUpRequests();
-     for (int i = 0; i < userRequests.length; i++) {
+
+  void m() async {
+    await getUserSignUpRequests();
+    for (int i = 0; i < userRequests.length; i++) {
       fetchPlaceDetails(i);
     }
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   void _acceptRequest(int index) {
-
-
-    
     UserSignUpRequest acceptedRequest = userRequests[index];
-    addUser(users.length,userRequests[index].name, userRequests[index].email, userRequests[index].phone, userRequests[index].password,"", userRequests[index].description, "owner",
+    addUser(
+        users[users.length - 1].id + 1,
+        userRequests[index].latitude,
+        userRequests[index].longitude,
+        userRequests[index].name,
+        userRequests[index].email,
+        userRequests[index].phone,
+        userRequests[index].password,
+        "",
+        userRequests[index].description,
+        "owner",
         userRequests[index].location);
 
     setState(() {
@@ -268,8 +273,6 @@ m();
           textColor: Colors.yellowAccent,
           onPressed: () {
             setState(() {
-
-              
               userRequests.add(deletedRequest);
               deletedRequests.remove(deletedRequest);
             });
@@ -283,7 +286,6 @@ m();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: userRequests.isEmpty
           ? Center(
               child: Text(

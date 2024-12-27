@@ -125,8 +125,9 @@ class _MaintenanceReminderPageState extends State<MaintenanceReminderPage> {
                         return null;
                       }
 try{
-addMaintenanceRecord(userId: global_user.id, date: _nextReminderDate!, description: mileage);
+addMaintenanceRecord(id: maintenanceRecords.length,userId: global_user.id, date: _nextReminderDate!, description: mileage);
                       maintenanceRecords.add(MaintenanceRecord(
+                        id: maintenanceRecords.length,
                           date: _nextReminderDate!,
                           description: mileage,
                           userid: global_user.id));

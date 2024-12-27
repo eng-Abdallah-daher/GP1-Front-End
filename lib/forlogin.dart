@@ -139,9 +139,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Column(
                     children: [
-                      Image.asset(
-                        'images/logo.png',
-                        height: 225,
+                      Image.network(
+                        'images/c2.Gif',
+                        width: 400,
                       ),
                       SizedBox(height: 8),
                       Text(

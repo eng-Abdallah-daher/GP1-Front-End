@@ -176,8 +176,9 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                        final tool =
                           items.firstWhere((tool) => tool.name == selectedTool);
                       setState(() {
-                        addSale(ownerId: global_user.id, itemId: tool.id, quantity: quantity, price: quantity * tool.price, date: DateTime.now());
+                        addSale(id: sales[sales.length - 1].id + 1,ownerId: global_user.id, itemId: tool.id, quantity: quantity, price: quantity * tool.price, date: DateTime.now());
                         sales.add(Sale(
+                          id: sales[sales.length - 1].id + 1,
                             ownerid: global_user.id,
                             itemid: tool.id,
                             quantity: quantity,

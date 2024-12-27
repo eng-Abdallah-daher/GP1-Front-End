@@ -275,6 +275,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                               if (quantityToSell >= item.availableQuantity) {
                                 setState(() {
                                   addSale(
+                                    id: sales[sales.length-1].id+1,
                                       ownerId: item.ownerid,
                                       itemId: item.id,
                                       quantity: item.availableQuantity,
@@ -285,6 +286,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                                
 
                                   sales.add(Sale(
+                                    id: sales[sales.length - 1].id + 1,
                                       ownerid: item.ownerid,
                                       itemid: item.id,
                                       price: item.price,
@@ -301,6 +303,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                                 setState(() {
                                   item.availableQuantity -= quantityToSell;
                                   sales.add(Sale(
+id: sales[sales.length - 1].id + 1,
                                       ownerid: item.ownerid,
                                       itemid: item.id,
                                       price: item.price,

@@ -354,10 +354,10 @@ getposts();
                 try{
 
                 
-                    addPost(DateTime.now(), posts.length, _postController.text,
+                    addPost(DateTime.now(), posts[posts.length-1].id+1, _postController.text,
                       global_user.id, _selectedImage.toString());
                   posts.add(Post(
-                      id: posts.length,
+                      id:  posts[posts.length - 1].id + 1,
                       ownerId: global_user.id,
                       description: _postController.text,
                       postImage: _selectedImage.toString(),

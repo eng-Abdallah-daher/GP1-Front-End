@@ -590,7 +590,7 @@ class _PostCardState extends State<PostCard> {
                                   i++) {
                                 if (widget.post.likes[i].userId ==
                                     global_user.id) {
-                                  deletelike(widget.post.id);
+                                  removeLikeFromPost(widget.post.id,global_user.id);
                                   widget.post.likes.removeAt(i);
                                   widget.post.likeCount =
                                       widget.post.likes.length;
@@ -610,7 +610,7 @@ class _PostCardState extends State<PostCard> {
                 ),
 
                 Text(
-                  '${widget.post.comments.length} Comments',
+                  '${widget.post.commentCount} Comments',
                   style: TextStyle(color: black),
                 ),
                 IconButton(

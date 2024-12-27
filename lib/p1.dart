@@ -74,9 +74,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               Center(
                 child: Column(
                   children: [
-                    Image.asset(
-                      'images/map.png',
-                      width: 300,
+                    Image.network(
+                      'images/c2.Gif',
+                      width: 400,
                     ),
                     SizedBox(height: 8),
                     Text(

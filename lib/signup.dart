@@ -9,6 +9,8 @@ import 'package:first/p6.dart';
 import 'package:first/pagetouploadimages.dart';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -26,11 +28,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    passwordController.dispose();
-    carPlateNumberController.dispose();
+    nameController.clear();
+    emailController.clear();
+    phoneController.clear();
+    passwordController.clear();
+    carPlateNumberController.clear();
     _pageController.dispose();
     super.dispose();
   }
@@ -46,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
           p1(),
           p2(),
           p3(),
-          if(selectedRole=="owner")EnsureImages(),
+          EnsureImages(),
           p4(),
           p5(),
           p6(),
@@ -109,11 +111,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
               ElevatedButton(
-                onPressed: _currentPage == 4
+                onPressed: _currentPage == 5
                     ? (acceptTerms ? _nextPage : null)
                     : _nextPage,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _currentPage == 4
+                  backgroundColor: _currentPage == 5
                       ? (acceptTerms ? Colors.orangeAccent : Colors.transparent)
                       : Colors.orangeAccent,
                   shadowColor: Colors.black45,
@@ -126,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   minimumSize: Size(120, 40),
                 ),
                 child: Text(
-                  ((_currentPage == 4&&selectedRole=="User")||(_currentPage == 5 && selectedRole=="owner")) ? "Go to Home" : "Next Page",
+                  ((_currentPage >=6)) ? "Go to Home" : "Next Page",
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -139,30 +141,16 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-
   void _nextPage() async {
     if (_currentPage == 0) {
-
-      if (nameController.text.isNotEmpty &&
-          emailController.text.isNotEmpty &&
-          phoneController.text.isNotEmpty) {
-        setState(() {
-         
-          _currentPage++;
-        });
-        _pageController.animateToPage(
-          _currentPage,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeIn,
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Please fill all fields'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      setState(() {
+        _currentPage++;
+      });
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
     } else if (_currentPage == 1) {
       setState(() {
         _currentPage++;
@@ -172,37 +160,11 @@ class _RegisterPageState extends State<RegisterPage> {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
-    } else if ((_currentPage == 2 && isuser)) {
-      if (passwordController.text.isNotEmpty &&
-          carPlateNumberController.text.isNotEmpty &&
-          confirmpassword.text.isNotEmpty) {
-        if (confirmpassword.text == passwordController.text) {
-          setState(() {
-            _currentPage++;
-          });
-          _pageController.animateToPage(
-            _currentPage,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeIn,
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Passwords do not match'),
-              backgroundColor: Colors.red,
-            ),
-          );
+    } else if (_currentPage == 2) {
+  if(passwordController.text==confirmpassword.text){
+         if (_currentPage == 2 && isuser) {
+          _currentPage++;
         }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Please fill all fields'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } else if ((_currentPage == 3&&isuser)||(!isuser&& _currentPage == 4)) {
-      if (acceptTerms) {
         setState(() {
           _currentPage++;
         });
@@ -211,12 +173,31 @@ class _RegisterPageState extends State<RegisterPage> {
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn,
         );
-      }
-    } else if ((_currentPage == 4 && isuser) ||
-        (!isuser && _currentPage == 5)) {
-    if (isuser) {
-        addUser(
-            users.length,
+  }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Passwords are not the same!'),
+            backgroundColor: Colors.red,
+          ),
+        );
+  }
+    }  
+    
+    else if (_currentPage < 5) {
+      setState(() {
+       
+        _currentPage++;
+      });
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    } else if(_currentPage ==5) {
+     if(isuser){
+       addUser(
+            users[users.length-1].id+1,
+            0,0,
             nameController.text,
             emailController.text,
             phoneController.text,
@@ -225,29 +206,35 @@ class _RegisterPageState extends State<RegisterPage> {
             descriptionController.text,
             "normal",
             locationController.text);
+
         _addUser();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('User added successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );}else{
-
-        // addUserSignUpRequest(userRequests.length, nameController.text, emailController.text, phoneController.text, descriptionController.text, locationController.text, latitude, longitude, [
-
-        //   marketImages[0].path!,
-        //   marketImages[1].path!,
-        //   marketImages[2].path!,
-
-        // ]);
-         ScaffoldMessenger.of(context).showSnackBar(
+      
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('User Regeistered successfully!'),
+            content: Text('User added successfully!'),
             backgroundColor: Colors.green,
           ),
         );
-      }
-      setState(() {
+     }else{
+await getUserSignUpRequests();
+        Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.best);
+            
+      addUserSignUpRequest(userRequests[userRequests.length-1].requestid+1, nameController.text,  emailController.text, phoneController.text,descriptionController.text, locationController.text, position.latitude, position.longitude);
+     ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('User Signup Requested successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+         }
+        _pageController.animateToPage(
+      _currentPage,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+    );
+
+     setState(() {
         _currentPage++;
       });
       _pageController.animateToPage(
@@ -255,8 +242,8 @@ class _RegisterPageState extends State<RegisterPage> {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
-    } else {
-      Navigator.pushReplacement(
+    }else{
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => CarServiceLoginApp(),
@@ -292,6 +279,9 @@ class _RegisterPageState extends State<RegisterPage> {
         description: "",
         locatoin: "",
         rates: [],
+        latitude: 0,
+        longitude: 0
+        
       ));
     });
     ScaffoldMessenger.of(context).showSnackBar(

@@ -18,7 +18,7 @@ class EnsureImages extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Roboto',
         visualDensity: VisualDensity.adaptivePlatformDensity,
-      
+    
       ),
       home: MarketSignUpPage(),
       debugShowCheckedModeBanner: false,

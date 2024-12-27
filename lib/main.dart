@@ -10,6 +10,7 @@ import 'package:first/forgotpasswordpage.dart';
 import 'package:first/forlogin.dart';
 import 'package:first/glopalvars.dart';
 import 'package:first/ownermainpage.dart';
+import 'package:first/p1.dart';
 import 'package:first/pagetouploadimages.dart';
 import 'package:first/searchpage.dart';
 import 'package:first/signup.dart';
@@ -25,11 +26,11 @@ void main() async{
 // await addTask(4,AssignedTask(ownerId: "2", taskId: "0", date: "1", time: "time", task: "task"));
 // await getAssignedTasks();
 // await getItems();
-await getusers();
-await getAllChats();
-await getItems();
-await getposts();
-  runApp(MaterialApp(home: usermainpage(),));
+// await getusers();
+// await getAllChats();
+// await getItems();
+// await getposts();
+  runApp(MaterialApp(home: CarServiceLoginApp(),));
 }
 
 class usermainpage extends StatelessWidget {
