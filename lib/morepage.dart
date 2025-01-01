@@ -1,15 +1,15 @@
 import 'dart:io';
-import 'package:first/AboutUsPage.dart';
-import 'package:first/chatpage.dart';
-import 'package:first/customizetheme.dart';
-import 'package:first/forlogin.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/languagesettings.dart';
+import 'package:CarMate/AboutUsPage.dart';
+import 'package:CarMate/chatpage.dart';
+import 'package:CarMate/customizetheme.dart';
+import 'package:CarMate/login.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/languagesettings.dart';
 import 'package:flutter/material.dart';
-import 'package:first/updateinfo.dart';
+import 'package:CarMate/updateinfo.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:first/changepassword.dart';
-import 'package:first/notifactionsettings.dart';
+import 'package:CarMate/changepassword.dart';
+import 'package:CarMate/notifactionsettings.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -71,6 +71,8 @@ class _MorePageState extends State<MorePage> {
           final fileUrl = reader.result as String;
           await uploadImageAndGetOptimizedUrl(fileUrl);
            _image = File(urlofimage);
+           updateUserprofileimage(global_user.email, urlofimage);
+           global_user.profileImage=urlofimage;
         });
       } else {
         try {
@@ -120,8 +122,9 @@ class _MorePageState extends State<MorePage> {
       child: Row(
         children: [
           GestureDetector(
-            onTap: (){
-              _pickImage();
+            onTap: ()async{
+              await _pickImage();
+              print("\nuserimage:\n"+urlofimage+ "\nuserimage:\n");
               global_user.profileImage=_image!.path;
             },
             child: CircleAvatar(

@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 
@@ -11,8 +11,9 @@ class _SalesPageState extends State<SalesPage> {
 
      @override
   void initState() {
+     m();
     super.initState();
-  m();
+ 
   }
   void m() async{
       await getSales();
@@ -220,6 +221,7 @@ class _SalesPageState extends State<SalesPage> {
   void _approveRequest(BuildContext context, SaleRequest sale) {
   try{
       setState(() {
+        print(sale.id);
 deleteSalesRequest(sale.id);
       salesrequests.remove(sale);
       
@@ -254,6 +256,8 @@ deleteSalesRequest(sale.id);
   void _rejectRequest(BuildContext context, SaleRequest sale) {
     setState(() {
 try{
+  Item m=items.where((element) => element.id==sale.itemid,).toList()[0];
+  updateItem(m.id, m.name, m.availableQuantity+sale.quantity, m.price);
         deleteSalesRequest(sale.id);
       salesrequests.remove(sale);
         ScaffoldMessenger.of(context).showSnackBar(

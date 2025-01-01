@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 
 class DeleteEmployeePage extends StatefulWidget {
   @override

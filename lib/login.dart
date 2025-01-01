@@ -1,10 +1,10 @@
-import 'package:first/admin.dart';
-import 'package:first/forgotpasswordpage.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/ownermainpage.dart';
+import 'package:CarMate/admin.dart';
+import 'package:CarMate/forgotpasswordpage.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/ownermainpage.dart';
 
-import 'package:first/signup.dart';
-import 'package:first/user.dart';
+import 'package:CarMate/signup.dart';
+import 'package:CarMate/user.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -70,8 +70,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-     getusers();
+     m();
     _checkBiometrics();
+  }
+  void m()async {
+    await getusers();
   }
 
   Future<void> _checkBiometrics() async {
@@ -216,9 +219,6 @@ if(_emailController.text=="admin"&&_passwordController.text=="admin"){
   Navigator.push(context, MaterialPageRoute(builder: (context) => adminmainpage()));
 loged=true;
 }
-
-
-                 
                     for (int i = 1; i < users.length; i++) {
                       
                       if (_emailController.text == users[i].email) {
@@ -229,9 +229,13 @@ loged=true;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ownermainpage()),
+                                builder: (context) => ownermainpage()
+                                
+                                ),
                             );
                           } else {
+                            getCarts();
+                            getTowingServices();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -243,14 +247,16 @@ loged=true;
                       }
                     }
 
-                    if (!loged) {
-                      SnackBar(
+                    if (loged==false) {
+                       ScaffoldMessenger.of(context).showSnackBar(
+                         SnackBar(
                         content: Text("Invalid email or password"),
                         backgroundColor: Colors.red,
                         duration: Duration(seconds: 2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
+                      )
                       );
                     }
                   },

@@ -1,5 +1,6 @@
-import 'package:first/deliveryrequests.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/delivaryrequestmap.dart';
+import 'package:CarMate/deliveryrequests.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -175,7 +176,7 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
               _buildTextField(_phoneController, "Phone Number",
                   keyboardType: TextInputType.phone),
               SizedBox(height: 20),
-              _buildTextField(_addressController, "Delivery Address"),
+              _buildTextmap(_addressController, "Delivery Address", context),
               SizedBox(height: 20),
               _buildTextField(
                   _instructionsController, "Additional Instructions",
@@ -190,6 +191,42 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
       ),
     );
   }
+
+ Widget _buildTextmap(
+    TextEditingController controller, String label, BuildContext context) {
+  return TextFormField(
+    controller: controller,
+    readOnly: true,
+    cursorColor: blueAccent,
+    decoration: InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: blueAccent),
+      filled: true,
+      fillColor: Colors.blue.shade50,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide(color: blueAccent),
+      ),
+    ),
+    onTap: () async {
+      final selectedLocation = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Delivaryrequestmap()),
+      );
+
+      if (selectedLocation != null) {
+        controller.text = selectedLocation.toString();
+      }
+    },
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return '$label is required';
+      }
+      return null;
+    },
+  );
+}
+
 
   Widget _buildTextField(TextEditingController controller, String label,
       {TextInputType? keyboardType, int maxLines = 1}) {
@@ -331,16 +368,20 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
   @override
   void initState() {
     super.initState();
- 
+
+    setState(() {
+      m();
+    });
     _checkBiometrics();
   }
 
-  Future<void> _checkBiometrics() async {
-      await  getbookings();
+  void m() async {
+    await getbookings();
     await getDeliveryRequests();
-    setState(() {
-      
-    });
+  }
+
+  Future<void> _checkBiometrics() async {
+    setState(() {});
     bool canCheckBiometrics;
     List<BiometricType>? availableBiometrics;
     try {
@@ -456,28 +497,42 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
   void _submitRequest() async {
     Booking? m = findCurrentBooking();
     if (m != null) {
-   try{
-       addDeliveryRequest(id: deliveryRequests.length,address: _addressController.text,instructions:_instructionsController.text,ownerId: m.ownerid,phone:_phoneController.text,userId:  global_user.id );
-      deliveryRequests.add(DeliveryRequest(
-        requestid: deliveryRequests.length,
-          ownerid: m.ownerid,
-          userid: global_user.id,
-          phone: _phoneController.text,
-          address: _addressController.text,
-          instructions: _instructionsController.text));
+      try {
+        addDeliveryRequest(
+            id: deliveryRequests.length,
+            address: _addressController.text,
+            instructions: _instructionsController.text,
+            ownerId: m.ownerid,
+            phone: _phoneController.text,
+            userId: global_user.id);
+        deliveryRequests.add(DeliveryRequest(
+            requestid: deliveryRequests.length,
+            ownerid: m.ownerid,
+            userid: global_user.id,
+            phone: _phoneController.text,
+            address: _addressController.text,
+            instructions: _instructionsController.text));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text('Your delivery request has been submitted successfully!'),
+          backgroundColor: Colors.blue,
+          duration: Duration(seconds: 3),
+        ));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'An error occurred while submitting your request. Please try again.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ));
+        print(e);
+      }
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Your delivery request has been submitted successfully!'),
-        backgroundColor: Colors.blue,
-        duration: Duration(seconds: 3),
-      ));
-   }catch(e){
-     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('An error occurred while submitting your request. Please try again.'),
+        content: Text('You can not request when your car is with you!'),
         backgroundColor: Colors.red,
         duration: Duration(seconds: 3),
       ));
-     print(e);
-   }
     }
   }
 

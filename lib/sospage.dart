@@ -1,5 +1,5 @@
-import 'package:first/EmergencyTowingPage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/EmergencyTowingPage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class SOSPage extends StatelessWidget {

@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+bool inchat=false;
 String urlofimage = "";
-User global_user = users[3];
+User global_user = users[0];
 Cart cart = carts[0];
 String selectedRole = 'user';
 bool isuser = true;
@@ -45,12 +45,14 @@ class PaymentRecord {
   final int year;
   final int month;
   bool paid;
+  int id;
 
   PaymentRecord({
     required this.userId,
     required this.year,
     required this.month,
     this.paid = false,
+    required this.id ,  
   });
 
   void togglePaymentStatus() {
@@ -62,63 +64,8 @@ class PaymentRecord {
     return "${year}-${month.toString().padLeft(2, '0')}: ${paid ? "Paid" : "Not Paid"}";
   }
 }
+List<PaymentRecord> paymentHistory = [];
 
-class PaymentHistory {
-  static List<PaymentRecord> paymentHistory = [];
-
-  static void updatePaymentStatus(int userId, int year, int month, bool paid) {
-    PaymentRecord? record = paymentHistory.firstWhere(
-      (record) =>
-          record.userId == userId &&
-          record.year == year &&
-          record.month == month,
-      orElse: () => PaymentRecord(userId: userId, year: year, month: month),
-    );
-
-    if (!paymentHistory.contains(record)) {
-      paymentHistory.add(record);
-    }
-    record.paid = paid;
-  }
-
-  static bool hasPaid(int userId, int year, int month) {
-    PaymentRecord? record = paymentHistory.firstWhere(
-      (record) =>
-          record.userId == userId &&
-          record.year == year &&
-          record.month == month,
-      orElse: () => PaymentRecord(userId: userId, year: year, month: month),
-    );
-    return record.paid;
-  }
-
-  static List<String> getPaymentHistory(int userId) {
-    return paymentHistory
-        .where((record) => record.userId == userId)
-        .map((record) =>
-            "${record.year}-${record.month.toString().padLeft(2, '0')}: ${record.paid ? "Paid" : "Not Paid"}")
-        .toList();
-  }
-
-  static void togglePaymentStatus(int userId, int year, int month) {
-    PaymentRecord? record = paymentHistory.firstWhere(
-      (record) =>
-          record.userId == userId &&
-          record.year == year &&
-          record.month == month,
-      orElse: () => PaymentRecord(userId: userId, year: year, month: month),
-    );
-
-    if (paymentHistory.contains(record)) {
-      record.togglePaymentStatus();
-    } else {
-      PaymentRecord newRecord =
-          PaymentRecord(userId: userId, year: year, month: month);
-      newRecord.togglePaymentStatus();
-      paymentHistory.add(newRecord);
-    }
-  }
-}
 
 class Complaint {
   int id;
@@ -225,9 +172,9 @@ class User {
   String password;
   String carPlateNumber;
   String role;
-  String? profileImage;
-  String? description;
-  String? locatoin;
+  String profileImage;
+  String description;
+  String locatoin;
   List<int> rates;
   bool isServiceActive;
 double latitude;
@@ -240,9 +187,9 @@ double longitude;
     required this.password,
     required this.carPlateNumber,
     required this.role,
-    this.profileImage,
-    this.description,
-    this.locatoin,
+    required this.profileImage,
+    required this.description,
+    required this.locatoin,
     required this.rates,
     this.isServiceActive = true,
     required this.longitude,
@@ -887,33 +834,37 @@ Future<void> addBooking(
     print('Error adding booking: $e');
   }
 }
-Future<void> addCart() async {
-  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/carts';
+Future<void> addCart(int userId) async {
+  
+    const String apiUrl = 'https://gp1-ghqa.onrender.com/api/carts';
 
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        
-      }),
-    );
+    final Map<String, dynamic> cartData = {
+      "cartId": carts[carts.length-1].cartId+1,
+      "user_id": userId,
+      "items": [],
+    };
 
-    if (response.statusCode == 201) {
-      print('Booking added successfully: ${jsonDecode(response.body)}');
-    } else {
-      print('Failed to add booking: ${response.statusCode} - ${response.body}');
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(cartData),
+      );
+
+      if (response.statusCode == 201) {
+        print("Cart created successfully: ${response.body}");
+      } else {
+        print("Failed to create cart: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error: $e");
     }
-  } catch (e) {
-    print('Error adding booking: $e');
-  }
+  
 }
 
 Future<void> addPost(DateTime createdAt, int id, String description,
     int ownerId, String postImage) async {
-  const String apiUrl = 'http://localhost:3000/api/posts';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/posts';
 
   try {
     final response = await http.post(
@@ -946,7 +897,7 @@ Future<void> addPost(DateTime createdAt, int id, String description,
 
 Future<void> addOffer(int posterId, double discount, String title,
     String description, DateTime validUntil) async {
-  const String apiUrl = 'http://localhost:3000/api/offers';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/offers';
 
   try {
     final response = await http.post(
@@ -976,7 +927,7 @@ Future<void> addOffer(int posterId, double discount, String title,
 
 Future<void> addRating(
     int id, String description, String userName, int ownerId, int rate) async {
-  const String apiUrl = 'http://localhost:3000/api/ratings';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/ratings';
 
   try {
     final response = await http.post(
@@ -1004,7 +955,7 @@ Future<void> addRating(
 }
 
 Future<void> addRate(int userId, int rate) async {
-  const String baseUrl = 'http://localhost:3000/api';
+  const String baseUrl = 'https://gp1-ghqa.onrender.com/api';
   final String url = '$baseUrl/users/newrate/$userId/$rate';
 
   try {
@@ -1037,7 +988,7 @@ Future<void> addSale(
     required double price,
     required DateTime date,
     required int id}) async {
-  const String baseUrl = 'http://localhost:3000/api';
+  const String baseUrl = 'https://gp1-ghqa.onrender.com/api';
   final String url = '$baseUrl/sales';
 
   final Map<String, dynamic> requestBody = {
@@ -1069,7 +1020,7 @@ Future<void> addSale(
 }
 
 Future<void> deleteAnItem(int itemId) async {
-  const String baseUrl = 'http://localhost:3000/api';
+  const String baseUrl = 'https://gp1-ghqa.onrender.com/api';
   final String url = '$baseUrl/items/$itemId';
 
   try {
@@ -1096,7 +1047,7 @@ Future<void> addMaintenanceRecord({
   required DateTime date,
   required String description,
 }) async {
-  const String baseUrl = 'http://localhost:3000/api';
+  const String baseUrl = 'https://gp1-ghqa.onrender.com/api';
   final String url = '$baseUrl/maintenanceRcords';
 
   try {
@@ -1124,7 +1075,7 @@ Future<void> addMaintenanceRecord({
 }
 
 Future<void> createChat(int chatId, int u1Id, int u2Id) async {
-  const String baseUrl = 'http://localhost:3000/api';
+  const String baseUrl = 'https://gp1-ghqa.onrender.com/api';
   final String endpoint = '/chats';
 
   final Map<String, dynamic> chatData = {
@@ -1153,7 +1104,7 @@ Future<void> createChat(int chatId, int u1Id, int u2Id) async {
 }
 
 Future<void> addLikeToPost(int postId, int userId) async {
-  const String baseUrl = 'http://localhost:3000/api/posts';
+  const String baseUrl = 'https://gp1-ghqa.onrender.com/api/posts';
   final String endpoint = '/$postId/like';
 
   final Map<String, dynamic> requestBody = {
@@ -1183,7 +1134,7 @@ Future<void> addMaintenanceRequest({
   required int userId,
   required DateTime time,
 }) async {
-  final url = Uri.parse('http://localhost:3000/api/maintenanceRequests');
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/maintenanceRequests');
 
   final response = await http.post(
     url,
@@ -1213,7 +1164,7 @@ Future<void> addDeliveryRequest({
   required String address,
   required String instructions,
 }) async {
-  final url = Uri.parse('http://localhost:3000/api/deliveryRequests/create');
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/deliveryRequests/create');
 
   final response = await http.post(
     url,
@@ -1238,7 +1189,7 @@ Future<void> addDeliveryRequest({
 }
 
 Future<void> updateItemQuantity(int itemId, int newQuantity) async {
-  final String baseUrl = "http://localhost:3000/api";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api";
   final String endpoint = "/sales/$itemId/updateQuantity";
 
   try {
@@ -1264,8 +1215,8 @@ Future<void> updateItemQuantity(int itemId, int newQuantity) async {
 }
 
 Future<void> addItemToCart(int cartId, Item item, int quantity) async {
-  final String baseUrl = "http://localhost:3000/api/carts";
-  final String endpoint = "/add-item";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/carts";
+  final String endpoint = "/add-item/$cartId";
 
   final response = await http.put(
     Uri.parse(baseUrl + endpoint),
@@ -1286,13 +1237,10 @@ Future<void> addItemToCart(int cartId, Item item, int quantity) async {
     }),
   );
 
-  if (response.statusCode != 200) {
-    throw Exception('Failed to add item to cart');
-  }
 }
 
 Future<void> addEmployee(int id, String name, String position) async {
-  final String baseUrl = "http://localhost:3000/api/employees";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/employees";
   final String endpoint = "/";
 
   final response = await http.post(
@@ -1317,7 +1265,7 @@ Future<void> addEmployee(int id, String name, String position) async {
 }
 
 Future<void> removeEmployee(int id) async {
-  final String baseUrl = "http://localhost:3000/api/employees";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/employees";
   final String endpoint = "/$id";
 
   final response = await http.delete(
@@ -1337,7 +1285,7 @@ Future<void> removeEmployee(int id) async {
 }
 
 Future<void> updateEmployee(int id, String name, String position) async {
-  final String baseUrl = "http://localhost:3000/api/employees";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/employees";
   final String endpoint = "/$id";
 
   final response = await http.put(
@@ -1361,7 +1309,7 @@ Future<void> updateEmployee(int id, String name, String position) async {
 }
 
 Future<void> addTowingService(TowingService towingService) async {
-  const String baseUrl = "http://localhost:3000/api/towingServices";
+  const String baseUrl = "https://gp1-ghqa.onrender.com/api/towingServices";
   final response = await http.post(
     Uri.parse(baseUrl),
     headers: {
@@ -1378,7 +1326,7 @@ Future<void> addTowingService(TowingService towingService) async {
 }
 
 Future<void> deleteUserSignUpRequest(int id) async {
-  final String baseUrl = "http://localhost:3000/api/usersignuprequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/usersignuprequests";
   final Uri url = Uri.parse('$baseUrl/$id');
 
   final response = await http.delete(
@@ -1408,7 +1356,7 @@ Future<void> addUserSignUpRequest(
   double longitude,
  
 ) async {
-  final String baseUrl = "http://localhost:3000/api/usersignuprequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/usersignuprequests";
   final Uri url = Uri.parse(baseUrl);
 List<String> images=[
   marketImages[0]!.path,
@@ -1426,6 +1374,7 @@ List<String> images=[
     'latitude': latitude,
     'longitude': longitude,
     'images': images,
+    'password':passwordController.text
   };
 
   final response = await http.post(
@@ -1444,7 +1393,7 @@ List<String> images=[
 }
 
 Future<void> updateUserActiveStatus(String email, bool status) async {
-  final String baseUrl = "http://localhost:3000/api/users";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/users";
   final String endpoint = "/$email/activestatus";
 
   final response = await http.put(
@@ -1463,9 +1412,29 @@ Future<void> updateUserActiveStatus(String email, bool status) async {
     print("Failed to update user active status: ${response.body}");
   }
 }
+Future<void> updateUserprofileimage(String email, String image) async {
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/users";
+  final String endpoint = "/$email/profileimage";
+
+  final response = await http.put(
+    Uri.parse(baseUrl + endpoint),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'newimage': image,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    print("User active image updated successfully.");
+  } else {
+    print("Failed to update user image: ${response.body}");
+  }
+}
 
 Future<void> updateUser(String id, String name, String phone) async {
-  final String baseUrl = "http://localhost:3000/api/users";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/users";
   final String endpoint = "/$id";
 
   final response = await http.put(
@@ -1505,7 +1474,7 @@ Future<void> deleteUser(String email) async {
 }
 
 Future<void> addSaleRequest(SaleRequest saleRequest) async {
-  final String baseUrl = "http://localhost:3000/api/salesRequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/salesRequests";
   final response = await http.post(
     Uri.parse(baseUrl),
     headers: {
@@ -1525,17 +1494,18 @@ Future<void> removeItemFromCart({
   required int cartId,
   required int itemId,
 }) async {
-  final String baseUrl = "http://localhost:3000/api/carts";
-  final String endpoint = "/remove-item";
+  
+  final String endpoint = "https://gp1-ghqa.onrender.com/api/carts/remove-item/0";
 
   final response = await http.put(
-    Uri.parse(baseUrl + endpoint),
+    Uri.parse(endpoint),
     headers: {
       'Content-Type': 'application/json',
     },
     body: jsonEncode({
       'cartId': cartId,
       'itemId': itemId,
+        
     }),
   );
 
@@ -1577,7 +1547,7 @@ Future<void> sendmsg({
 }
 
 Future<void> deleteDeliveryRequest(int id) async {
-  final String baseUrl = "http://localhost:3000/api/deliveryRequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/deliveryRequests";
   final String endpoint = "/$id";
 
   final response = await http.delete(
@@ -1595,7 +1565,7 @@ Future<void> deleteDeliveryRequest(int id) async {
 }
 
 Future<void> updateItem(int id, String name, int quantity, double price) async {
-  final String baseUrl = "http://localhost:3000/api/items";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/items";
   final String endpoint = "/$id";
 
   final response = await http.put(
@@ -1619,7 +1589,7 @@ Future<void> updateItem(int id, String name, int quantity, double price) async {
 
 Future<void> updateBooking(
     int bookingId, String customerName, DateTime appointmentDate) async {
-  final String baseUrl = "http://localhost:3000/api/bookings";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/bookings";
   final String endpoint = "/$bookingId";
 
   final response = await http.put(
@@ -1643,7 +1613,7 @@ Future<void> updateBooking(
 
 Future<void> addNewItem(int ownerId, int id, String name, double price,
     String description, List<String> imagePaths, int availableQuantity) async {
-  final String baseUrl = "http://localhost:3000/api/items";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/items";
   final String endpoint = "/";
 
   final response = await http.post(
@@ -1670,7 +1640,7 @@ Future<void> addNewItem(int ownerId, int id, String name, double price,
 }
 
 Future<void> deleteMaintenanceRequest(int id) async {
-  final String baseUrl = "http://localhost:3000/api/maintenanceRequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/maintenanceRequests";
   final String endpoint = "/$id";
 
   final response = await http.delete(
@@ -1688,7 +1658,7 @@ Future<void> deleteMaintenanceRequest(int id) async {
 }
 
 Future<void> updateDeliveryRequestStatus(int id, String status) async {
-  final String baseUrl = "http://localhost:3000/api/deliveryRequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/deliveryRequests";
   final String endpoint = "/status/$id";
 
   try {
@@ -1713,7 +1683,7 @@ Future<void> updateDeliveryRequestStatus(int id, String status) async {
 }
 
 Future<void> deleteSalesRequest(int id) async {
-  final String baseUrl = "http://localhost:3000/api/salesRequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/salesRequests";
   final String endpoint = "/$id";
 
   try {
@@ -1736,7 +1706,7 @@ Future<void> deleteSalesRequest(int id) async {
 
 Future<void> updateDeliveryRequest(
     int id, String phone, String address, String instructions) async {
-  final String baseUrl = "http://localhost:3000/api/deliveryRequests";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/deliveryRequests";
   final String endpoint = "/$id";
 
   try {
@@ -1763,7 +1733,7 @@ Future<void> updateDeliveryRequest(
 }
 
 Future<void> addTask(int employeeId, AssignedTask taskData) async {
-  final String baseUrl = "http://localhost:3000/api/employees";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/employees";
   final String endpoint = "/add-task";
 
   try {
@@ -1793,8 +1763,8 @@ Future<void> addTask(int employeeId, AssignedTask taskData) async {
 }
 
 Future<void> removeTask(int employeeId, String taskId) async {
-  final String baseUrl = "http://localhost:3000/api/employees";
-  final String endpoint = "/remove-task";
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/employees";
+  final String endpoint = "/remove-task/$employeeId";
 
   try {
     final response = await http.delete(
@@ -1803,7 +1773,7 @@ Future<void> removeTask(int employeeId, String taskId) async {
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        'employeeId': employeeId,
+        
         'taskId': taskId,
       }),
     );
@@ -1816,23 +1786,25 @@ Future<void> removeTask(int employeeId, String taskId) async {
   } catch (error) {
     print("Error removing task: $error");
   }
+  getAssignedTasks();
 }
 
 Future<void> addTaskToSchedule(AssignedTask taskData) async {
-  final url = Uri.parse('http://gp1-ghqa.onrender.com/api/availableSchedules/');
+
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/availableSchedules');
 
   try {
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'taskData': {
+        
           'date': taskData.date,
           'time': taskData.time,
           'task': taskData.task,
           'taskId': taskData.taskId,
           'ownerId': "${global_user.id}"
-        }
+        
       }),
     );
 
@@ -1848,7 +1820,7 @@ Future<void> addTaskToSchedule(AssignedTask taskData) async {
 
 Future<void> removeTaskFromSchedule(String scheduleId) async {
   final url = Uri.parse(
-      'http://gp1-ghqa.onrender.com/api/availableSchedules/$scheduleId');
+      'https://gp1-ghqa.onrender.com/api/availableSchedules/$scheduleId');
 
   try {
     final response = await http.delete(
@@ -1946,13 +1918,13 @@ Future<void> addUser (
 
     if (response.statusCode == 200) {
       await getCarts();
-      addCart();
+      addCart( id);
     } else {}
   } catch (error) {}
 }
 
 Future<void> getbookings() async {
-  const String apiUrl = 'http://localhost:3000/api/bookings';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/bookings';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -1961,9 +1933,7 @@ Future<void> getbookings() async {
       final List<dynamic> chatListJson = json.decode(response.body);
       bookings =
           chatListJson.map((chatJson) => Booking.fromJson(chatJson)).toList();
-      for (int i = 0; i < bookings.length; i++) {
-        print(bookings[i].customerName + "    " + bookings[i].status);
-      }
+     
     } else {
       print('Failed to fetch chats: ${response.statusCode}');
     }
@@ -1973,7 +1943,7 @@ Future<void> getbookings() async {
 }
 
 Future<void> getusers() async {
-  const String apiUrl = 'http://localhost:3000/api/users';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/users';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2003,10 +1973,16 @@ Future<void> getusers() async {
             locatoin: userJson['locatoin'],
             isServiceActive: userJson['isServiceActive'] ?? true,
           ));
+          
         }
+
+       
       } else {
         print('Unexpected JSON structure: "data" is not a list.');
       }
+
+
+      
     } else {
       print('Failed to fetch users: ${response.statusCode}');
     }
@@ -2016,7 +1992,7 @@ Future<void> getusers() async {
 }
 
 Future<void> getcomplaints() async {
-  const String apiUrl = 'http://localhost:3000/api/complaints';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/complaints';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2050,7 +2026,7 @@ Future<void> getcomplaints() async {
 }
 
 Future<void> getposts() async {
-  const String apiUrl = 'http://localhost:3000/api/posts';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/posts';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2128,7 +2104,7 @@ Future<void> getposts() async {
 }
 
 Future<void> getSalesRequests() async {
-  const String apiUrl = 'http://localhost:3000/api/salesRequests';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/salesRequests';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2140,7 +2116,7 @@ Future<void> getSalesRequests() async {
 
       for (var saleData in jsonData) {
         SaleRequest saleRequest = SaleRequest(
-          id: int.tryParse(saleData['_id']) ?? 0,
+          id: int.tryParse(saleData['id'].toString()) ?? 0,
           ownerid: int.tryParse(saleData['ownerid'].toString()) ?? 0,
           itemid: int.tryParse(saleData['itemid'].toString()) ?? 0,
           quantity: int.tryParse(saleData['quantity'].toString()) ?? 0,
@@ -2159,7 +2135,7 @@ Future<void> getSalesRequests() async {
 }
 
 Future<void> getMaintenanceRequests() async {
-  const String apiUrl = 'http://localhost:3000/api/maintenanceRequests';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/maintenanceRequests';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2192,7 +2168,7 @@ Future<void> getMaintenanceRequests() async {
 }
 
 Future<void> getItems() async {
-  const String apiUrl = 'http://localhost:3000/api/items';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/items';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2211,8 +2187,7 @@ Future<void> getItems() async {
             price: (itemData['price'] as num).toDouble(),
             description: itemData['description'] ?? '',
             imagePaths: List<String>.from(itemData['imagePaths'] ?? []),
-            availableQuantity:
-                int.tryParse(itemData['availableQuantity'].toString()) ?? 0,
+            availableQuantity:int.tryParse(itemData['availableQuantity'].toString()) ?? 0,
           );
 
           items.add(item);
@@ -2229,7 +2204,7 @@ Future<void> getItems() async {
 }
 
 Future<List<Cart>> getCarts() async {
-  const String apiUrl = 'http://localhost:3000/api/carts';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/carts';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2280,7 +2255,7 @@ Future<List<Cart>> getCarts() async {
 }
 
 Future<List<Sale>> getSales() async {
-  const String apiUrl = 'http://localhost:3000/api/sales';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/sales';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2318,7 +2293,7 @@ Future<List<Sale>> getSales() async {
 }
 
 Future<List<Offer>> getOffers() async {
-  const String apiUrl = 'http://localhost:3000/api/offers';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/offers';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2356,7 +2331,7 @@ Future<List<Offer>> getOffers() async {
 }
 
 Future<void> getAssignedTasks() async {
-  String apiUrl = 'http://localhost:3000/api/availableSchedules';
+  String apiUrl = 'https://gp1-ghqa.onrender.com/api/availableSchedules';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2364,26 +2339,23 @@ Future<void> getAssignedTasks() async {
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
 
-      if (jsonData['data'] is List) {
+      if (jsonData is List) {
         availableSchedule = [];
 
-        for (int i = 0; i < jsonData['data'].length; i++) {
-          var taskData = jsonData['data'][i];
+        for (int i = 0; i < jsonData.length; i++) {
+          var taskData = jsonData[i];
 
           AssignedTask task = AssignedTask(
             ownerId: taskData['ownerId'].toString(),
             taskId: taskData['taskId'].toString(),
-            date: taskData['date'],
-            time: taskData['time'],
-            task: taskData['task'],
+            date: taskData['date'].toString(),
+            time: taskData['time'].toString(),
+            task: taskData['task'].toString(),
           );
 
           availableSchedule.add(task);
         }
 
-        for (var task in availableSchedule) {
-          print('Task: ${task.task}, Date: ${task.date}, Time: ${task.time}');
-        }
       } else {
         print('Error: "data" is not a list');
       }
@@ -2396,7 +2368,7 @@ Future<void> getAssignedTasks() async {
 }
 
 Future<void> getDeliveryRequests() async {
-  String apiUrl = 'http://localhost:3000/api/deliveryRequests';
+  String apiUrl = 'https://gp1-ghqa.onrender.com/api/deliveryRequests';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2417,6 +2389,7 @@ Future<void> getDeliveryRequests() async {
             phone: requestData['phone'] ?? '',
             address: requestData['address'] ?? '',
             instructions: requestData['instructions'] ?? '',
+            status: requestData['status'] ?? '',
           );
 
           deliveryRequests.add(request);
@@ -2433,7 +2406,7 @@ Future<void> getDeliveryRequests() async {
 }
 
 Future<void> getTowingServices() async {
-  String apiUrl = 'http://localhost:3000/api/towingservices';
+  String apiUrl = 'https://gp1-ghqa.onrender.com/api/towingservices';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2468,7 +2441,7 @@ Future<void> getTowingServices() async {
 }
 
 Future<void> getUserSignUpRequests() async {
-  String apiUrl = 'http://localhost:3000/api/usersignuprequests';
+  String apiUrl = 'https://gp1-ghqa.onrender.com/api/usersignuprequests';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2509,7 +2482,7 @@ Future<void> getUserSignUpRequests() async {
 }
 
 Future<void> getEmployees() async {
-  String apiUrl = 'http://localhost:3000/api/employees';
+  String apiUrl = 'https://gp1-ghqa.onrender.com/api/employees';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2558,7 +2531,7 @@ Future<void> getEmployees() async {
 }
 
 Future<void> getMaintenanceRecords() async {
-  const String apiUrl = 'http://localhost:3000/api/maintenanceRcords';
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/maintenanceRcords';
 
   try {
     final response = await http.get(Uri.parse(apiUrl));
@@ -2578,10 +2551,7 @@ Future<void> getMaintenanceRecords() async {
           maintenanceRecords.add(record);
         }
 
-        for (var record in maintenanceRecords) {
-          print(
-              'User ID: ${record.userid}, Date: ${record.getFormattedDate()}, Description: ${record.description}');
-        }
+      
       } else {
         print('Error: Unexpected data structure');
       }
@@ -2594,7 +2564,7 @@ Future<void> getMaintenanceRecords() async {
 }
 
 Future<void> uploadImageAndGetOptimizedUrl(String base64Image) async {
-  final url = Uri.parse('http://localhost:3000/upload');
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/upload');
   final body = jsonEncode({'imageData': base64Image});
   final headers = {'Content-Type': 'application/json'};
 
@@ -2605,7 +2575,7 @@ Future<void> uploadImageAndGetOptimizedUrl(String base64Image) async {
       final responseData = jsonDecode(response.body);
 
       urlofimage = responseData['optimizedUrl'];
-      print(urlofimage);
+      
     } else {
       throw Exception(
           'Failed to upload image. Status code: ${response.statusCode}');
@@ -2618,7 +2588,7 @@ Future<void> uploadImageAndGetOptimizedUrl(String base64Image) async {
 
 Future<void> removeLikeFromPost(int postId, int userId) async {
   final url =
-      Uri.parse('http://localhost:3000/api/posts/likes/$postId/$userId');
+      Uri.parse('https://gp1-ghqa.onrender.com/api/posts/likes/$postId/$userId');
   try {
     final response = await http.delete(
       url,
@@ -2638,7 +2608,7 @@ Future<void> removeLikeFromPost(int postId, int userId) async {
 }
 
 Future<void> addCommentToPost(int postId, Comment commentData) async {
-  final url = Uri.parse('http://localhost:3000/api/posts/$postId/comment');
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/posts/$postId/comment');
   try {
     final response = await http.post(
       url,
@@ -2683,7 +2653,7 @@ Future<void> addCommentToPost(int postId, Comment commentData) async {
 
 Future<void> removeCommentFromPost(int postId, int commentId) async {
   final url =
-      Uri.parse('http://localhost:3000/api/posts/$postId/comments/$commentId');
+      Uri.parse('https://gp1-ghqa.onrender.com/api/posts/$postId/comments/$commentId');
 
   try {
     final response = await http.delete(
@@ -2708,7 +2678,7 @@ Future<void> removeCommentFromPost(int postId, int commentId) async {
 
 Future<void> updateComment(int postId, int commentId, String newText) async {
   final String url =
-      'http://localhost:3000/api/posts/$postId/comments/$commentId';
+      'https://gp1-ghqa.onrender.com/api/posts/$postId/comments/$commentId';
   final response = await http.put(
     Uri.parse(url),
     headers: <String, String>{
@@ -2731,7 +2701,7 @@ Future<void> addReply(int postId, int commentId, Comment reply) async {
       )
       .toList()[0];
   final url = Uri.parse(
-      'http://localhost:3000/api/posts/$postId/comments/$commentId/replies');
+      'https://gp1-ghqa.onrender.com/api/posts/$postId/comments/$commentId/replies');
 
   try {
     final response = await http.post(
@@ -2783,7 +2753,7 @@ Future<void> addReply(int postId, int commentId, Comment reply) async {
 
 
 Future<void> editReply(int postId, int commentId, int replyId, String newText) async {
-  final url = Uri.parse('http://localhost:3000/api/posts/$postId/comments/$commentId/replies/$replyId');
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/posts/$postId/comments/$commentId/replies/$replyId');
   
   try {
     final response = await http.put(
@@ -2803,5 +2773,101 @@ Future<void> editReply(int postId, int commentId, int replyId, String newText) a
     }
   } catch (error) {
     print('Error: $error');
+  }
+}
+
+
+
+
+
+
+
+
+Future<void> addPaymentRecordtodb({
+  required int userId,
+  required int year,
+  required int month,
+  
+  required int id,
+}) async {
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/payments/');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'userId': userId,
+        'year': year,
+        'month': month,
+        'paid': true,
+        'id': id,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Payment record added successfully');
+    } else {
+      print('Failed to add payment record: ${response.body}');
+    }
+  } catch (e) {
+    print('Error adding payment record: $e');
+  }
+}
+
+
+
+
+Future<void> deletePaymentRecordfromdb(int id) async {
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/payments/$id');
+
+  try {
+    final response = await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Payment record deleted successfully');
+    } else {
+      print('Failed to delete payment record: ${response.body}');
+    }
+  } catch (e) {
+    print('Error deleting payment record: $e');
+  }
+}
+
+Future<void> fetchPaymentRecords() async {
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/payments');
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      paymentHistory = data.map((record) {
+        return PaymentRecord(
+          userId: record['userId'],
+          year: record['year'],
+          month: record['month'],
+          paid: record['paid'],
+          id: record['id'],
+        );
+      }).toList();
+      print('Payment records fetched successfully: ${paymentHistory.length}');
+    } else {
+      print('Failed to fetch payment records: ${response.body}');
+    }
+  } catch (e) {
+    print('Error fetching payment records: $e');
   }
 }

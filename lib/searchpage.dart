@@ -1,4 +1,4 @@
-import 'package:first/profile_page.dart';
+import 'package:CarMate/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'glopalvars.dart';
 

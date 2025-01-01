@@ -1,5 +1,6 @@
+import 'package:CarMate/AddAvailableSchedulesPage.dart';
 import 'package:flutter/material.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 
 class AddEmployeePage extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
 
     super.initState();
 m();
+getAssignedTasks();
   }
   void m() async {
      await getEmployees();
@@ -29,6 +31,24 @@ m();
           "Add Employee",
           style: TextStyle(fontWeight: FontWeight.bold, color: white),
         ),
+        actions: [
+           IconButton(
+              onPressed: () {
+                setState(() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddAvailableSchedulesPage(),
+                    ),
+                  );
+                });
+              },
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 30,
+              ))
+        ],
         backgroundColor: blue,
         centerTitle: true,
         elevation: 4,

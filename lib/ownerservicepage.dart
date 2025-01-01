@@ -1,15 +1,15 @@
-import 'package:first/AdvertisementManagementPage.dart';
-import 'package:first/BillingPaymentPage.dart';
-import 'package:first/ComplaintsListPage.dart';
-import 'package:first/EmployeeManagementPage.dart';
-import 'package:first/InventoryManagementPage.dart';
-import 'package:first/ManageBookingsPage.dart';
-import 'package:first/ManageRequestsPage.dart';
-import 'package:first/MonthlyPerformanceReviewPage.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/ownerdelivaryrequests.dart';
-import 'package:first/store.dart';
-import 'package:first/paymentpage.dart';
+import 'package:CarMate/AdvertisementManagementPage.dart';
+import 'package:CarMate/BillingPaymentPage.dart';
+import 'package:CarMate/ComplaintsListPage.dart';
+import 'package:CarMate/EmployeeManagementPage.dart';
+import 'package:CarMate/InventoryManagementPage.dart';
+import 'package:CarMate/ManageBookingsPage.dart';
+import 'package:CarMate/ManageRequestsPage.dart';
+import 'package:CarMate/MonthlyPerformanceReviewPage.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/ownerdelivaryrequests.dart';
+import 'package:CarMate/store.dart';
+import 'package:CarMate/paymentpage.dart';
 import 'package:flutter/material.dart';
 
 class OwnerServicesPage extends StatefulWidget {

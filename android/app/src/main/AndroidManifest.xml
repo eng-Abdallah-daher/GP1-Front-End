@@ -2,7 +2,7 @@
     package="com.example.first"> <!-- Replace with your app's package name -->
 
     <application
-        android:label="first"
+        android:label="CarMate"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         

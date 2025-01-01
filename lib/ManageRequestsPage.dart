@@ -1,4 +1,5 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/ownermainpage.dart';
 import 'package:flutter/material.dart';
 
 
@@ -150,14 +151,15 @@ m();
                 }
 
                 accp = true;
+                _acceptRequest(m, addDaysAndHours(m.time, days, hours));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text(
                           "Request for $name accepted for $days days and $hours hours")),
                 );
 
-                _acceptRequest(m, addDaysAndHours(m.time, days, hours));
-                Navigator.pop(context);
+               
+              
               },
               child: Text(
                 "Accept Request",
@@ -188,7 +190,7 @@ m();
   }
 
   void _acceptRequest(maintenancerequest request, DateTime after) {
-   
+  
       bookings.add(Booking(
         userid: request.user_id,
         bookingid: bookings.length,
@@ -198,18 +200,28 @@ m();
         appointment: request.time,
         status: "Confirmed"));
      
-addBooking(request.user_id, bookings.length-1, request.owner_id, after  , request.time, getnameofuser(request.user_id), "Confirmed");
+if(bookings.isEmpty){
+  addBooking(request.user_id, 0, request.owner_id, after,
+          request.time, getnameofuser(request.user_id), "Confirmed");
+}else{
+  addBooking(request.user_id, bookings[bookings.length - 1].bookingid+1, request.owner_id, after,
+          request.time, getnameofuser(request.user_id), "Confirmed");
+}
  
     _removeRequest(request);
-    setState(() {});
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ownermainpage()),
+    );
+index=1;   
   }
 
   void _removeRequest(maintenancerequest request) {
   try{
       setState(() {
-      
+       deleteMaintenanceRequest(request.requestid);
       maintenancerequests.remove(request);
-      deleteMaintenanceRequest(request.requestid);
+     
     });
      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

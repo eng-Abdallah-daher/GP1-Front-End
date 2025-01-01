@@ -1,5 +1,5 @@
-import 'package:first/OffersListPage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/OffersListPage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class OfferManagementPage extends StatefulWidget {

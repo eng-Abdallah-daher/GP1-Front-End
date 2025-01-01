@@ -1,5 +1,5 @@
-import 'package:first/ComplaintsListPage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/ComplaintsListPage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class ComplaintsManagementPage extends StatefulWidget {

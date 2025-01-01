@@ -1,5 +1,5 @@
 
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class p1 extends StatelessWidget {

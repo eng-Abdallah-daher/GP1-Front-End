@@ -1,10 +1,10 @@
-import 'package:first/chatpage.dart';
-import 'package:first/commentpage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/chatpage.dart';
+import 'package:CarMate/commentpage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
-  final User user;
+   User user;
 
   ProfilePage({required this.user});
 
@@ -18,7 +18,13 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
 
-  getposts();
+  // m();
+  }
+  void m() async{
+    await getposts();
+    setState(() {
+      
+    });
   }
   @override
   Widget build(BuildContext context) {

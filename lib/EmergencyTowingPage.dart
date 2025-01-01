@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +19,7 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
 
   @override
   void initState() {
+    getTowingServices();
     super.initState();
     _initializeLocation();
   }

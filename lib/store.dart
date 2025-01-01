@@ -1,7 +1,7 @@
-import 'package:first/glopalvars.dart';
-import 'package:first/user.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/user.dart';
 import 'package:flutter/material.dart';
-import 'package:first/cartpage.dart';
+import 'package:CarMate/cartpage.dart';
 import 'dart:async';
 
 class CarToolStoreApp extends StatelessWidget {
@@ -32,19 +32,24 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    m();
     super.initState();
-m();
+
   }
   void m() async {
     await getItems();
     fetchDataFromDatabase();
+     
     filteredToolData = List.from(items);
+      await getCarts();
+      
     setState(() {
       
     });
   }
 
   void fetchDataFromDatabase() {
+ 
     setState(() {
       for (var tool in items) {
         currentImageIndex[tool.name] = 0;
@@ -225,22 +230,29 @@ m();
                     ),
                     TextButton(
                       onPressed: () {
+                        
                         int finalQuantity =
                             int.tryParse(quantityController.text) ?? 1;
+                        
                         if (finalQuantity > 0 &&
                             finalQuantity <= tool.availableQuantity) {
                     try{
+                        
+                           
+                      
                                 addItemToCart(cart.cartId,tool,finalQuantity);
                           cart.addItem(tool, finalQuantity);
-updateItemQuantity(tool.id, tool.availableQuantity);
+                          
+updateItem(tool.id, tool.name, tool.availableQuantity, tool.price);
+                            Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    '${tool.name} added to cart! Quantity: $finalQuantity'),
+                              ),
+                            );
                           setState(() {});
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  '${tool.name} added to cart! Quantity: $finalQuantity'),
-                            ),
-                          );
-                          Navigator.of(context).pop();
+                        
                     }catch(e) {
                       
                       ScaffoldMessenger.of(context).showSnackBar(

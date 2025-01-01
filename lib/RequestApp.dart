@@ -1,5 +1,5 @@
-import 'package:first/glopalvars.dart';
-import 'package:first/user.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/user.dart';
 import 'package:flutter/material.dart';
 
 void main() {

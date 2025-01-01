@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -15,11 +15,7 @@ class EnsureImages extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Market Owner Sign Up',
-      theme: ThemeData(
-        fontFamily: 'Roboto',
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-    
-      ),
+      
       home: MarketSignUpPage(),
       debugShowCheckedModeBanner: false,
     );

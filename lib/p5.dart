@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class p5 extends StatelessWidget {
@@ -115,7 +115,7 @@ isuser ?'Step 5: Final Verification':'Step 6: Final Verification',
                       _buildInfoRow('Full Name:', fullName),
                       _buildInfoRow('Email Address:', email),
                       _buildInfoRow('Phone Number:', phone),
-                      _buildInfoRow('Car Plate Number:', carPlate),
+                    if(isuser) _buildInfoRow('Car Plate Number:', carPlate),
                     ],
                   ),
                 ),

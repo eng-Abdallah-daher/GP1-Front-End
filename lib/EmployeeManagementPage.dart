@@ -1,6 +1,6 @@
-import 'package:first/addemp.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/removeemp.dart';
+import 'package:CarMate/addemp.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/removeemp.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeManagementPage extends StatefulWidget {
@@ -15,13 +15,15 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
   String _searchQuery = "";
   @override
   void initState() {
+    
+    m();
     super.initState();
-  m();
+  
   }
 
   void m()async{
      await getEmployees();
-    await getAssignedTasks();
+    getAssignedTasks();
     setState(() {
       
     });
@@ -164,12 +166,12 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
   Widget _buildEmployeeCard(BuildContext context, Employee employee) {
     return GestureDetector(
       onTap: () {
+        
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => TaskDetailPage(
               employee: employee,
-              availableSchedule: availableSchedule,
               onTaskRemoved: () {
                 setState(() {});
               },
@@ -340,6 +342,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
   }
 
  void _assignTaskToEmployee(Employee employee, AssignedTask task) {
+
     setState(() {
       employee.assignedTaskIds.add(task);
       addTask(employee.id, task);
@@ -347,17 +350,18 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
       availableSchedule.removeWhere(
           (scheduledTask) => scheduledTask.taskId == task.taskId);
     });
+    
   }
 }
 
 class TaskDetailPage extends StatelessWidget {
   final Employee employee;
-  List<AssignedTask> availableSchedule;
+ 
   final Function onTaskRemoved;
 
   TaskDetailPage({
     required this.employee,
-    required this.availableSchedule,
+ 
     required this.onTaskRemoved,
   });
 
@@ -398,7 +402,7 @@ class TaskDetailPage extends StatelessWidget {
               : ListView.builder(
                   itemCount: employee.assignedTaskIds.length,
                   itemBuilder: (context, index) {
-                    final task = availableSchedule.where((element) => element.taskId== employee.assignedTaskIds[index],).toList()[0];
+                    final task = employee.assignedTaskIds[index];
                     return Card(
                       elevation: 10,
                       shape: RoundedRectangleBorder(

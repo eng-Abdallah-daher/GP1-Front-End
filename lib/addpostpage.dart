@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -354,14 +354,35 @@ getposts();
                 try{
 
                 
-                    addPost(DateTime.now(), posts[posts.length-1].id+1, _postController.text,
-                      global_user.id, _selectedImage.toString());
-                  posts.add(Post(
+                    
+                if(posts.isEmpty){
+                  addPost(
+                          DateTime.now(),
+                          0,
+                          _postController.text,
+                          global_user.id,
+                          _selectedImage.toString());
+                    posts.add(Post(
+                          id: 0,
+                          ownerId: global_user.id,
+                          description: _postController.text,
+                          postImage: _selectedImage.toString(),
+                          createdAt: DateTime.now()));
+                }else{
+                  addPost(
+                          DateTime.now(),
+                          posts[posts.length - 1].id + 1,
+                          _postController.text,
+                          global_user.id,
+                          _selectedImage.toString());
+                          
+                            posts.add(Post(
                       id:  posts[posts.length - 1].id + 1,
                       ownerId: global_user.id,
                       description: _postController.text,
                       postImage: _selectedImage.toString(),
                       createdAt: DateTime.now()));
+                }
 
           _showMessage('Post added successfully!',Colors.green);
                   _postController.clear();

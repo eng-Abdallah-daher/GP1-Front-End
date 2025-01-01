@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -90,6 +90,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    getusers();
     _getCurrentLocation();
     _initSpeech(); 
   }
@@ -167,12 +168,15 @@ class _MapScreenState extends State<MapScreen> {
     int index=0;
     for(int i = 0; i <users.length;i++) {
       if(users[i].role =="owner"){
+        
         LatLng location=LatLng(users[i].latitude, users[i].longitude);
   double distance = _calculateDistance(currentLocation!, location);
   if(min<distance){
     min=distance;
 index=i;
+l=location;
   }
+
      setState(() {
             markers = [
               Marker(
@@ -185,16 +189,36 @@ index=i;
                   size: 40,
                 ),
               ),
-               Marker(
-                width: 80.0,
-                height: 80.0,
-                point: l!,
-                builder: (ctx) => Icon(
-                  Icons.car_repair,
-                  color: Colors.green,
-                  size: 40,
-                ),
-              ),
+              Marker(
+  width: 80.0,
+  height: 80.0,
+  point: l,
+  builder: (ctx) => GestureDetector(
+    onTap: () {
+     
+      showDialog(
+        context: ctx,
+        builder: (context) => AlertDialog(
+          title: Text("Marker Clicked"),
+          content: Text("You clicked the marker at $l!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); 
+              },
+              child: Text("Close"),
+            ),
+          ],
+        ),
+      );
+    },
+    child: Icon(
+      Icons.car_repair,
+      color: Colors.green,
+      size: 40,
+    ),
+  ),
+)
               
               ];
               

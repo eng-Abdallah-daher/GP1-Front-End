@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class DeliveryRequestsPage extends StatefulWidget {
@@ -134,7 +134,7 @@ void m()async{
                   ElevatedButton.icon(
                     onPressed: () => _deleteRequest(index),
                     icon: Icon(Icons.delete, color: Colors.white),
-                    label: Text('Delete'),
+                    label: Text('Delete',style: TextStyle(color: white),),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       padding: const EdgeInsets.symmetric(
@@ -149,7 +149,9 @@ void m()async{
                     ElevatedButton.icon(
                       onPressed: () => _updateRequest(index),
                       icon: Icon(Icons.edit, color: Colors.white),
-                      label: Text('Update'),
+                      label: Text('Update',
+                        style: TextStyle(color: white),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: const EdgeInsets.symmetric(

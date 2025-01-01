@@ -107,6 +107,9 @@ setState(() {
     
 try{
   updateItem(item.id,nameController.text, toolQuantity, toolPrice);
+  item.name=nameController.text;
+  item.availableQuantity=toolQuantity;
+  item.price=toolPrice;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Tool updated successfully!'),

@@ -1,5 +1,5 @@
-import 'package:first/glopalvars.dart';
-import 'package:first/ownermainpage.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/ownermainpage.dart';
 import 'package:flutter/material.dart';
 
 class SalesManagementPage extends StatefulWidget {
@@ -186,6 +186,7 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                             date: DateTime.now()));
 
                         tool.availableQuantity -= quantity;
+                        
 updateItemQuantity(tool.id, tool.availableQuantity);
                         if (tool.availableQuantity == 0) {
                           deleteAnItem(tool.id);

@@ -1,6 +1,6 @@
-import 'package:first/AddBookingPage.dart';
-import 'package:first/EditBookingPage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/AddBookingPage.dart';
+import 'package:CarMate/EditBookingPage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class ManageBookingsPage extends StatefulWidget {

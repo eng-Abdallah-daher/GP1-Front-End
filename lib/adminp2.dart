@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class AdminP2 extends StatefulWidget {
@@ -12,10 +12,14 @@ class _AdminP2State extends State<AdminP2> {
 
   @override
   void initState() {
+m();
     super.initState();
     filteredUsers = users.sublist(1,users.length);
   }
 
+void m() async{
+  await getusers();
+}
   void searchUsers(String query) {
     final matchingUsers = users.sublist(1,users.length).where((user) {
       final lowerName = user.name.toLowerCase();

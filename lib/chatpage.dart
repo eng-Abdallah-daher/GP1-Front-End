@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -25,21 +25,20 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    inchat = true;
    int i=0;
     _timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
      
-      try {
-        var newMessages = await fetchMessages( chat.id);
-      
-        setState(() {
-          chat.messages = newMessages;
-         
-          
-        });
-        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      } catch (e) {
-       
-      }
+     if(inchat){
+       try {
+          var newMessages = await fetchMessages(chat.id);
+
+          setState(() {
+            chat.messages = newMessages;
+          });
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        } catch (e) {}
+     }
     });
   
   }
@@ -115,6 +114,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
+    inchat=false;
     _controller.dispose();
     _scrollController.dispose();
     _timer?.cancel();

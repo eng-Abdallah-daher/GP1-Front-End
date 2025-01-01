@@ -1,7 +1,7 @@
-import 'package:first/commentpage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/commentpage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
-import 'package:first/profile_page.dart';
+import 'package:CarMate/profile_page.dart';
 import 'package:share_plus/share_plus.dart';
 
 

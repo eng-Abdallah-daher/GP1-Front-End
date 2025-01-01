@@ -1,16 +1,16 @@
-import 'package:first/forlogin.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/p1.dart';
-import 'package:first/p2.dart';
-import 'package:first/p3.dart';
-import 'package:first/p4.dart';
-import 'package:first/p5.dart';
-import 'package:first/p6.dart';
-import 'package:first/pagetouploadimages.dart';
+import 'package:CarMate/login.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/p1.dart';
+import 'package:CarMate/p2.dart';
+import 'package:CarMate/p3.dart';
+import 'package:CarMate/p4.dart';
+import 'package:CarMate/p5.dart';
+import 'package:CarMate/p6.dart';
+import 'package:CarMate/pagetouploadimages.dart';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
+
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -128,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   minimumSize: Size(120, 40),
                 ),
                 child: Text(
-                  ((_currentPage >=6)) ? "Go to Home" : "Next Page",
+                  ((_currentPage >= 6)) ? "Go to Home" : "Next Page",
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -141,6 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+
   void _nextPage() async {
     if (_currentPage == 0) {
       setState(() {
@@ -161,8 +162,8 @@ class _RegisterPageState extends State<RegisterPage> {
         curve: Curves.easeIn,
       );
     } else if (_currentPage == 2) {
-  if(passwordController.text==confirmpassword.text){
-         if (_currentPage == 2 && isuser) {
+      if (passwordController.text == confirmpassword.text) {
+        if (_currentPage == 2 && isuser) {
           _currentPage++;
         }
         setState(() {
@@ -173,19 +174,16 @@ class _RegisterPageState extends State<RegisterPage> {
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn,
         );
-  }else{
-      ScaffoldMessenger.of(context).showSnackBar(
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Passwords are not the same!'),
             backgroundColor: Colors.red,
           ),
         );
-  }
-    }  
-    
-    else if (_currentPage < 5) {
+      }
+    } else if (_currentPage < 5) {
       setState(() {
-       
         _currentPage++;
       });
       _pageController.animateToPage(
@@ -193,11 +191,12 @@ class _RegisterPageState extends State<RegisterPage> {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
-    } else if(_currentPage ==5) {
-     if(isuser){
-       addUser(
-            users[users.length-1].id+1,
-            0,0,
+    } else if (_currentPage == 5) {
+      if (isuser) {
+        addUser(
+            users[users.length - 1].id + 1,
+            0,
+            0,
             nameController.text,
             emailController.text,
             phoneController.text,
@@ -208,33 +207,53 @@ class _RegisterPageState extends State<RegisterPage> {
             locationController.text);
 
         _addUser();
-      
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('User added successfully!'),
             backgroundColor: Colors.green,
           ),
         );
-     }else{
-await getUserSignUpRequests();
+      } else {
+        await getUserSignUpRequests();
         Position position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.best);
-            
-      addUserSignUpRequest(userRequests[userRequests.length-1].requestid+1, nameController.text,  emailController.text, phoneController.text,descriptionController.text, locationController.text, position.latitude, position.longitude);
-     ScaffoldMessenger.of(context).showSnackBar(
+
+        if (userRequests.isEmpty) {
+          addUserSignUpRequest(
+              0,
+              nameController.text,
+              emailController.text,
+              phoneController.text,
+              descriptionController.text,
+              locationController.text,
+              position.latitude,
+              position.longitude);
+        } else {
+          addUserSignUpRequest(
+              userRequests[userRequests.length - 1].requestid + 1,
+              nameController.text,
+              emailController.text,
+              phoneController.text,
+              descriptionController.text,
+              locationController.text,
+              position.latitude,
+              position.longitude);
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('User Signup Requested successfully!'),
             backgroundColor: Colors.green,
           ),
         );
-         }
-        _pageController.animateToPage(
-      _currentPage,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeIn,
-    );
+      }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
 
-     setState(() {
+      setState(() {
         _currentPage++;
       });
       _pageController.animateToPage(
@@ -242,8 +261,8 @@ await getUserSignUpRequests();
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
-    }else{
-        Navigator.pushReplacement(
+    } else {
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => CarServiceLoginApp(),
@@ -268,21 +287,19 @@ await getUserSignUpRequests();
   void _addUser() {
     setState(() {
       users.add(User(
-        carPlateNumber: carPlateNumberController.text.trim(),
-        email: emailController.text.trim(),
-        id: users.length,
-        name: nameController.text.trim(),
-        phone: phoneController.text.trim(),
-        password: passwordController.text.trim(),
-        role: "normal",
-        profileImage: "images/avatarimage.png",
-        description: "",
-        locatoin: "",
-        rates: [],
-        latitude: 0,
-        longitude: 0
-        
-      ));
+          carPlateNumber: carPlateNumberController.text.trim(),
+          email: emailController.text.trim(),
+          id: users.length,
+          name: nameController.text.trim(),
+          phone: phoneController.text.trim(),
+          password: passwordController.text.trim(),
+          role: "normal",
+          profileImage: "images/avatarimage.png",
+          description: "",
+          locatoin: "",
+          rates: [],
+          latitude: 0,
+          longitude: 0));
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

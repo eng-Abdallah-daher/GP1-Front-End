@@ -1,9 +1,9 @@
-import 'package:first/adminmap.dart';
-import 'package:first/adminp1.dart';
-import 'package:first/adminp2.dart';
-import 'package:first/chats.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/ownerpayment.dart';
+import 'package:CarMate/adminmap.dart';
+import 'package:CarMate/adminp1.dart';
+import 'package:CarMate/adminp2.dart';
+import 'package:CarMate/chats.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/ownerpayment.dart';
 import 'package:flutter/material.dart';
 
 class adminmainpage extends StatelessWidget {

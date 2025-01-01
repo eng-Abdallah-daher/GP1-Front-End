@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -58,7 +58,10 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
   }
 
   void _acceptRequest(int index) {
+    print(index);
+
     UserSignUpRequest acceptedRequest = userRequests[index];
+    print(acceptedRequest.name);
     addUser(
         users[users.length - 1].id + 1,
         userRequests[index].latitude,

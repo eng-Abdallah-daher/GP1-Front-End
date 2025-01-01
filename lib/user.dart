@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:first/chats.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/searchpage.dart';
-import 'package:first/servicepage.dart';
-import 'package:first/morepage.dart';
-import 'package:first/sospage.dart';
-import 'package:first/map.dart';
-import 'package:first/posts.dart';
+import 'package:CarMate/chats.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/searchpage.dart';
+import 'package:CarMate/servicepage.dart';
+import 'package:CarMate/morepage.dart';
+import 'package:CarMate/sospage.dart';
+import 'package:CarMate/map.dart';
+import 'package:CarMate/posts.dart';
 class usermainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

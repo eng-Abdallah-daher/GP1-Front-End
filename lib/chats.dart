@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:first/chatpage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/chatpage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class ChatsPage extends StatefulWidget {
@@ -13,11 +13,11 @@ class _ChatsPageState extends State<ChatsPage> {
   Timer? _timer;
   String searchQuery = "";
   List<Chat> filteredUsers = getuserchats();
-
+bool _isDisposed=false;
   @override
   void initState() {
     super.initState();
-
+inchat=true;
     
     _searchController.addListener(() {
       setState(() {
@@ -27,17 +27,27 @@ class _ChatsPageState extends State<ChatsPage> {
     });
 
     
+ 
     _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) async {
-      await getAllChats();
-      setState(() {
-        filterChats(); 
-      });
+      
+      if (_isDisposed) return; 
+      if (inchat) {
+        await getAllChats();
+        if (!_isDisposed) {
+          setState(() {
+            filterChats();
+          });
+        }
+      }
     });
   }
 
   @override
   void dispose() {
+    _isDisposed = true;
+     inchat = false;
      _timer?.cancel(); 
+    
     _searchController.dispose();
    
     super.dispose();

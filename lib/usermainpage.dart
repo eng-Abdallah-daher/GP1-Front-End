@@ -1,16 +1,13 @@
-import 'package:CarMate/DashboardPage.dart';
-import 'package:CarMate/addpostpage.dart';
 import 'package:CarMate/chats.dart';
-import 'package:CarMate/map.dart';
 import 'package:CarMate/glopalvars.dart';
-import 'package:CarMate/ownerservicepage.dart';
-import 'package:CarMate/profile_page.dart';
 import 'package:CarMate/searchpage.dart';
 import 'package:flutter/material.dart';
+import 'package:CarMate/servicepage.dart';
 import 'package:CarMate/morepage.dart';
+import 'package:CarMate/sospage.dart';
+import 'package:CarMate/map.dart';
 import 'package:CarMate/posts.dart';
-
-class ownermainpage extends StatelessWidget {
+class usermainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,26 +26,22 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = index;
 
   bool flag = true;
-  bool flag2 = false;
-  bool flag3 = false;
   List<Widget> _pages = [
     PostsApp(),
-    OwnerServicesPage(),
-    DashboardPage(),
+    ServicesPage(),
+    SOSPage(),
     MorePage(),
     MapPage(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
       if (index == 0) {
         flag = true;
-        flag2 = false;
-        flag3 = false;
         setState(() {});
         shownewposts();
       }
+      _selectedIndex = index;
     });
     setState(() {});
   }
@@ -86,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset(
+          Image.network(
             imagePath,
             height: 29,
             width: 29,
@@ -128,44 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
               width: 40,
               height: 40,
-              decoration: !flag2
-                  ? (_selectedIndex == 0
-                      ? BoxDecoration(
-                          color: blue,
-                          borderRadius: BorderRadius.circular(22),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 7,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        )
-                      : BoxDecoration())
-                  : null,
-              child: flag2
-                  ? null
-                  : (_selectedIndex == 0
-                      ? IconButton(
-                          icon: Icon(
-                            flag ? Icons.message : Icons.people_alt_sharp,
-                            size: 25,
-                            color: white,
-                          ),
-                          onPressed: () {
-                            flag = !flag;
-                            setState(() {});
-                          },
-                          splashRadius: 50,
-                          splashColor: white.withOpacity(0.5),
-                          highlightColor: white.withOpacity(0.3),
-                          padding: EdgeInsets.all(1),
-                        )
-                      : null)),
-          SizedBox(width: 10),
-          Container(
-              width: 40,
-              height: 40,
               decoration: _selectedIndex == 0
                   ? BoxDecoration(
                       color: blue,
@@ -182,12 +137,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: _selectedIndex == 0
                   ? IconButton(
                       icon: Icon(
-                        flag3 ? Icons.home_rounded : Icons.add_chart_sharp,
+                        flag ? Icons.message : Icons.people_alt_sharp,
                         size: 25,
                         color: white,
                       ),
                       onPressed: () {
-                        flag3 = !flag3;
+                        flag = !flag;
                         setState(() {});
                       },
                       splashRadius: 50,
@@ -250,8 +205,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             onPressed: () {
-              print(global_user);
-              flag2 = !flag2;
+              setState(() {
+                _selectedIndex = 3;
+              });
               setState(() {});
             },
           ),
@@ -261,14 +217,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          flag3
-              ? AddPostPage()
-              : !flag2
-                  ? (flag ? PostsApp() : ChatsPage())
-                  : ProfilePage(
-                      user: global_user),
-          OwnerServicesPage(),
-          DashboardPage(),
+          flag ? PostsApp() : ChatsPage(),
+          ServicesPage(),
+          SOSPage(),
           MorePage(),
           MapPage(),
         ],
@@ -292,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _buildImageButton('images/store.png', 'Store', 2),
+                  _buildImageButton('images/sosheadset.png', 'SOS', 2),
                   _buildImageButton('images/more.png', 'More', 3),
                 ],
               ),

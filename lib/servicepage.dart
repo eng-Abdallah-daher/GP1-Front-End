@@ -1,14 +1,14 @@
-import 'package:first/OffersNotificationsPage.dart';
-import 'package:first/RequestApp.dart';
-import 'package:first/RequestCarDeliveryPage.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/repairestimate.dart';
-import 'package:first/mainenancehistorypage.dart';
-import 'package:first/maintenancepage.dart';
-import 'package:first/store.dart';
-import 'package:first/paymentpage.dart';
-import 'package:first/trackrepairstatuspage.dart';
-import 'package:first/viewratings.dart';
+import 'package:CarMate/OffersNotificationsPage.dart';
+import 'package:CarMate/RequestApp.dart';
+import 'package:CarMate/RequestCarDeliveryPage.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/repairestimate.dart';
+import 'package:CarMate/mainenancehistorypage.dart';
+import 'package:CarMate/maintenancepage.dart';
+import 'package:CarMate/store.dart';
+import 'package:CarMate/paymentpage.dart';
+import 'package:CarMate/trackrepairstatuspage.dart';
+import 'package:CarMate/viewratings.dart';
 import 'package:flutter/material.dart';
 
 class ServicesPage extends StatefulWidget {

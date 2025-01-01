@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class CartPage extends StatefulWidget {
@@ -11,6 +11,8 @@ class _CartPageState extends State<CartPage> {
 
   @override
   void initState() {
+    getCarts();
+
     super.initState();
     calculateTotal();
   }
@@ -147,42 +149,75 @@ class _CartPageState extends State<CartPage> {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async{
+                      await getSalesRequests();
                       if (cart.localitems.isNotEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Checkout successful!')),
-                        );
+                      
                       try{
                           for (int i = 0; i < cart.localitems.length; i++) {
-                        addSaleRequest(SaleRequest(
-                            id: salesrequests[salesrequests.length-1].id+1,
-                              ownerid: cart.localitems[i].ownerid,
-                              itemid: cart.localitems[i].id,
-                              quantity: cart.localitems[i].availableQuantity,
-                              price: cart.localitems[i].price,
-                              date: DateTime.now()));
-                          salesrequests.add(SaleRequest(
-                            id: salesrequests[salesrequests.length - 1].id +1,
-                              ownerid: cart.localitems[i].ownerid,
-                              itemid: cart.localitems[i].id,
-                              quantity: cart.localitems[i].availableQuantity,
-                              price: cart.localitems[i].price,
-                              date: DateTime.now()));
+                         if(salesrequests.isEmpty){
+                             
+                              addSaleRequest(SaleRequest(
+                                  id:0,
+                                  ownerid: cart.localitems[i].ownerid,
+                                  itemid: cart.localitems[i].id,
+                                  quantity:
+                                      cart.localitems[i].availableQuantity,
+                                  price: cart.localitems[i].price,
+                                  date: DateTime.now()));
+
+                              salesrequests.add(SaleRequest(
+                                  id:0,
+                                  ownerid: cart.localitems[i].ownerid,
+                                  itemid: cart.localitems[i].id,
+                                  quantity:
+                                      cart.localitems[i].availableQuantity,
+                                  price: cart.localitems[i].price,
+                                  date: DateTime.now()));
+                         }else{
+                             
+                              addSaleRequest(SaleRequest(
+                                  id: salesrequests[salesrequests.length - 1]
+                                          .id +
+                                      1,
+                                  ownerid: cart.localitems[i].ownerid,
+                                  itemid: cart.localitems[i].id,
+                                  quantity:
+                                      cart.localitems[i].availableQuantity,
+                                  price: cart.localitems[i].price,
+                                  date: DateTime.now()));
+
+                              salesrequests.add(SaleRequest(
+                                  id: salesrequests[salesrequests.length - 1]
+                                          .id +
+                                      1,
+                                  ownerid: cart.localitems[i].ownerid,
+                                  itemid: cart.localitems[i].id,
+                                  quantity:
+                                      cart.localitems[i].availableQuantity,
+                                  price: cart.localitems[i].price,
+                                  date: DateTime.now()));
+                         }
+
+                                  removeItemFromCart(
+                                cartId: cart.cartId,
+                                itemId: cart.localitems[i].id);
                         }
 
 
-                        for (int i = 0; i < cart.localitems.length; i++) {
-                            removeItemFromCart(
-                                cartId: cart.cartId,
-                                itemId: cart.localitems[i].id);
-                          }
+                       
 
                           cart.localitems = [];
                           updateTotal();
-
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Checkout successful!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
                           Navigator.of(context).pop();
                       }catch(e){
-                        
+                        print(e);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Failed to checkout cart!'),
                                 backgroundColor: Colors.red),
@@ -308,20 +343,27 @@ class _CartPageState extends State<CartPage> {
                                try{
                                  for (int i = 0; i < items.length; i++) {
                                   if (items[i].id == item.id) {
-                                       updateItemQuantity(items[i].id,
-                                        items[i].availableQuantity + 1);
+                                  
+                                    if(item.availableQuantity==1){
+                                        removeItemFromCart(cartId: cart.cartId, itemId: item.id);
+                                    }else{
+                                      addItemToCart(cart.cartId, item,
+                                            item.availableQuantity - 1);
+                                    }
+                                       updateItem(items[i].id, items[i].name, items[i].availableQuantity+1, items[i].price);
                                     items[i].availableQuantity++;
-                                 
+                                 item.availableQuantity--;
                                     break;
                                   }
                                 }
-                                item.availableQuantity--;
+                                
                                 if (item.availableQuantity == 0) {
+                                 
                                   for (int i = 0;
                                       i < cart.localitems.length;
                                       i++) {
                                     if (cart.localitems[i].id == item.id) {
-                                      removeItemFromCart(cartId: cart.cartId, itemId: item.id);
+                                     
                                       cart.localitems.removeAt(i);
                                       break;
                                     }
@@ -364,11 +406,12 @@ class _CartPageState extends State<CartPage> {
                                       );
                                     } else {
                                      try{
-                                        updateItemQuantity(items[i].id,
-                                          items[i].availableQuantity - 1);
-                                      items[i].availableQuantity--;
-                                     
-                                      item.availableQuantity++;
+                                      
+   addItemToCart(cart.cartId, item, item.availableQuantity+1);
+
+updateItem(items[i].id, items[i].name, items[i].availableQuantity-1, items[i].price);
+items[i].availableQuantity--;
+     item.availableQuantity++;
                                      }catch(e){
                                        ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -398,14 +441,18 @@ class _CartPageState extends State<CartPage> {
                   onPressed: () {
                     for (int i = 0; i < items.length; i++) {
                       if (items[i].id == item.id) {
-                        updateItemQuantity(items[i].id, items[i].availableQuantity+item.availableQuantity);
+                       
+                        removeItemFromCart(
+                            cartId: cart.cartId, itemId: item.id);
                         items[i].availableQuantity += item.availableQuantity;
+                        updateItem(items[i].id, items[i].name, items[i].availableQuantity, items[i].price);
                         break;
                       }
                     }
                     for (int i = 0; i < cart.localitems.length; i++) {
                       if (cart.localitems[i].id == item.id) {
                         cart.localitems.removeAt(i);
+                        
                         break;
                       }
                     }

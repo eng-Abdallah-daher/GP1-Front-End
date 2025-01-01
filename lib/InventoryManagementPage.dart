@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:first/SellPage.dart';
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/SellPage.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -266,7 +266,8 @@ addNewItem(global_user.id, items.length, nameController.text,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async{
+                           await getSales();
                           int quantityToSell =
                               int.tryParse(sellQuantityController.text) ?? 0;
 
@@ -301,22 +302,33 @@ addNewItem(global_user.id, items.length, nameController.text,
                                 ));
                               } else {
                                 setState(() {
+                                 
                                   item.availableQuantity -= quantityToSell;
-                                  sales.add(Sale(
-id: sales[sales.length - 1].id + 1,
+                                   addSale(
+                                      ownerId: item.ownerid,
+                                      itemId: item.id,
+                                      quantity: quantityToSell,
+                                      price: item.price,
+                                      date: DateTime.now(),
+                                      id: sales[sales.length - 1].id + 1);
+                              
+                                   sales.add(Sale(
+                                      id: sales[sales.length - 1].id + 1,
                                       ownerid: item.ownerid,
                                       itemid: item.id,
                                       price: item.price,
                                       quantity: quantityToSell,
                                       date: DateTime.now()));
+                                         updateItem(item.id, item.name, item.availableQuantity, item.price);
+                                 
                                 });
+                                
                                 Navigator.of(context).pop();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  content: Text(
-                                      'Sold $quantityToSell ${item.name}(s)!'),
-                                    backgroundColor: Colors.green
-                                ));
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        'Sold $quantityToSell ${item.name}(s)!'),
+                                    backgroundColor: Colors.green)); 
+                            
                               }
                             } else {
                               ScaffoldMessenger.of(context)

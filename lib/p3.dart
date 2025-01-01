@@ -1,4 +1,4 @@
-import 'package:first/glopalvars.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
 class p3 extends StatelessWidget {
@@ -78,7 +78,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                   child: Column(
                     children: [
                       Image.asset(
-                        'images/logo3.png',
+                        'images/car.png',
                         height: 220,
                       ),
                       SizedBox(height: 16),
@@ -149,7 +149,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                   },
                 ),
                 SizedBox(height: 16),
-             if(selectedRole=="owner")
+             if(selectedRole!="owner")
                   TextFormField(
                     controller: carPlateNumberController,
                     decoration: InputDecoration(

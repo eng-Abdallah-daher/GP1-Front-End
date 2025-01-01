@@ -1,5 +1,5 @@
-import 'package:first/glopalvars.dart';
 import 'package:flutter/material.dart';
+import 'package:CarMate/glopalvars.dart';
 
 class OwnerPaymentPage extends StatefulWidget {
   @override
@@ -14,14 +14,19 @@ class _OwnerPaymentPageState extends State<OwnerPaymentPage> {
 
   @override
   void initState() {
-    super.initState();
-
-
+    m();
     filteredUsers = users
         .sublist(1, users.length)
-        .where((user) => user.role == 'owner').toList();
+        .where((user) => user.role == 'owner')
+        .toList();
+    super.initState();
   }
-
+void m ()async{
+  await fetchPaymentRecords();
+  setState(() {
+    
+  });
+}
   void filterUsers() {
     setState(() {
       filteredUsers = users.sublist(1, users.length).where((user) {
@@ -34,298 +39,228 @@ class _OwnerPaymentPageState extends State<OwnerPaymentPage> {
   }
 
   bool hasPaid(User user) {
-    return PaymentHistory.hasPaid(user.id, selectedYear, selectedMonth);
+    return paymentHistory.any((record) =>
+        record.userId == user.id &&
+        record.year == selectedYear &&
+        record.month == selectedMonth &&
+        record.paid);
   }
 
-  void togglePaymentStatus(User user) {
+  void removePaymentRecord(User user) {
+   
     setState(() {
-      PaymentHistory.togglePaymentStatus(user.id, selectedYear, selectedMonth);
+      for(int i=0;i<paymentHistory.length;i++) {
+         deletePaymentRecordfromdb(paymentHistory[i].id);
+        if(paymentHistory[i].userId == user.id && paymentHistory[i].year == selectedYear && paymentHistory[i].month == selectedMonth) {
+          paymentHistory.removeAt(i);
+          break;
+        }
+      }
+      
+     
+    });
+  }
+
+  void addPaymentRecord(User user) {
+    addPaymentRecordtodb(userId: user.id, year: selectedYear, month: selectedMonth,  id: paymentHistory.isEmpty?0: paymentHistory[paymentHistory.length - 1].id + 1 );
+        setState(() {
+      paymentHistory.add(PaymentRecord(
+        userId: user.id,
+        year: selectedYear,
+        month: selectedMonth,
+        paid: true,
+        id: paymentHistory.isEmpty ? 0 : paymentHistory[paymentHistory.length - 1].id + 1,
+      ));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: LinearGradient(
-                      colors: [Colors.blue.shade300, Colors.blue.shade500],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.shade200,
-                        spreadRadius: 2,
-                        blurRadius: 6,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: DropdownButton<int>(
-                    value: selectedYear,
-                    onChanged: (int? newValue) {
-                      setState(() {
-                        selectedYear = newValue!;
-                      });
-                    },
-                    items: List.generate(5, (index) {
-                      int year = DateTime.now().year - index;
-                      return DropdownMenuItem<int>(
-                        value: year,
-                        child: AnimatedContainer(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 14.0, horizontal: 18.0),
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.blue.shade100,
-                                Colors.blue.shade200
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(10.0),
-                            border: Border.all(
-                              color: Colors.blue.shade300,
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blue.shade100,
-                                spreadRadius: 1,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            year.toString(),
-                            style: TextStyle(
-                              fontSize: 18,
+                _buildDropdownButton<int>(
+                  value: selectedYear,
+                  items: List.generate(5, (index) {
+                    int year = DateTime.now().year - index;
+                    return DropdownMenuItem<int>(
+                      value: year,
+                      child: Text(year.toString(),
+                          style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade800,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                    icon: Icon(
-                      Icons.arrow_drop_down_circle,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    iconSize: 30,
-                    underline: SizedBox(),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    dropdownColor: Colors.blue.shade100,
-                  ),
-                ),
-                DropdownButton<int>(
-                  value: selectedMonth,
-                  onChanged: (int? newValue) {
+                              color: Colors.blue.shade800)),
+                    );
+                  }),
+                  onChanged: (value) {
                     setState(() {
-                      selectedMonth = newValue!;
+                      selectedYear = value!;
                     });
                   },
+                ),
+                _buildDropdownButton<int>(
+                  value: selectedMonth,
                   items: List.generate(12, (index) {
                     return DropdownMenuItem<int>(
                       value: index + 1,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.blue.shade200,
-                              Colors.blue.shade500
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.blue.shade100,
-                              blurRadius: 4,
-                              spreadRadius: 1,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          DateTime(0, index + 1).monthName,
+                      child: Text(DateTime(0, index + 1).monthName,
                           style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade800)),
                     );
                   }),
-                  icon: Icon(
-                    Icons.arrow_drop_down_circle,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                  iconSize: 30,
-                  underline: SizedBox(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue.shade800,
-                  ),
-                  dropdownColor: Colors.blue.shade300,
-                )
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMonth = value!;
+                    });
+                  },
+                ),
               ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
             SizedBox(height: 16),
-            TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                labelText: "Search Owner",
-                labelStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade700,
-                ),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.blue.shade700,
-                    size: 24,
-                  ),
-                ),
-                filled: true,
-                fillColor: Colors.blue.shade50,
-                hintText: "Enter owner's name",
-                hintStyle: TextStyle(
-                  color: Colors.blue.shade400,
-                  fontSize: 14,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(
-                    color: Colors.blue.shade300,
-                    width: 1.5,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(
-                    color: Colors.blue.shade300,
-                    width: 1.5,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(
-                    color: Colors.blue.shade600,
-                    width: 2.0,
-                  ),
-                ),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              ),
-              onChanged: (text) => filterUsers(),
-            ),
+            _buildSearchField(),
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: filteredUsers.length,
                 itemBuilder: (context, index) {
                   User user = filteredUsers[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 8,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.blue,
-                            const Color.fromARGB(255, 194, 218, 237)
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(16),
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage(user.profileImage!),
-                        ),
-                        title: Text(
-                          user.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              user.email,
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              user.phone,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            hasPaid(user)
-                                ? Icons.check_circle
-                                : Icons.remove_circle,
-                            color: hasPaid(user) ? Colors.green : Colors.red,
-                            size: 30,
-                          ),
-                          onPressed: () {
-                            togglePaymentStatus(user);
-                          },
-                        ),
-                      ),
-                    ),
-                  );
+                  return _buildUserCard(user);
                 },
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+Widget _buildDropdownButton<T>({
+    required T value,
+    required List<DropdownMenuItem<T>> items,
+    required void Function(T?)? onChanged,
+  }) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          colors: [
+            Colors.blue.shade100,Colors.blue.shade100,
+            Colors.blue.shade400, Colors.blue.shade700],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.shade200.withOpacity(0.5),
+            spreadRadius: 3,
+            blurRadius: 8,
+            offset: Offset(0, 6),
+          ),
+        ],
+        border: Border.all(color: Colors.white.withOpacity(0.8), width: 2),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          onChanged: onChanged,
+          items: items,
+          icon: Icon(
+            Icons.arrow_drop_down_circle_rounded,
+            color: Colors.white,
+            size: 28,
+          ),
+          dropdownColor: Colors.blue.shade50,
+          borderRadius: BorderRadius.circular(12),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue.shade900,
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildSearchField() {
+    return TextField(
+      controller: searchController,
+      decoration: InputDecoration(
+        labelText: "Search Owner",
+        labelStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.blue.shade700,
+        ),
+        prefixIcon: Icon(Icons.search, color: Colors.blue.shade700),
+        filled: true,
+        fillColor: Colors.blue.shade50,
+        hintText: "Enter owner's name",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.blue.shade300),
+        ),
+      ),
+      onChanged: (text) => filterUsers(),
+    );
+  }
+
+  Widget _buildUserCard(User user) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      elevation: 8,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue, Color.fromARGB(255, 194, 218, 237)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: ListTile(
+          contentPadding: EdgeInsets.all(16),
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(user.profileImage!),
+          ),
+          title: Text(
+            user.name,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
+          subtitle: Text(
+            user.email,
+            style: TextStyle(color: Colors.white70),
+          ),
+          trailing: IconButton(
+            icon: Icon(
+              hasPaid(user) ? Icons.check_circle : Icons.remove_circle,
+              color: hasPaid(user) ? Colors.green : Colors.red,
+            ),
+            onPressed: () {
+              
+              if (hasPaid(user)) {
+                removePaymentRecord(user);
+              } else {
+                addPaymentRecord(user);
+              }
+            },
+          ),
         ),
       ),
     );
@@ -349,10 +284,4 @@ extension on DateTime {
       "Dec"
     ][this.month - 1];
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: OwnerPaymentPage(),
-  ));
 }

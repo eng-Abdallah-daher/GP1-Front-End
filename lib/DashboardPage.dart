@@ -1,10 +1,7 @@
-import 'package:first/AddToolPage.dart';
-import 'package:first/OrdersPage.dart';
-import 'package:first/SalesManagementPage.dart';
-import 'package:first/glopalvars.dart';
-import 'package:first/manage_tools_page.dart';
+import 'package:CarMate/SalesManagementPage.dart';
+import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/manage_tools_page.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -16,7 +13,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
    
- getItems();
+ 
   
    
     super.initState();
@@ -24,7 +21,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
   void m () async{
       
-
+await getItems();
     await getSales();
     topSellingTools = getTopSellingTools();
     setState(() {
