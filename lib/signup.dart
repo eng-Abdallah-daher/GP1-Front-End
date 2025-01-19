@@ -24,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
+    getusers();
   }
 
   @override
@@ -143,15 +144,25 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _nextPage() async {
+    
     if (_currentPage == 0) {
-      setState(() {
-        _currentPage++;
-      });
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
+    if(users.where((element) => element.email==emailController.text,).isEmpty){
+        setState(() {
+          _currentPage++;
+        });
+        _pageController.animateToPage(
+          _currentPage,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Email already exists!'),
+          backgroundColor: Colors.red,
+        ),
       );
+    }
     } else if (_currentPage == 1) {
       setState(() {
         _currentPage++;
@@ -287,6 +298,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _addUser() {
     setState(() {
       users.add(User(
+        onlineStatus: false,
           carPlateNumber: carPlateNumberController.text.trim(),
           email: emailController.text.trim(),
           id: users.length,

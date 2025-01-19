@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            ((widget.user.id != global_user.id)&&widget.user.role=="owner" )
+            ((widget.user.id != global_user.id)&&(widget.user.role == "owner")&&(widget.user.isServiceActive) )
                 ? _buildActionButtons()
                 : SizedBox(
                     height: 30,

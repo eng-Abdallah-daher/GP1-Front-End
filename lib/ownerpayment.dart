@@ -17,7 +17,7 @@ class _OwnerPaymentPageState extends State<OwnerPaymentPage> {
     m();
     filteredUsers = users
         .sublist(1, users.length)
-        .where((user) => user.role == 'owner')
+        .where((user) => (user.role == 'owner')&&(user.isServiceActive))
         .toList();
     super.initState();
   }
@@ -30,7 +30,7 @@ void m ()async{
   void filterUsers() {
     setState(() {
       filteredUsers = users.sublist(1, users.length).where((user) {
-        return user.role == 'owner' &&
+        return user.role == 'owner' &&user.isServiceActive&&
             user.name
                 .toLowerCase()
                 .contains(searchController.text.toLowerCase());

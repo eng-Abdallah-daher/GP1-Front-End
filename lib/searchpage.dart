@@ -16,7 +16,7 @@ class _usersearchPageState extends State<usersearchPage> {
   void initState() {
     super.initState();
 
-    filteredusers = users.sublist(1,users.length);
+    filteredusers = users.sublist(1,users.length).where((element) => element.isServiceActive,).toList();
   }
 
   void searchusers(String query) {

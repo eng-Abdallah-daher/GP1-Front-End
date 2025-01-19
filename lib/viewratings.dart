@@ -1,26 +1,47 @@
+import 'package:CarMate/ComplaintsListPage.dart';
 import 'package:CarMate/ComplaintsManagementPage.dart';
 import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/updateview.dart';
 import 'package:flutter/material.dart';
-
 class ViewWorkshopRatingsPage extends StatefulWidget {
   @override
   _ViewWorkshopRatingsPageState createState() =>
       _ViewWorkshopRatingsPageState();
 }
-
 class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
     @override
   void initState()  {
+  m();
     super.initState();
    
   }
-
+  void m() async {
+    await getusers();
+    setState(() {
+      
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          actions: [
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ComplaintsListPage(),
+                ),
+              );
+            },
+            tooltip: 'View Complaints',
+          ),
+        ],
         title: Text(
           "Workshop Ratings",
+          
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: blueAccent,
@@ -33,7 +54,7 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
         child: ListView.builder(
           itemCount: users.length,
           itemBuilder: (context, index) {
-            if (users[index].role == "owner") {
+            if ((users[index].role == "owner")&&(users[index].isServiceActive)) {
               return _buildWorkshopRatingCard(context, users[index]);
             } else {
               return SizedBox(height: 0);
@@ -118,9 +139,17 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
     );
   }
 
-  void _onArrowTap(BuildContext context, User rating) {
-    if (global_user.israted(rating.id)) {
-      showDialog(
+  void _onArrowTap(BuildContext context, User rating) async{
+    
+   
+    if (global_user.israted(rating.id)) { 
+      await getcomplaints();
+        Complaint p = complaints
+          .where((element) =>
+              (element.ownerid == rating.id) &&
+              (element.userid == global_user.id))
+          .toList()[0];
+ showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -128,37 +157,117 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
               borderRadius: BorderRadius.circular(20),
             ),
             backgroundColor: Colors.blue.shade50,
-            title: Text(
-              "Already Rated",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue.shade800,
+            title: Center(
+              child: Text(
+                "Already Rated",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20, 
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
+                ),
               ),
             ),
-            content: Text(
-              "You have already rated this workshop.",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.blue.shade600,
+            content: SingleChildScrollView(
+              child: Text(
+                "You have already rated this workshop. What would you like to do?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16, 
+                  color: Colors.blue.shade600,
+                ),
               ),
             ),
+            actionsAlignment: MainAxisAlignment.center,
             actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue.shade800,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              SizedBox(
+                width: MediaQuery.of(context).size.width *
+                    0.8,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade800,
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "Close",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-                child: Text(
-                  "Close",
-                  style: TextStyle(
-                    color: white,
+              ),
+              SizedBox(height: 10),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await getcomplaints();
+                    Navigator.of(context).pop();
+                  
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ComplaintsupdatePage(c: p),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade800,
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "Edit Review",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: ElevatedButton(
+                  onPressed: ()  {
+                     removeComplaint(p.id);
+                      removeComplaintfromuser(global_user.id,p.ownerid);
+                  global_user.rates.removeWhere((element) => element==p.ownerid,);
+                       Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ViewWorkshopRatingsPage()
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Review removed successfully."),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red.shade800,
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "Remove Review",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
@@ -166,6 +275,8 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
           );
         },
       );
+
+
     } else {
       Navigator.push(
         context,

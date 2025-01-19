@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: CircleAvatar(
           radius: 40,
-          backgroundImage: AssetImage('images/map.png'),
+          backgroundImage: NetworkImage('images/map.png'),
           backgroundColor: Colors.transparent,
         ),
         backgroundColor: blue,

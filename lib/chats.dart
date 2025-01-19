@@ -172,7 +172,7 @@ inchat=true;
                       chat.messages.isEmpty
                           ? "👋 No messages yet"
                           : chat.messages.last.senderId == global_user.id
-                              ? 'Me: ${chat.messages.last.content}'
+                              ? 'Me: ${chat.messages.last.content.startsWith('image:')? "image" : chat.messages.last.content}'
                               : chat.messages.last.content,
                       style: TextStyle(
                         fontSize: 14,

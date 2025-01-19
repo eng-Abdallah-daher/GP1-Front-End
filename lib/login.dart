@@ -2,12 +2,11 @@ import 'package:CarMate/admin.dart';
 import 'package:CarMate/forgotpasswordpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:CarMate/ownermainpage.dart';
-
 import 'package:CarMate/signup.dart';
 import 'package:CarMate/user.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
-
+import 'package:flutter/foundation.dart';
 class CarServiceLoginApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -59,6 +58,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  
   final LocalAuthentication auth = LocalAuthentication();
   bool _canCheckBiometrics = false;
   bool _isAuthenticated = false;
@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    handlePageCloseOrLeave();
     super.initState();
      m();
     _checkBiometrics();
@@ -142,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Column(
                     children: [
-                      Image.network(
+                      Image.asset(
                         'images/c2.Gif',
                         width: 400,
                       ),
@@ -217,22 +218,35 @@ class _LoginScreenState extends State<LoginScreen> {
 if(_emailController.text=="admin"&&_passwordController.text=="admin"){
   global_user=users[0];
   Navigator.push(context, MaterialPageRoute(builder: (context) => adminmainpage()));
+  updateUserStatus(global_user.email, false);
 loged=true;
 }
                     for (int i = 1; i < users.length; i++) {
                       
                       if (_emailController.text == users[i].email) {
                         if (users[i].password == _passwordController.text) {
+                          updateUserStatus(users[i].email, true);
                           loged = true;
                           global_user = users[i];
                           if (users[i].role == "owner") {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ownermainpage()
-                                
+                            if(users[i].isServiceActive){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ownermainpage()),
+                              );
+                            }else{
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text("Your account is Deactivated!"),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                            );
+                              ));
+                            }
+                         
                           } else {
                             getCarts();
                             getTowingServices();
@@ -275,7 +289,7 @@ loged=true;
                   ),
                 ),
                 SizedBox(height: 32),
-                Row(
+             kIsWeb?SizedBox():   Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton(
@@ -308,6 +322,8 @@ loged=true;
                     ),
                   ],
                 ),
+              
+            
                 SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

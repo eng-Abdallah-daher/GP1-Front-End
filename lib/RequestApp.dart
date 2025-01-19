@@ -37,12 +37,13 @@ m();
   }
   TextEditingController _searchController = TextEditingController();
 
-  List<User> filteredUsers = users.sublist(1, users.length);
+  List<User> filteredUsers = users.sublist(1, users.length).where((element) => element.isServiceActive,).toList();
 
   void _filterUsers(String query) {
     setState(() {
       filteredUsers = users.sublist(1, users.length).where((user) {
-        return user.name.toLowerCase().contains(query.toLowerCase());
+
+        return user.name.toLowerCase().contains(query.toLowerCase())&&user.isServiceActive;
       }).toList();
     });
   }

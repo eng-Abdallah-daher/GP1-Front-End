@@ -9,6 +9,7 @@ import 'dart:html' as html;
 import 'package:path_provider/path_provider.dart';
 class ChatPage extends StatefulWidget {
   Chat m;
+  
   ChatPage({required this.m});
   @override
   _ChatPageState createState() => _ChatPageState(chat: m);
@@ -21,10 +22,15 @@ class _ChatPageState extends State<ChatPage> {
   final ImagePicker _picker = ImagePicker();
   final ScrollController _scrollController = ScrollController();
   Timer? _timer;
-
+bool? isonline;
   @override
   void initState() {
     super.initState();
+   if(global_user.id!=chat.u1.id){
+    isonline=chat.u1.onlineStatus;
+   }else{
+     isonline=chat.u2.onlineStatus;
+   }
     inchat = true;
    int i=0;
     _timer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
@@ -82,6 +88,10 @@ class _ChatPageState extends State<ChatPage> {
           await uploadImageAndGetOptimizedUrl(fileUrl);
           source = urlofimage;
               _sendMessage('Image: ${source}');
+              sendmsg(
+              chatId: chat.id,
+              senderId: global_user.id,
+              text: 'image:${source}');
         });
       } else {
         try {
@@ -166,8 +176,8 @@ class _ChatPageState extends State<ChatPage> {
               ),
               SizedBox(height: 4),
               Text(
-                'Online',
-                style: TextStyle(color: Colors.greenAccent, fontSize: 16),
+                isonline! ?'Online':'Offline',
+                style: TextStyle(color:isonline! ? Colors.greenAccent:Colors.redAccent, fontSize: 16),
               ),
             ],
           ),
@@ -191,21 +201,56 @@ class _ChatPageState extends State<ChatPage> {
           _buildChatHeader(),
           Expanded(
             child: ListView.builder(
-              controller: _scrollController,
-              itemCount: chat.messages.length,
-              itemBuilder: (context, index) {
-                final message = chat.messages[index];
-                final isUserMessage = message.senderId == global_user.id;
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  alignment: isUserMessage
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: isUserMessage
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                    children: [
+            controller: _scrollController,
+            itemCount: chat.messages.length,
+            itemBuilder: (context, index) {
+              final message = chat.messages[index];
+              final isUserMessage = message.senderId == global_user.id;
+              final isImageMessage = message.content.startsWith('image:');
+              final imageUrl = isImageMessage
+                  ? message.content.replaceFirst('image:', '').trim()
+                  : null;
+
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                alignment: isUserMessage
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: isUserMessage
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  children: [
+                    if (isImageMessage)
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isUserMessage
+                              ? Colors.blueAccent
+                              : Colors.grey[300],
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isUserMessage
+                                  ? Colors.blueAccent.withOpacity(0.3)
+                                  : Colors.grey[600]!.withOpacity(0.3),
+                              spreadRadius: 3,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            imageUrl!,
+                            width: 250,
+                            height: 250,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    if (!isImageMessage)
                       Container(
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -213,6 +258,16 @@ class _ChatPageState extends State<ChatPage> {
                               ? Colors.blueAccent
                               : Colors.grey[300],
                           borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isUserMessage
+                                  ? Colors.blueAccent.withOpacity(0.3)
+                                  : Colors.grey[600]!.withOpacity(0.3),
+                              spreadRadius: 3,
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Column(
                           crossAxisAlignment: isUserMessage
@@ -239,12 +294,13 @@ class _ChatPageState extends State<ChatPage> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 5),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    SizedBox(height: 5),
+                  ],
+                ),
+              );
+            },
+          )
+
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

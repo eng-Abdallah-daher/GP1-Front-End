@@ -1,5 +1,5 @@
 library globals;
-
+import 'dart:html' as html;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 bool inchat=false;
 String urlofimage = "";
+
 User global_user = users[0];
 Cart cart = carts[0];
 String selectedRole = 'user';
@@ -69,12 +70,14 @@ List<PaymentRecord> paymentHistory = [];
 
 class Complaint {
   int id;
+  int userid;
   String description;
   String userName;
   int ownerid;
   int rate;
   Complaint(
       {required this.id,
+      required this.userid,
       required this.description,
       required this.userName,
       required this.ownerid,
@@ -179,7 +182,9 @@ class User {
   bool isServiceActive;
 double latitude;
 double longitude;
+bool onlineStatus;
   User({
+    required this.onlineStatus,
     required this.id,
     required this.name,
     required this.phone,
@@ -197,6 +202,7 @@ double longitude;
   });
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      onlineStatus: json['online'] ,
       longitude: json['longitude'] ?? '' ,
       latitude: json['latitude'] ?? '',
       id: int.tryParse(json['id']?.toString() ?? '0') ?? 0,
@@ -226,13 +232,15 @@ double longitude;
 
   double getaveragerate() {
     double sum = 0;
-    for (int i = 0; i < rates.length; i++) {
-      sum += rates[i];
+List<Complaint> coms=complaints.where((element) => element.ownerid==id,).toList();
+if(coms.isEmpty) return 0;
+    for (int i = 0; i < coms.length; i++) {
+      sum += coms[i].rate;
     }
     if (rates.isEmpty) {
       return 0;
     } else {
-      double average = sum / rates.length;
+      double average = sum / coms.length;
       return double.parse(average.toStringAsFixed(1));
     }
   }
@@ -537,6 +545,7 @@ List<Chat> getuserchats() {
 
   for (int i = 0; i < chats.length; i++) {
     if (chats[i].u1.id == global_user.id || chats[i].u2.id == global_user.id) {
+      if(chats[i].u1.isServiceActive && chats[i].u2.isServiceActive)
       result.add(chats[i]);
     }
   }
@@ -925,42 +934,14 @@ Future<void> addOffer(int posterId, double discount, String title,
   }
 }
 
-Future<void> addRating(
-    int id, String description, String userName, int ownerId, int rate) async {
-  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/ratings';
 
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        "id": id,
-        "description": description,
-        "userName": userName,
-        "ownerId": ownerId,
-        "rate": rate,
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      print('Rating added successfully: ${jsonDecode(response.body)}');
-    } else {
-      print('Failed to add rating: ${response.statusCode} - ${response.body}');
-    }
-  } catch (e) {
-    print('Error adding rating: $e');
-  }
-}
 
 Future<void> addRate(int userId, int rate) async {
-  const String baseUrl = 'https://gp1-ghqa.onrender.com/api';
-  final String url = '$baseUrl/users/newrate/$userId/$rate';
+   String baseUrl = 'https://gp1-ghqa.onrender.com/api/users/newrate/$userId';
 
   try {
     final response = await http.post(
-      Uri.parse(url),
+      Uri.parse(baseUrl),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -972,7 +953,7 @@ Future<void> addRate(int userId, int rate) async {
     if (response.statusCode == 200) {
       print('Rate added successfully');
     } else if (response.statusCode == 404) {
-      print('User not found');
+      print(response.body);
     } else {
       print('Failed to add rate: ${response.body}');
     }
@@ -1904,6 +1885,7 @@ Future<void> addUser (
     'isServiceActive': true,
     'latitude' :latitude,
     'longitude' : longitude,
+    'online':false
    
   };
 
@@ -1958,6 +1940,7 @@ Future<void> getusers() async {
           Map<String, dynamic> userJson = jsonData['data'][i];
 
           users.add(User(
+            onlineStatus: userJson['online'] ,
             latitude: double.parse(userJson['latitude'].toString()),
             longitude:double.parse(userJson['longitude'].toString()),
             id: int.parse(userJson['id'].toString()),
@@ -1970,7 +1953,7 @@ Future<void> getusers() async {
             rates: List<int>.from(userJson['rates'] ?? []),
             profileImage: userJson['profileImage'],
             description: userJson['description'],
-            locatoin: userJson['locatoin'],
+            locatoin: userJson['location'],
             isServiceActive: userJson['isServiceActive'] ?? true,
           ));
           
@@ -2007,10 +1990,11 @@ Future<void> getcomplaints() async {
           Map<String, dynamic> complaintJson = jsonData['data'][i];
 
           complaints.add(Complaint(
-            id: complaints.length,
+            userid: complaintJson['userid'],
+            id:complaintJson['id'],
             description: complaintJson['description'],
             userName: complaintJson['userName'],
-            ownerid: complaintJson['ownerid'],
+            ownerid: complaintJson['ownerId'],
             rate: complaintJson['rate'],
           ));
         }
@@ -2026,6 +2010,7 @@ Future<void> getcomplaints() async {
 }
 
 Future<void> getposts() async {
+  
   const String apiUrl = 'https://gp1-ghqa.onrender.com/api/posts';
 
   try {
@@ -2038,59 +2023,65 @@ Future<void> getposts() async {
 
       if (jsonData['data'] is List<dynamic>) {
         for (int i = 0; i < jsonData['data'].length; i++) {
+
+          
           Map<String, dynamic> postJson = jsonData['data'][i];
 
-          List<Like> likes = [];
+          User user =users.where((element) => element.id==postJson['ownerId'],).toList()[0];
 
-          if (postJson['likes'] is List<dynamic>) {
-            for (var likeUserId in postJson['likes']) {
-              if (likeUserId is int) {
-                likes.add(Like(userId: likeUserId));
-              }
-            }
-          }
+         if(user.isServiceActive){
+           List<Like> likes = [];
 
-          List<Comment> comments = [];
-          if (postJson['comments'] is List<dynamic>) {
-            for (var commentJson in postJson['comments']) {
-              List<Comment> replies = [];
-              if (commentJson['replies'] is List<dynamic>) {
-                for (var replyJson in commentJson['replies']) {
-                  replies.add(Comment(
-                    commentid: replyJson['commentid'],
-                    commenterid: replyJson['commenterid'],
-                    text: replyJson['text'],
-                    timestamp: DateTime.parse(replyJson['timestamp']),
-                    isLiked: replyJson['isLiked'],
-                    replies: [],
-                    likes: [],
-                  ));
+            if (postJson['likes'] is List<dynamic>) {
+              for (var likeUserId in postJson['likes']) {
+                if (likeUserId is int) {
+                  likes.add(Like(userId: likeUserId));
                 }
               }
-
-              comments.add(Comment(
-                commentid: commentJson['commentid'],
-                commenterid: commentJson['commenterid'],
-                text: commentJson['text'],
-                timestamp: DateTime.parse(commentJson['timestamp']),
-                isLiked: commentJson['isLiked'],
-                replies: replies,
-                likes: [],
-              ));
             }
-          }
 
-          posts.add(Post(
-            id: postJson['id'],
-            ownerId: postJson['ownerId'],
-            description: postJson['description'],
-            postImage: postJson['postImage'],
-            createdAt: DateTime.parse(postJson['createdAt']),
-            likeCount: postJson['likeCount'],
-            commentCount: postJson['commentCount'],
-            likes: likes,
-            comments: comments,
-          ));
+            List<Comment> comments = [];
+            if (postJson['comments'] is List<dynamic>) {
+              for (var commentJson in postJson['comments']) {
+                List<Comment> replies = [];
+                if (commentJson['replies'] is List<dynamic>) {
+                  for (var replyJson in commentJson['replies']) {
+                    replies.add(Comment(
+                      commentid: replyJson['commentid'],
+                      commenterid: replyJson['commenterid'],
+                      text: replyJson['text'],
+                      timestamp: DateTime.parse(replyJson['timestamp']),
+                      isLiked: replyJson['isLiked'],
+                      replies: [],
+                      likes: [],
+                    ));
+                  }
+                }
+
+                comments.add(Comment(
+                  commentid: commentJson['commentid'],
+                  commenterid: commentJson['commenterid'],
+                  text: commentJson['text'],
+                  timestamp: DateTime.parse(commentJson['timestamp']),
+                  isLiked: commentJson['isLiked'],
+                  replies: replies,
+                  likes: [],
+                ));
+              }
+            }
+
+            posts.add(Post(
+              id: postJson['id'],
+              ownerId: postJson['ownerId'],
+              description: postJson['description'],
+              postImage: postJson['postImage'],
+              createdAt: DateTime.parse(postJson['createdAt']),
+              likeCount: postJson['likeCount'],
+              commentCount: postJson['commentCount'],
+              likes: likes,
+              comments: comments,
+            ));
+         }
         }
       } else {
         print('Unexpected JSON structure: "data" is not a list.');
@@ -2180,17 +2171,22 @@ Future<void> getItems() async {
 
       if (jsonData['data'] is List) {
         for (var itemData in jsonData['data']) {
-          Item item = Item(
-            id: int.tryParse(itemData['id'].toString()) ?? 0,
-            ownerid: int.tryParse(itemData['ownerid'].toString()) ?? 0,
-            name: itemData['name'] ?? '',
-            price: (itemData['price'] as num).toDouble(),
-            description: itemData['description'] ?? '',
-            imagePaths: List<String>.from(itemData['imagePaths'] ?? []),
-            availableQuantity:int.tryParse(itemData['availableQuantity'].toString()) ?? 0,
-          );
+         bool additem =users.where((element) => (int.tryParse(itemData['ownerid'].toString())==element.id)).toList()[0].isServiceActive;
+          if(additem){
+              Item item = Item(
+              id: int.tryParse(itemData['id'].toString()) ?? 0,
+              ownerid: int.tryParse(itemData['ownerid'].toString()) ?? 0,
+              name: itemData['name'] ?? '',
+              price: (itemData['price'] as num).toDouble(),
+              description: itemData['description'] ?? '',
+              imagePaths: List<String>.from(itemData['imagePaths'] ?? []),
+              availableQuantity:
+                  int.tryParse(itemData['availableQuantity'].toString()) ?? 0,
+            );
 
-          items.add(item);
+            items.add(item);
+          }
+        
         }
       } else {
         print('Unexpected JSON structure: data is not a list.');
@@ -2870,4 +2866,139 @@ Future<void> fetchPaymentRecords() async {
   } catch (e) {
     print('Error fetching payment records: $e');
   }
+}
+
+
+Future<void> updatepassword(String email,String newpass) async {
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/users";
+  final String endpoint = "/${email}/password";
+
+  final response = await http.put(
+    Uri.parse(baseUrl + endpoint),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+    'newPassword':newpass
+    }),
+  );
+}
+
+
+Future<void> removeComplaint(int id) async {
+  String baseUrl = "https://gp1-ghqa.onrender.com/api/complaints/$id";
+
+  final response = await http.delete(
+    Uri.parse(baseUrl),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({}),
+  );
+
+  if (response.statusCode == 200) {
+    print("complaint deletedsuccessfully.");
+  } else {
+    print("Failed to delete complaint: ${response.body}");
+  }
+}
+Future<void> removeComplaintfromuser(int id,int ownerid) async {
+  String baseUrl = "https://gp1-ghqa.onrender.com/api/users/rates/$id";
+
+  final response = await http.delete(
+    Uri.parse(baseUrl),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      "rate":ownerid
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    print("complaint deletedsuccessfully.");
+  } else {
+    print("Failed to delete complaint: ${response.body}");
+  }
+}
+Future<void> updatecomplaint(int id,int rate,String description) async {
+   String baseUrl = "https://gp1-ghqa.onrender.com/api/complaints/$id";
+ 
+
+  final response = await http.put(
+    Uri.parse(baseUrl),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'rate': rate,
+      'description': description
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    print("complaint updated successfully.");
+  } else {
+    print("Failed to update complaint: ${response.body}");
+  }
+}
+Future<void> addRating(
+    int id, String description, String userName, int ownerId, int rate) async {
+  const String apiUrl = 'https://gp1-ghqa.onrender.com/api/complaints';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "id": id,
+        "userid":global_user.id,
+        "description": description,
+        "userName": userName,
+        "ownerId": ownerId,
+        "rate": rate,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      print('Rating added successfully: ${jsonDecode(response.body)}');
+    } else {
+      print('Failed to add rating: ${response.statusCode} - ${response.body}');
+    }
+  } catch (e) {
+    print('Error adding rating: $e');
+  }
+}
+
+Future<void> updateUserStatus(String email, bool status) async {
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/users/$email/onlinestatus'); 
+  
+  try {
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        
+        'status': status, 
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('User status updated successfully');
+    } else {
+      print(response.body);
+    }
+  } catch (e) {
+    print('Error updating user status: $e');
+  }
+}
+
+void handlePageCloseOrLeave() {
+  html.window.addEventListener('beforeunload', (html.Event event) {
+updateUserStatus(global_user.email, false);
+    final confirmationMessage = 'Are you sure you want to leave?';
+    (event as html.BeforeUnloadEvent).returnValue = confirmationMessage;
+  });
 }

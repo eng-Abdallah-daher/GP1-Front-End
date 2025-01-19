@@ -43,20 +43,21 @@ void m() async{
     });
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
         itemCount: posts.length,
         itemBuilder: (context, index) {
           return PostCard(
-            post: posts[index],
-            onDelete: () => _removePost(index),
+            post: posts[posts.length - 1 - index],
+            onDelete: () => _removePost(posts.length - 1 - index),
           );
         },
       ),
     );
   }
+
 }
 
 class PostCard extends StatefulWidget {

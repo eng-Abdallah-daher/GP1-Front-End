@@ -95,7 +95,18 @@ class _MapScreenState extends State<MapScreen> {
     _initSpeech(); 
   }
 
-  void _getCurrentLocation() async {
+void _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) return;
+    }
+
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
@@ -113,6 +124,7 @@ class _MapScreenState extends State<MapScreen> {
       ));
     });
   }
+
 
   Future<List<String>> _getSearchSuggestions(String query) async {
     final response = await http.get(Uri.parse(
@@ -158,16 +170,16 @@ class _MapScreenState extends State<MapScreen> {
 
   void _findNearby(String amenity) async {
   if(amenity=='fixer'){
-    LatLng l=LatLng(users.where((element) => element.role=="owner",).toList()[0].latitude, users
+    LatLng l=LatLng(users.where((element) => (element.role == "owner")&&(element.isServiceActive),).toList()[0].latitude, users
               .where(
-                (element) => element.role == "owner",
+                (element) => (element.role == "owner") && (element.isServiceActive),
               )
               .toList()[0]
               .longitude);
     double min=double.maxFinite;
     int index=0;
     for(int i = 0; i <users.length;i++) {
-      if(users[i].role =="owner"){
+      if(users[i].role =="owner"&&users[i].isServiceActive){
         
         LatLng location=LatLng(users[i].latitude, users[i].longitude);
   double distance = _calculateDistance(currentLocation!, location);
@@ -463,7 +475,7 @@ l=location;
                 onPressed: _isListening ? _stopListening : _startListening,
               ),
               CircleAvatar(
-                backgroundImage: NetworkImage('../images/' + background),
+                backgroundImage: AssetImage('../images/' + background),
               ),
             ],
           ),

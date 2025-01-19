@@ -1,29 +1,30 @@
+import 'package:CarMate/ComplaintsListPage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
-class ComplaintsManagementPage extends StatefulWidget {
-  int ownerid;
-  ComplaintsManagementPage({required this.ownerid});
+class ComplaintsupdatePage extends StatefulWidget {
+Complaint c;
+  ComplaintsupdatePage({required this.c});
 
   @override
-  _ComplaintsManagementPageState createState() =>
-      _ComplaintsManagementPageState();
+  _ComplaintsupdatePageState createState() =>
+      _ComplaintsupdatePageState();
 }
 
-class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
-
+class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
   @override
   void initState() {
-    
+    descriptionController.text=widget.c.description;
+    rating=widget.c.rate;
     super.initState();
-   m();
+    m();
   }
-  void m() async{
-    await  getcomplaints();
-    setState(() {
-      
-    });
+
+  void m() async {
+    await getcomplaints();
+    setState(() {});
   }
+
   final TextEditingController descriptionController = TextEditingController();
 
   int rating = 0;
@@ -34,61 +35,38 @@ class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
     });
   }
 
-  void addComplaint() {
+  void updateComplaint() {
     setState(() {
-try{
-addRating(complaints.length, descriptionController.text,
-            global_user.name, widget.ownerid, rating);
-          
-addRate(global_user.id, widget.ownerid);
-
-      complaints.add(Complaint(
-        userid: global_user.id,
-        id:complaints.length,
-        description: descriptionController.text,
-        userName: global_user.name,
-        ownerid: widget.ownerid,
-        rate: rating,
-      ));
-      global_user.rates.add(widget.ownerid);
-      for (int i = 1; i < users.length; i++) {
-        if (users[i].id == widget.ownerid) {
-          
-          users[i].rates.add(rating);
-
-          break;
-        }
-      }
-         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Complaint submitted successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      Navigator.pop(context);
-
-      descriptionController.clear();
-
-      rating = 0;}catch(e){
+      try {
+      updatecomplaint(widget.c.id, rating, descriptionController.text);
+      
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to submit complaint, please try again later'),
-          backgroundColor: Colors.red,
-        ),);
-      }
-    
-    });
+          SnackBar(
+            content: Text('Complaint updated successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        descriptionController.clear();
 
-   
+        rating = 0;
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update complaint, please try again later'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Submit Complaints & Feedback'),
+        title: Text('update Complaints & Feedback'),
         backgroundColor: Colors.blueAccent,
-      
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -96,7 +74,7 @@ addRate(global_user.id, widget.ownerid);
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Submit a New Complaint',
+              'update a Complaint',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -205,7 +183,7 @@ addRate(global_user.id, widget.ownerid);
 
   Widget _buildSubmitButton() {
     return ElevatedButton(
-      onPressed: addComplaint,
+      onPressed: updateComplaint,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blueAccent,
         foregroundColor: Colors.white,

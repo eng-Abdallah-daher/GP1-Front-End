@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:CarMate/EmailSender.dart';
+import 'package:CarMate/glopalvars.dart';
 import 'package:CarMate/login.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +26,7 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  final TextEditingController emailController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +82,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ElevatedButton(
                 onPressed: () {
                   if (emailController.text.isNotEmpty) {
+                   final random = Random();
+                   int y= 100000 + random.nextInt(900000);
+                    EmailSender.sendEmail(emailController.text, "Reset the Password", "Your password reset code is: ${y} \nPlease do not share this code with anyone for your security.");
+                    urlofimage="$y";
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => EnterCodePage()),
+                    );
+                  }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            'Please fill the emailAddress!'),
+                            backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 },
@@ -186,7 +202,7 @@ class _EnterCodePageState extends State<EnterCodePage> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  if (codeController.text == '123456') {
+                  if (codeController.text == urlofimage) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -285,6 +301,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 onPressed: () {
                   if (newPasswordController.text ==
                       confirmPasswordController.text) {
+                        updatepassword(emailController.text, confirmPasswordController.text);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Password updated successfully')),
                     );

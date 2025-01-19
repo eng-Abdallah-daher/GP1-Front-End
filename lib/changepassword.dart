@@ -16,16 +16,30 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   void _changePassword() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      if (_newPassword != _confirmPassword) {
+if(_currentPassword!=global_user.password){
+  ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Incorrect current password'),backgroundColor: Colors.red,),
+            
+          );
+        return;
+      }
+      if (_newPassword.length < 8) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('New password and confirmation do not match')),
+          SnackBar(content: Text('New password must be at least 6 characters long'),backgroundColor: Colors.red),
         );
         return;
       }
 
+      if (_newPassword != _confirmPassword) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('New password and confirmation do not match'),backgroundColor: Colors.red),
+        );
+        return;
+      }
+updatepassword(global_user.email, _newPassword);
+global_user.password=_newPassword;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password changed successfully!')),
+        SnackBar(content: Text('Password changed successfully!'),backgroundColor: Colors.green),
       );
     }
   }

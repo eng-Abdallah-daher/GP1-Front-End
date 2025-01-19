@@ -99,7 +99,7 @@ class _CommentsPageState extends State<CommentsPage> {
           backgroundImage: NetworkImage(users
               .sublist(1, users.length)
               .where(
-                (element) => element.id == comment.commenterid,
+                (element) => (element.id == comment.commenterid)&&(element.isServiceActive),
               )
               .toList()[0]
               .profileImage!),
@@ -117,7 +117,7 @@ class _CommentsPageState extends State<CommentsPage> {
                       text: users
                           .sublist(1, users.length)
                           .where(
-                            (element) => element.id == comment.commenterid,
+                            (element) => (element.id == comment.commenterid)&&(element.isServiceActive),
                           )
                           .toList()[0]
                           .name,
@@ -233,7 +233,7 @@ bool islikedcomment(Comment comment){
           CircleAvatar(
             backgroundImage: NetworkImage(users
                 .sublist(1, users.length)
-                .where((element) => element.id== reply.commenterid,).toList()[0].profileImage!),
+                .where((element) => (element.id == reply.commenterid)&&(element.isServiceActive),).toList()[0].profileImage!),
             radius: 18,
           ),
           SizedBox(width: 10),
@@ -248,7 +248,7 @@ bool islikedcomment(Comment comment){
                         text: users
                             .sublist(1, users.length)
                             .where(
-                              (element) => element.id == reply.commenterid,
+                              (element) => (element.id == reply.commenterid)&&(element.isServiceActive),
                             )
                             .toList()[0]
                             .name,
@@ -450,7 +450,7 @@ void _showReplyDialog(Comment comment) {
                 
                 Text(
                   'Reply to ${users.sublist(1, users.length).where(
-                        (element) => element.id == comment.commenterid,
+                        (element) =>(element.id == comment.commenterid)&&(element.isServiceActive),
                       ).toList()[0].name}',
                   style: TextStyle(
                     fontSize: 22,
