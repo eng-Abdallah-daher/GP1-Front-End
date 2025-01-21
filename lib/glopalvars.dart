@@ -28,6 +28,8 @@ TextEditingController phoneController = TextEditingController();
 TextEditingController passwordController = TextEditingController();
 TextEditingController carPlateNumberController = TextEditingController();
 TextEditingController confirmpassword = TextEditingController();
+TextEditingController birthDateController = TextEditingController();
+String? selectedGender;
 bool acceptTerms = false;
 String getnameofuser(int user_id) {
   for (int i = 1; i < users.length; i++) {
@@ -92,8 +94,9 @@ class Booking {
   DateTime appointmentDate;
   DateTime appointment;
   String status;
-
+String description;
   Booking({
+    required this.description,
     required this.appointment,
     required this.userid,
     required this.bookingid,
@@ -105,6 +108,7 @@ class Booking {
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
+      description: json['description'] ,
       userid: json['userId'],
       bookingid: json['bookingId'],
       ownerid: json['ownerId'],
@@ -183,6 +187,8 @@ class User {
 double latitude;
 double longitude;
 bool onlineStatus;
+String birthDate;
+String gender;
   User({
     required this.onlineStatus,
     required this.id,
@@ -199,9 +205,13 @@ bool onlineStatus;
     this.isServiceActive = true,
     required this.longitude,
     required this.latitude,
+    required this.birthDate,
+    required this.gender,
   });
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      birthDate: json['bitrh'] ?? '',
+      gender: json['gender'] ?? '',
       onlineStatus: json['online'] ,
       longitude: json['longitude'] ?? '' ,
       latitude: json['latitude'] ?? '',
@@ -298,11 +308,14 @@ class maintenancerequest {
   int owner_id;
   int user_id;
   DateTime time;
+  String description;
   maintenancerequest(
       {required this.requestid,
       required this.owner_id,
       required this.user_id,
-      required this.time}) {}
+      required this.time,
+      required this.description
+      }) {}
 }
 
 List<User> users = [];
@@ -790,6 +803,8 @@ class UserSignUpRequest {
   final double latitude;
   final double longitude;
   final List<String> images;
+  String birth;
+  String gender;
   String placeDetails;
   String password;
   UserSignUpRequest({
@@ -804,10 +819,13 @@ class UserSignUpRequest {
     required this.longitude,
     required this.images,
     this.placeDetails = 'Loading place details...',
+    required this.birth ,
+    required this.gender
   });
 }
 
 Future<void> addBooking(
+  String description,
     int userId,
     int bookingId,
     int ownerId,
@@ -824,6 +842,8 @@ Future<void> addBooking(
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
+        "description": description,
+  
         "userId": userId,
         "bookingId": bookingId,
         "ownerId": ownerId,
@@ -870,7 +890,25 @@ Future<void> addCart(int userId) async {
     }
   
 }
+Future<void> deletepost(int postid) async{
+ String apiUrl = 'https://gp1-ghqa.onrender.com/api/posts/$postid';
 
+  try {
+    final response = await http.delete(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+       
+      }),
+    );
+
+  
+  } catch (e) {
+   
+  }
+}
 Future<void> addPost(DateTime createdAt, int id, String description,
     int ownerId, String postImage) async {
   const String apiUrl = 'https://gp1-ghqa.onrender.com/api/posts';
@@ -990,11 +1028,7 @@ Future<void> addSale(
       body: jsonEncode(requestBody),
     );
 
-    if (response.statusCode == 200) {
-      print('Sale added successfully');
-    } else {
-      print('Failed to add sale: ${response.body}');
-    }
+   
   } catch (error) {
     print('Error adding sale: $error');
   }
@@ -1114,6 +1148,7 @@ Future<void> addMaintenanceRequest({
   required int ownerId,
   required int userId,
   required DateTime time,
+  required String description,
 }) async {
   final url = Uri.parse('https://gp1-ghqa.onrender.com/api/maintenanceRequests');
 
@@ -1127,6 +1162,7 @@ Future<void> addMaintenanceRequest({
       'owner_id': ownerId,
       'user_id': userId,
       'time': time.toIso8601String(),
+      'description': description
     }),
   );
 
@@ -1145,7 +1181,7 @@ Future<void> addDeliveryRequest({
   required String address,
   required String instructions,
 }) async {
-  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/deliveryRequests/create');
+  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/deliveryRequests/');
 
   final response = await http.post(
     url,
@@ -1159,6 +1195,7 @@ Future<void> addDeliveryRequest({
       'phone': phone,
       'address': address,
       'instructions': instructions,
+      'status':'Pending'
     }),
   );
 
@@ -1335,6 +1372,9 @@ Future<void> addUserSignUpRequest(
   String location,
   double latitude,
   double longitude,
+  String  Birth,
+  String gender
+
  
 ) async {
   final String baseUrl = "https://gp1-ghqa.onrender.com/api/usersignuprequests";
@@ -1355,7 +1395,10 @@ List<String> images=[
     'latitude': latitude,
     'longitude': longitude,
     'images': images,
-    'password':passwordController.text
+    'password':passwordController.text,
+    'gender':gender,
+    'birthDat':Birth
+
   };
 
   final response = await http.post(
@@ -1582,6 +1625,27 @@ Future<void> updateBooking(
       'customerName': customerName,
       'appointmentDate': appointmentDate
           .toIso8601String(), // Convert DateTime to ISO8601 string
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    print('Booking updated successfully');
+  } else {
+    print('Failed to update booking: ${response.body}');
+  }
+}
+Future<void> updateBookingstatus(
+    int bookingId, String status) async {
+  final String baseUrl = "https://gp1-ghqa.onrender.com/api/bookings";
+  final String endpoint = "/$bookingId/status";
+
+  final response = await http.patch(
+    Uri.parse(baseUrl + endpoint),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'status': status, // Convert DateTime to ISO8601 string
     }),
   );
 
@@ -1913,8 +1977,10 @@ Future<void> getbookings() async {
 
     if (response.statusCode == 200) {
       final List<dynamic> chatListJson = json.decode(response.body);
-      bookings =
-          chatListJson.map((chatJson) => Booking.fromJson(chatJson)).toList();
+      bookings =chatListJson.map((chatJson) => Booking.fromJson(chatJson)).toList();
+      for(int i = 0; i < bookings.length; i++){
+        print(bookings[i].status);
+      }
      
     } else {
       print('Failed to fetch chats: ${response.statusCode}');
@@ -1938,8 +2004,9 @@ Future<void> getusers() async {
       if (jsonData['data'] is List<dynamic>) {
         for (int i = 0; i < jsonData['data'].length; i++) {
           Map<String, dynamic> userJson = jsonData['data'][i];
-
           users.add(User(
+            birthDate: userJson['bitrh'],
+            gender:  userJson['gender'],
             onlineStatus: userJson['online'] ,
             latitude: double.parse(userJson['latitude'].toString()),
             longitude:double.parse(userJson['longitude'].toString()),
@@ -2139,6 +2206,7 @@ Future<void> getMaintenanceRequests() async {
       if (jsonData['data'] is List) {
         for (var requestData in jsonData['data']) {
           maintenancerequest maintenanceRequest = maintenancerequest(
+            description: requestData['description'] ,
             requestid: int.tryParse(requestData['requestid'].toString()) ?? 0,
             owner_id: int.tryParse(requestData['owner_id'].toString()) ?? 0,
             user_id: int.tryParse(requestData['user_id'].toString()) ?? 0,
@@ -2301,6 +2369,13 @@ Future<List<Offer>> getOffers() async {
 
       if (jsonData['data'] is List) {
         for (var offerData in jsonData['data']) {
+          print(offerData['id']);
+          print(offerData['title']);
+          print(offerData['description']);
+          print(offerData['discount']);
+          print(DateTime.parse(offerData['validUntil']));
+
+          print(offerData['posterid']);
           Offer offer = Offer(
             id: offerData['id'],
             title: offerData['title'],
@@ -2450,6 +2525,8 @@ Future<void> getUserSignUpRequests() async {
       if (jsonData is List) {
         for (var requestData in jsonData) {
           UserSignUpRequest request = UserSignUpRequest(
+            birth: requestData['bitrh'],
+            gender: requestData['gender'],
             password: requestData['password'] ?? '',
             requestid: int.tryParse(requestData['requestid'].toString()) ?? 0,
             name: requestData['name'] ?? '',
@@ -2748,9 +2825,11 @@ Future<void> addReply(int postId, int commentId, Comment reply) async {
 }
 
 
-Future<void> editReply(int postId, int commentId, int replyId, String newText) async {
-  final url = Uri.parse('https://gp1-ghqa.onrender.com/api/posts/$postId/comments/$commentId/replies/$replyId');
-  
+Future<void> editReply(
+    int postId, int commentId, int replyId, String newText) async {
+  final url = Uri.parse(
+      'https://gp1-ghqa.onrender.com/api/posts/$postId/comments/$commentId/replies/$replyId');
+
   try {
     final response = await http.put(
       url,
@@ -2761,11 +2840,37 @@ Future<void> editReply(int postId, int commentId, int replyId, String newText) a
         'newText': newText,
       }),
     );
-    
+
     if (response.statusCode == 200) {
       print('Reply updated successfully');
     } else {
       print('Failed to update reply: ${response.body}');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+}
+
+Future<void> deleteReply(
+    int postId, int commentId, int replyId) async {
+  final url = Uri.parse(
+      'https://gp1-ghqa.onrender.com/api/posts/$postId/comments/$commentId/replies/$replyId');
+
+  try {
+    final response = await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+       
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Reply deletedcessfully');
+    } else {
+      print('Failed to delete Reply: ${response.body}');
     }
   } catch (error) {
     print('Error: $error');

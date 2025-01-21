@@ -304,7 +304,10 @@ bool islikedcomment(Comment comment){
             onPressed: () => _showEditReplyDialog(reply,com),
             child: Text('Edit', style: TextStyle(color: blue))),
         TextButton(
-            onPressed: () => _deleteReply(reply),
+            onPressed: (){
+               deleteReply(widget.post.id, com.commentid, reply.commentid);
+              _deleteReply(reply);
+            },
             child: Text('Delete', style: TextStyle(color: Colors.red))),
       ],
     );
@@ -850,13 +853,15 @@ void _showEditReplyDialog(Comment reply,Comment com) {
     setState(() {
       removeCommentFromPost(widget.post.id, comment.commentid);
       widget.post.comments.remove(comment); 
+      widget.post.commentCount--; 
     });
   }
 
   void _deleteReply(Comment reply) {
     setState(() {
-      
+     
       final parentComment = widget.post.comments.firstWhere((c) => c.replies.contains(reply));
+      
       parentComment.replies.remove(reply);
     });
   }

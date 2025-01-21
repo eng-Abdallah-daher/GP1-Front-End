@@ -1,3 +1,4 @@
+import 'package:CarMate/EmailSender.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:CarMate/ownermainpage.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +153,17 @@ m();
 
                 accp = true;
                 _acceptRequest(m, addDaysAndHours(m.time, days, hours));
+                   User normal=users.where((element) => element.id== m.user_id,).toList()[0];
+                            User owner=users.where((element) => element.id==m.owner_id,).toList()[0];
+                              EmailSender.sendEmail(
+                    normal.email,
+                    "Accepting booking",
+                    "The booking at " +
+                        m.time.toString() +
+                        " is accepted at the workshop of " +
+                        owner.name);
+                         
+                           
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text(
@@ -192,6 +204,7 @@ m();
   void _acceptRequest(maintenancerequest request, DateTime after) {
   
       bookings.add(Booking(
+        description: request.description,
         userid: request.user_id,
         bookingid: bookings.length,
         ownerid: request.owner_id,
@@ -201,13 +214,32 @@ m();
         status: "Confirmed"));
      
 if(bookings.isEmpty){
-  addBooking(request.user_id, 0, request.owner_id, after,
+  addBooking(request.description,request.user_id, 0, request.owner_id, after,
           request.time, getnameofuser(request.user_id), "Confirmed");
 }else{
-  addBooking(request.user_id, bookings[bookings.length - 1].bookingid+1, request.owner_id, after,
+  addBooking(
+          request.description,request.user_id, bookings[bookings.length - 1].bookingid+1, request.owner_id, after,
           request.time, getnameofuser(request.user_id), "Confirmed");
 }
- 
+    User normal = users
+        .where(
+          (element) => element.id == request.user_id,
+        )
+        .toList()[0];
+    User owner = users
+        .where(
+          (element) => element.id == request.owner_id,
+        )
+        .toList()[0];
+                           
+    EmailSender.sendEmail(
+        normal.email,
+        "Accepting booking",
+        "The booking at " +
+            request.time.toString() +
+            " is accepted at the workshop of " +
+            owner.name);
+                         
     _removeRequest(request);
     Navigator.push(
       context,
@@ -220,6 +252,7 @@ index=1;
   try{
       setState(() {
        deleteMaintenanceRequest(request.requestid);
+       
       maintenancerequests.remove(request);
      
     });
@@ -306,6 +339,11 @@ index=1;
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(height: 5,),
+                         Text(
+                          'Description : ${request.description}',
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
                         SizedBox(height: 5),
                         Text(
                           'Request Date : ${request.time}',
@@ -330,7 +368,12 @@ index=1;
                           Icons.delete,
                           Colors.red.shade700,
                           'Remove',
-                          () => _removeRequest(request),
+                          () {
+                            User normal=users.where((element) => element.id==request.user_id,).toList()[0];
+                            User owner=users.where((element) => element.id==request.owner_id,).toList()[0];
+                            EmailSender.sendEmail(normal.email, "Accepting booking", "The booking at "+request.time.toString()+" is not accepted at the workshop of "+owner.name);
+                            _removeRequest(request);
+                          },
                         ),
                       ],
                     ),

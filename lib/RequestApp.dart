@@ -263,6 +263,27 @@ class _SelectTimePageState extends State<SelectTimePage> {
               ),
             ),
             SizedBox(height: 30),
+            TextFormField(
+  controller: descriptionController,
+  decoration: InputDecoration(
+    filled: true,
+    fillColor: Colors.white,
+    hintText: 'Description',
+    prefixIcon: Icon(Icons.description, color: Colors.lightBlue),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+  keyboardType: TextInputType.text,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a description';
+    }
+    return null;
+  },
+)
+,
+SizedBox(height: 16,),
             Text(
               "Select Date & Time:",
               style: TextStyle(
@@ -306,12 +327,37 @@ class _SelectTimePageState extends State<SelectTimePage> {
                 onPressed: () {
                   if (_selectedDateTime != null) {
                    try{
-                     addMaintenanceRequest(ownerId:widget.user.id,userId: global_user.id,time: _selectedDateTime,requestId: maintenancerequests.length );
-                    maintenancerequests.add(maintenancerequest(
-                        requestid: maintenancerequests.length,
+       
+                   if(maintenancerequests.length==0){
+                                  addMaintenanceRequest(
+                                    description: descriptionController.text,
+                            ownerId: widget.user.id,
+                            userId: global_user.id,
+                            time: _selectedDateTime,
+                            requestId: 0);
+                     maintenancerequests.add(maintenancerequest(
+                      description: descriptionController.text,
+                        requestid: 0,
                         owner_id: widget.user.id,
                         user_id: global_user.id,
                         time: _selectedDateTime));
+                   }else{
+                     addMaintenanceRequest(
+                            description: descriptionController.text,
+                            ownerId: widget.user.id,
+                            userId: global_user.id,
+                            time: _selectedDateTime,
+                            requestId: maintenancerequests[
+                                        maintenancerequests.length - 1]
+                                    .requestid +
+                                1);
+                     maintenancerequests.add(maintenancerequest(
+                      description: descriptionController.text,
+                        requestid:maintenancerequests[ maintenancerequests.length-1].requestid+1,
+                        owner_id: widget.user.id,
+                        user_id: global_user.id,
+                        time: _selectedDateTime));
+                   }
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(

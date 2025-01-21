@@ -16,14 +16,14 @@ class _usersearchPageState extends State<usersearchPage> {
   void initState() {
     super.initState();
 
-    filteredusers = users.sublist(1,users.length).where((element) => element.isServiceActive,).toList();
+    filteredusers = users.sublist(1,users.length).where((element) => element.isServiceActive&&(element.role=="owner"),).toList();
   }
 
   void searchusers(String query) {
     List<User> matchingusers = users.sublist(1, users.length).where((user) {
       final userNameLower = user.name.toLowerCase();
       final searchLower = query.toLowerCase();
-      return userNameLower.contains(searchLower);
+      return userNameLower.contains(searchLower)&& user.role=="owner";
     }).toList();
 
     setState(() {

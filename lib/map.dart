@@ -55,7 +55,7 @@ class MapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Advanced Map App',
+      title: 'carMate',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

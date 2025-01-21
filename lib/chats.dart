@@ -116,6 +116,7 @@ inchat=true;
               itemCount: filteredUsers.length,
               itemBuilder: (context, index) {
                 final chat = filteredUsers[index];
+              
                 final isCurrentUser = chat.u1.id == global_user.id;
 
                 return Container(
@@ -142,6 +143,7 @@ inchat=true;
                   child: ListTile(
                     onTap: () {
                       fromsearch = true;
+                        print(index);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -173,7 +175,9 @@ inchat=true;
                           ? "👋 No messages yet"
                           : chat.messages.last.senderId == global_user.id
                               ? 'Me: ${chat.messages.last.content.startsWith('image:')? "image" : chat.messages.last.content}'
-                              : chat.messages.last.content,
+                              : chat.messages.last.content.startsWith('image:')
+                                  ? "image"
+                                  : chat.messages.last.content,
                       style: TextStyle(
                         fontSize: 14,
                         color: chat.messages.isEmpty

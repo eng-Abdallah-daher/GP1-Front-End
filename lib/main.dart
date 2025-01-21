@@ -1,5 +1,6 @@
+import 'package:CarMate/startpages.dart';
+import 'package:CarMate/servicepage.dart';
 import 'package:flutter/material.dart';
-import 'package:CarMate/login.dart';
-void main() async{
-  runApp(MaterialApp(home: CarServiceLoginApp()));
+void main() {
+  runApp(MaterialApp(home: ServicesPage()));
 }

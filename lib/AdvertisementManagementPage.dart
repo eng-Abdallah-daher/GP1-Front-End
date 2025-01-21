@@ -13,7 +13,10 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
     @override
   void initState() {
     super.initState();
-   
+   m();
+  }
+  void m() async {
+    await getOffers();
   }
 
   final TextEditingController titleController = TextEditingController();

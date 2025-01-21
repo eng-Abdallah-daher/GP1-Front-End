@@ -1,3 +1,4 @@
+import 'package:CarMate/EmailSender.dart';
 import 'package:CarMate/delivaryrequestmap.dart';
 import 'package:CarMate/deliveryrequests.dart';
 import 'package:CarMate/glopalvars.dart';
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Car Service App',
+      title: 'carMate',
       theme: ThemeData(
         scaffoldBackgroundColor: white,
         fontFamily: 'Helvetica',
@@ -498,6 +499,7 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
     Booking? m = findCurrentBooking();
     if (m != null) {
       try {
+        EmailSender.sendEmail(users.where((element) => element.id==m.ownerid,).toList()[0].email, "Delivery Request",users.where((element) => element.id==m.userid,).toList()[0].name+ " wants the car to be delivered!");
         addDeliveryRequest(
             id: deliveryRequests.length,
             address: _addressController.text,
@@ -505,6 +507,7 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
             ownerId: m.ownerid,
             phone: _phoneController.text,
             userId: global_user.id);
+            
         deliveryRequests.add(DeliveryRequest(
             requestid: deliveryRequests.length,
             ownerid: m.ownerid,

@@ -25,6 +25,8 @@ class _ChatPageState extends State<ChatPage> {
 bool? isonline;
   @override
   void initState() {
+     getusers();
+     m();
     super.initState();
    if(global_user.id!=chat.u1.id){
     isonline=chat.u1.onlineStatus;
@@ -42,11 +44,24 @@ bool? isonline;
           setState(() {
             chat.messages = newMessages;
           });
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+          if (_scrollController.position.pixels <
+              _scrollController.position.maxScrollExtent - 100) {
+           
+          } else {
+            _scrollController
+                .jumpTo(_scrollController.position.maxScrollExtent);
+          }
         } catch (e) {}
      }
     });
   
+  }
+  void m() async{
+    await getuserchats();
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    setState(() {
+      
+    });
   }
 
   Future<void> _sendMessage(String messageText) async {

@@ -222,7 +222,7 @@ getposts();
                                 child: Stack(
                                   children: [
                                     
-                                    Image.network(
+                                    Image.asset(
                                       imagePath,
                                       width: 60, 
                                       height: 60, 

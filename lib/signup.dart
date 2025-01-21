@@ -239,7 +239,11 @@ class _RegisterPageState extends State<RegisterPage> {
               descriptionController.text,
               locationController.text,
               position.latitude,
-              position.longitude);
+              position.longitude,
+              birthDateController.text,
+              selectedGender!
+
+              );
         } else {
           addUserSignUpRequest(
               userRequests[userRequests.length - 1].requestid + 1,
@@ -249,7 +253,9 @@ class _RegisterPageState extends State<RegisterPage> {
               descriptionController.text,
               locationController.text,
               position.latitude,
-              position.longitude);
+              position.longitude,
+                birthDateController.text,
+              selectedGender!);
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -298,6 +304,8 @@ class _RegisterPageState extends State<RegisterPage> {
   void _addUser() {
     setState(() {
       users.add(User(
+        birthDate: birthDateController.text,
+        gender: selectedGender!,
         onlineStatus: false,
           carPlateNumber: carPlateNumberController.text.trim(),
           email: emailController.text.trim(),

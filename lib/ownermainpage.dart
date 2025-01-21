@@ -3,6 +3,7 @@ import 'package:CarMate/addpostpage.dart';
 import 'package:CarMate/chats.dart';
 import 'package:CarMate/map.dart';
 import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/mapstart.dart';
 import 'package:CarMate/ownerservicepage.dart';
 import 'package:CarMate/profile_page.dart';
 import 'package:CarMate/searchpage.dart';
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     OwnerServicesPage(),
     DashboardPage(),
     MorePage(),
-    MapPage(),
+    CarMateMapApp(),
   ];
 
   void _onItemTapped(int index) {
@@ -270,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
           OwnerServicesPage(),
           DashboardPage(),
           MorePage(),
-          MapPage(),
+          CarMateMapApp(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(

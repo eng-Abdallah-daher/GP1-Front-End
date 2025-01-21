@@ -402,24 +402,37 @@ class _PostCardState extends State<PostCard> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ListTile(
+            (widget.post.ownerId == global_user.id)
+                    ?    ListTile(
                 leading: Icon(Icons.edit, color: blue),
                 title: Text('Edit Post'),
                 onTap: () {
                   Navigator.pop(context);
                   _editPost(context);
                 },
-              ),
-              Divider(),
-              ListTile(
+              )
+                  : SizedBox(
+                      height: 0,
+                    ),
+               (widget.post.ownerId == global_user.id)
+                    ? Divider() : SizedBox(
+                      height: 0,
+                    ),
+
+             (widget.post.ownerId == global_user.id)
+                    ?   ListTile(
                 leading: Icon(Icons.delete, color: Colors.red),
                 title: Text('Delete Post'),
                 onTap: () {
                   Navigator.pop(context);
+                  deletepost(widget.post.id);
                   _deletePost();
                 },
-              ),
-              Divider(),
+              ) : SizedBox(
+                      height: 0,
+                    ),
+               (widget.post.ownerId == global_user.id)
+                    ? Divider() : SizedBox(height: 0,),
               ListTile(
                 leading: Icon(Icons.report, color: Colors.orange),
                 title: Text('Report Post'),
@@ -504,12 +517,11 @@ class _PostCardState extends State<PostCard> {
                     ],
                   ),
                 ),
-                (widget.post.ownerId == global_user.id)
-                    ? IconButton(
+               IconButton(
                         icon: Icon(Icons.more_horiz, color: black),
                         onPressed: () => _showMoreOptions(context),
                       )
-                    : Container()
+                   
               ],
             ),
           ),

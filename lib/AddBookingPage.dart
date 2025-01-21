@@ -164,19 +164,49 @@ class _AddBookingPageState extends State<AddBookingPage> {
         if (_formKey.currentState!.validate() && _selectedDate != null) {
           setState(() {
            try{
-               bookings.add(Booking(
-                appointment: DateTime.now(),
-                userid: -1,
-                bookingid: bookings.length,
-                ownerid: global_user.id,
-                customerName: _customerNameController.text,
-                appointmentDate: _selectedDate!,
-                status: _status,
-              ));
-             addBooking(
--1, bookings.length, global_user.id, _selectedDate!,
-                DateTime.now(), _customerNameController.text, _status
-            );
+             if(bookings.isEmpty){
+                bookings.add(Booking(
+                  description: "",
+                  appointment: DateTime.now(),
+                  userid: -1,
+                  bookingid: bookings.length,
+                  ownerid: global_user.id,
+                  customerName: _customerNameController.text,
+                  appointmentDate: _selectedDate!,
+                  status: _status,
+                ));
+
+                addBooking(
+                    "",
+                    -1,
+                    bookings.length,
+                    global_user.id,
+                    _selectedDate!,
+                    DateTime.now(),
+                    _customerNameController.text,
+                    _status);
+             }else{
+                bookings.add(Booking(
+                  description: "",
+                  appointment: DateTime.now(),
+                  userid: -1,
+                  bookingid: bookings[bookings.length - 1].bookingid + 1,
+                  ownerid: global_user.id,
+                  customerName: _customerNameController.text,
+                  appointmentDate: _selectedDate!,
+                  status: _status,
+                ));
+
+                addBooking(
+                    "",
+                    -1,
+                    bookings[bookings.length-1].bookingid+1,
+                    global_user.id,
+                    _selectedDate!,
+                    DateTime.now(),
+                    _customerNameController.text,
+                    _status);
+             }
          
 
             _customerNameController.clear();

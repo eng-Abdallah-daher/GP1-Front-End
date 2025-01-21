@@ -267,8 +267,8 @@ for(int i=0;i<chats.length;i++){
 }
 if(!loged){
 try{
-    createChat(chats.length, global_user.id, users[0].id);
-  chats.add(Chat(lastMessage: DateTime.now(), id: chats.length, messages: [], u1: global_user, u2: users[0]));
+    createChat(chats[chats.length-1].id+1, global_user.id, users[0].id);
+  chats.add(Chat(lastMessage: DateTime.now(), id: chats[chats.length - 1].id + 1, messages: [], u1: global_user, u2: users[0]));
                  
                   Navigator.push(
                       context,

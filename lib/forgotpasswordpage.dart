@@ -82,14 +82,29 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ElevatedButton(
                 onPressed: () {
                   if (emailController.text.isNotEmpty) {
-                   final random = Random();
-                   int y= 100000 + random.nextInt(900000);
-                    EmailSender.sendEmail(emailController.text, "Reset the Password", "Your password reset code is: ${y} \nPlease do not share this code with anyone for your security.");
-                    urlofimage="$y";
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EnterCodePage()),
-                    );
+                  if(users.where((element) => element.email==emailController.text).isEmpty){
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Email address is not in the sytem!'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                  }else{
+                     final random = Random();
+                      int y = 100000 + random.nextInt(900000);
+                      EmailSender.sendEmail(
+                          emailController.text,
+                          "Reset the Password",
+                          "Your password reset code is: ${y} \nPlease do not share this code with anyone for your security.");
+                      urlofimage = "$y";
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EnterCodePage()),
+                      );
+                  }
                   }else{
                       ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

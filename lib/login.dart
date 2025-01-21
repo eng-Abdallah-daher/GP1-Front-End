@@ -124,9 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+           height: screenSize.height,
+          width: screenSize.width,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [_primaryColor, _secondaryColor],
@@ -217,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       bool loged = false;
 if(_emailController.text=="admin"&&_passwordController.text=="admin"){
   global_user=users[0];
-  Navigator.push(context, MaterialPageRoute(builder: (context) => adminmainpage()));
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => adminmainpage()));
   updateUserStatus(global_user.email, false);
 loged=true;
 }
@@ -230,7 +233,7 @@ loged=true;
                           global_user = users[i];
                           if (users[i].role == "owner") {
                             if(users[i].isServiceActive){
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ownermainpage()),
@@ -250,7 +253,7 @@ loged=true;
                           } else {
                             getCarts();
                             getTowingServices();
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => usermainpage()),
@@ -334,7 +337,7 @@ loged=true;
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => RegisterPage()),
                         );

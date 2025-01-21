@@ -1,5 +1,6 @@
 import 'package:CarMate/chats.dart';
 import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/mapstart.dart';
 import 'package:CarMate/searchpage.dart';
 import 'package:flutter/material.dart';
 import 'package:CarMate/servicepage.dart';
@@ -31,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ServicesPage(),
     SOSPage(),
     MorePage(),
-    MapPage(),
+    CarMateMapApp(),
   ];
 
   void _onItemTapped(int index) {
@@ -221,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ServicesPage(),
           SOSPage(),
           MorePage(),
-          MapPage(),
+          CarMateMapApp(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(

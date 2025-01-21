@@ -8,13 +8,20 @@ class OffersListPage extends StatefulWidget {
 }
 
 class _OffersListPageState extends State<OffersListPage> {
+  List<Offer> fillteredoffers = [];
   @override
   void initState() {
   
     super.initState();
-   
+   m();
   }
-
+  void m() async{
+  await getOffers();
+  fillteredoffers=offers.where((element) => element.posterid==global_user.id,).toList();
+  setState(() {
+    
+  });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,8 +46,9 @@ class _OffersListPageState extends State<OffersListPage> {
               ),
             )
           : ListView.builder(
-              itemCount: offers.length,
+              itemCount: fillteredoffers.length,
               itemBuilder: (context, index) {
+                
                 return Card(
                   elevation: 8,
                   shape: RoundedRectangleBorder(
@@ -59,7 +67,7 @@ class _OffersListPageState extends State<OffersListPage> {
                     child: ListTile(
                       contentPadding: EdgeInsets.all(16),
                       title: Text(
-                        '${offers[index].title}',
+                        '${fillteredoffers[index].title}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -70,7 +78,7 @@ class _OffersListPageState extends State<OffersListPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Discount: ${offers[index].discount}% off',
+                            'Discount: ${fillteredoffers[index].discount}% off',
                             style: TextStyle(
                               fontSize: 18,
                               color: Colors.white,
@@ -79,19 +87,19 @@ class _OffersListPageState extends State<OffersListPage> {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            'Description: ${offers[index].description}',
+                            'Description: ${fillteredoffers[index].description}',
                             style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                           SizedBox(height: 5),
                           Text(
-                            'Valid Until: ${offers[index].validUntil.toLocal().toString().split(' ')[0]}',
+                            'Valid Until: ${fillteredoffers[index].validUntil.toLocal().toString().split(' ')[0]}',
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white),
                           ),
                           Text(
-                            'Posted By: ${getusernaembyid(offers[index].posterid)}',
+                            'Posted By: ${getusernaembyid(fillteredoffers[index].posterid)}',
                             style: TextStyle(
                                 fontSize: 14, color: Colors.grey[300]),
                           ),

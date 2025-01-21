@@ -510,19 +510,8 @@ class _ProfilePageState extends State<ProfilePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildInfoColumn("238", "Posts"),
-              Container(
-                height: 40,
-                width: 1,
-                color: Colors.blue,
-              ),
-              _buildInfoColumn("238", "Followers"),
-              Container(
-                height: 40,
-                width: 1,
-                color: Colors.blue,
-              ),
-              _buildInfoColumn("238", "Following"),
+              _buildInfoColumn("${getUserPosts().length}", "Posts"),
+              
             ],
           )
         ],
@@ -540,10 +529,12 @@ class _ProfilePageState extends State<ProfilePage> {
             fontWeight: FontWeight.bold,
             color: Colors.blueGrey,
           ),
+          textAlign: TextAlign.center,
         ),
         Text(
           title,
           style: TextStyle(fontSize: 16, color: Colors.black),
+           textAlign: TextAlign.center,
         ),
       ],
     );
@@ -628,10 +619,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
 
                    try{
-                     createChat(chats.length, global_user.id, widget.user.id);
+                     createChat(chats[chats.length - 1].id + 1, global_user.id, widget.user.id);
                     chats.add(Chat(
                         lastMessage: DateTime.now(),
-                        id: chats.length,
+                        id: chats[chats.length - 1].id + 1,
                         messages: [],
                         u1: global_user,
                         u2: widget.user));
@@ -672,9 +663,9 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           _buildContactRow(Icons.email, widget.user.email),
           SizedBox(height: 10),
-          _buildContactRow(Icons.cake, "March 15, 1993"),
+          _buildContactRow(Icons.cake, widget.user.birthDate),
           SizedBox(height: 10),
-          _buildContactRow(Icons.person, "Male"),
+          _buildContactRow(Icons.person, widget.user.gender),
         ],
       ),
     );

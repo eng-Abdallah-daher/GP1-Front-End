@@ -1,5 +1,6 @@
 import 'package:CarMate/AddBookingPage.dart';
 import 'package:CarMate/EditBookingPage.dart';
+import 'package:CarMate/EmailSender.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
@@ -131,7 +132,7 @@ getSales();
                 Expanded(
                   child: filteredBookings.isNotEmpty
                       ? ListView.builder(
-                          itemCount: filteredBookings.where((element) => (element.ownerid==global_user.id)&&(element.status=="Confirmed"),).length,
+                          itemCount: filteredBookings.where((element) => (element.ownerid==global_user.id),).length,
                           itemBuilder: (context, index) {
                             final booking = filteredBookings[index];
 
@@ -379,8 +380,31 @@ getSales();
                        try{
                            setState(() {
                             booking.status = 'Completed';
+                            updateBookingstatus(booking.bookingid, booking.status);
                             addSale(id: sales[sales.length - 1].id + 1,ownerId: global_user.id, itemId: -1, quantity: 0, price: cost, date: DateTime(1,1,1));
                         sales.add(Sale(id: sales[sales.length - 1].id + 1,ownerid: global_user.id, itemid: -1, quantity: 0, price: cost, date: DateTime(1,1,1)));
+                        
+                        EmailSender.sendEmail(users.where((element) => element.id== booking.userid,).toList()[0].email, "Completed booking", "The booking has been completed in the workshop of "+
+                                      users
+                                          .where(
+                                            (element) =>
+                                                element.id == booking.ownerid,
+                                          )
+                                          .toList()[0]
+                                          .name+" with cost : "+_costController.text+" !");
+                                         EmailSender. sendEmailwithpdf(
+                                      users.where(
+                                        (element) =>
+                                            element.id == booking.ownerid,
+                                      )
+                                      .toList()[0]
+                                      .name, users
+                                      .where(
+                                        (element) =>
+                                            element.id == booking.userid,
+                                      )
+                                      .toList()[0]
+                                      .name, _costController.text, users.where((element) => element.id== booking.userid,).toList()[0].email);
                           });
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(

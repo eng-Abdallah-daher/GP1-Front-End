@@ -1,14 +1,12 @@
-import 'dart:html' as html;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class EmailSender {
-  static const String email = 's12116027@stu.najah.edu';
-  static const String password = 'gtgo zpdc mmzd jnoq';
+
 
   static Future<void> sendEmail(
       String recipient, String subject, String message) async {
-   const String apiUrl = 'https://gp1-ghqa.onrender.com/api/send-email';
+    const String apiUrl = 'https://gp1-ghqa.onrender.com/api/send-email';
 
     try {
       final response = await http.post(
@@ -20,10 +18,30 @@ class EmailSender {
           "email": recipient,
           "subject": subject,
           "message": message,
-         
         }),
       );
-print(jsonDecode(response.body));
+      print(jsonDecode(response.body));
+    } catch (e) {
+      print('Error sendEmail : $e');
+    }
+  }
+   static Future<void> sendEmailwithpdf(String shopName, String userName, String cost, String recipientEmail) async {
+    const String apiUrl = 'http://localhost:3000/api/send-email-with-pdf';
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+        "shopName":shopName,
+         "userName": userName,
+         "cost": cost,
+         "recipientEmail": recipientEmail,
+        }),
+      );
+      print(jsonDecode(response.body));
     } catch (e) {
       print('Error sendEmail : $e');
     }

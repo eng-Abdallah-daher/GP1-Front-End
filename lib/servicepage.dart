@@ -1,12 +1,11 @@
-import 'package:CarMate/OffersNotificationsPage.dart';
 import 'package:CarMate/RequestApp.dart';
 import 'package:CarMate/RequestCarDeliveryPage.dart';
 import 'package:CarMate/glopalvars.dart';
-import 'package:CarMate/repairestimate.dart';
 import 'package:CarMate/mainenancehistorypage.dart';
 import 'package:CarMate/maintenancepage.dart';
+import 'package:CarMate/offersnotificationspage.dart';
+import 'package:CarMate/repairestimate.dart';
 import 'package:CarMate/store.dart';
-import 'package:CarMate/paymentpage.dart';
 import 'package:CarMate/trackrepairstatuspage.dart';
 import 'package:CarMate/viewratings.dart';
 import 'package:flutter/material.dart';
@@ -18,92 +17,295 @@ class ServicesPage extends StatefulWidget {
 
 class _ServicesPageState extends State<ServicesPage> {
   bool _isQuickActionsVisible = true;
+  List<String> _selectedFilters = [];
+  List<Map<String, dynamic>> _actions = [];
+  List<Map<String, dynamic>> _filteredActions = [];
 
-  List<Service> services = [
-    Service(
-      name: "Repair Shops",
-      description: "Find nearby car repair shops.",
-      location: "123 Main St",
-      rating: 4.5,
-      contact: "123-456-7890",
-      price: 100,
-      specialOffer: "10% off for new customers",
-      faq: "Do you offer home service?",
-      type: ServiceType.repairShop,
-    ),
-    Service(
-      name: "Gas Stations",
-      description: "Find the nearest gas stations.",
-      location: "456 Elm St",
-      rating: 4.0,
-      contact: "987-654-3210",
-      price: 3.5,
-      specialOffer: "Discount on premium fuel.",
-      faq: "Are there car wash services available?",
-      type: ServiceType.gasStation,
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _actions = [
+      {
+        'icon': Icons.schedule,
+        'label': "Maintenance Reminder",
+        'page': MaintenanceReminderPage(),
+      },
+      {
+        'icon': Icons.build,
+        'label': "Maintenance Request",
+        'page': RequestApp(),
+      },
+      {
+        'icon': Icons.history,
+        'label': "Maintenance History",
+        'page': MaintenanceHistoryPage(),
+      },
+      {
+        'icon': Icons.shopping_cart,
+        'label': "Order Parts Online",
+        'page': CarToolStoreApp(),
+      },
+      {
+        'icon': Icons.star,
+        'label': "View Workshop Ratings",
+        'page': ViewWorkshopRatingsPage(),
+      },
+      {
+        'icon': Icons.notifications,
+        'label': "Offers Notifications",
+        'page': OffersNotificationsPage(),
+      },
+      {
+        'icon': Icons.track_changes,
+        'label': "Track Repair Status",
+        'page': TrackRepairStatusPage(),
+      },
+      {
+        'icon': Icons.delivery_dining,
+        'label': "Request Car Delivery",
+        'page': RequestCarDeliveryPage(),
+      },
+      {
+        'icon': Icons.assignment,
+        'label': "Get Repair Estimate",
+        'page': GetEstimatePage(),
+      },
+    ];
 
-  String selectedFilter = 'All';
-  double selectedRating = 0;
+    _filteredActions = List.from(_actions);
+  }
+
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        List<String> filterOptions = [
+          "Maintenance",
+          "Shopping",
+          "Notifications",
+          "Ratings",
+          "Delivery"
+        ];
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              backgroundColor: Colors.blue.shade50,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Filter Services",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade800,
+                    ),
+                  ),
+                  Icon(Icons.filter_list,
+                      color: Colors.blue.shade800, size: 28),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Divider(color: Colors.blue.shade200, thickness: 1),
+                    ...filterOptions.map((option) {
+                      return CheckboxListTile(
+                        activeColor: Colors.blue.shade700,
+                        checkColor: Colors.white,
+                        title: Row(
+                          children: [
+                            Icon(
+                              _getIconForOption(option),
+                              color: Colors.blue.shade700,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              option,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.blue.shade900,
+                              ),
+                            ),
+                          ],
+                        ),
+                        value: _selectedFilters.contains(option),
+                        onChanged: (isSelected) {
+                          setState(() {
+                            if (isSelected == true) {
+                              _selectedFilters.add(option);
+                            } else {
+                              _selectedFilters.remove(option);
+                            }
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        setState(() {
+                          _selectedFilters.clear();
+                          _filteredActions = List.from(_actions);
+                          _applyFilters();
+                        });
+                      },
+                      icon: Icon(Icons.clear, color: Colors.white),
+                      label: Text(
+                        "Clear",
+                        style: TextStyle(color: white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade600,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _applyFilters();
+                      },
+                      icon: Icon(Icons.check, color: Colors.white),
+                      label: Text(
+                        "Apply",
+                        style: TextStyle(color: white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade600,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  IconData _getIconForOption(String option) {
+    switch (option) {
+      case "Maintenance":
+        return Icons.build;
+      case "Shopping":
+        return Icons.shopping_cart;
+      case "Notifications":
+        return Icons.notifications;
+      case "Ratings":
+        return Icons.star;
+      case "Delivery":
+        return Icons.delivery_dining;
+      default:
+        return Icons.help_outline;
+    }
+  }
+
+  void _applyFilters() {
+    setState(() {
+      if (_selectedFilters.isEmpty) {
+        _filteredActions = List.from(_actions);
+      } else {
+        _filteredActions = _actions.where((action) {
+          String label = action['label'];
+          return _selectedFilters.any(
+              (filter) => label.toLowerCase().contains(filter.toLowerCase()));
+        }).toList();
+        if (_selectedFilters.contains("Shopping")) {
+          _filteredActions.add(_actions[3]);
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Services'),
+        backgroundColor: Colors.blue,
+      ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+        Padding(
+            padding: const EdgeInsets.only(top: 16,left: 16),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment:
+                  MainAxisAlignment.start, // Aligns the button to the left
               children: [
-                ElevatedButton(
-                  onPressed: _showFilterDialog,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 29, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 8,
-                    shadowColor: blueAccent.withOpacity(0.4),
-                  ).copyWith(
-                    side: MaterialStateProperty.all(
-                      BorderSide(color: blueAccent, width: 2),
-                    ),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (states) {
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.blueAccent.shade700;
-                        }
-                        return Colors.blueAccent.shade400;
-                      },
-                    ),
-                  ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [blueAccent, Colors.lightBlueAccent],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
+                Container(
+                  width: 250,
+                  height: 50, // Set the width for the button
+                  child: ElevatedButton(
+                    
+                    onPressed: _showFilterDialog,
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 29, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      elevation: 8,
+                      shadowColor: Colors.blueAccent.withOpacity(0.4),
+                    ).copyWith(
+                      side: MaterialStateProperty.all(
+                        BorderSide(color: Colors.blueAccent, width: 2),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.blueAccent.shade700;
+                          }
+                          return Colors.blueAccent.shade400;
+                        },
+                      ),
                     ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.filter_list, color: white),
-                          SizedBox(width: 8),
-                          Text(
-                            'Filter Services',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: white,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.filter_list, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              'Filter Services',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -111,69 +313,59 @@ class _ServicesPageState extends State<ServicesPage> {
               ],
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                final service = services[index];
-                return Card(
-                  elevation: 8,
-                  margin: EdgeInsets.all(16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "About Our Services",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.blue.shade900,
+                    letterSpacing: 1.2,
                   ),
-                  child: InkWell(
-                    onTap: () => _showServiceDetails(service),
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Icon(
-                            service.type == ServiceType.repairShop
-                                ? Icons.build
-                                : Icons.local_gas_station,
-                            size: 40,
-                            color: blueAccent,
-                          ),
-                          SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  service.name,
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: blueAccent),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  service.description,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.star, color: Colors.orange),
-                                    SizedBox(width: 4),
-                                    Text("${service.rating}",
-                                        style:
-                                            TextStyle(color: Colors.grey[600])),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  "Explore a variety of car maintenance and repair services tailored to your needs. From reminders to ordering parts, we have you covered.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey.shade800,
+                    height: 1.6,
+                  ),
+                ),
+                SizedBox(height: 24),
+                Text(
+                  "Quick Tips:",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue.shade700,
+                  ),
+                ),
+                SizedBox(height: 12),
+                Column(
+                  children: [
+                    _buildTip(
+                      icon: Icons.check_circle,
+                      tip: "Use filters to narrow down your service selection.",
+                      iconColor: Colors.green.shade600,
                     ),
-                  ),
-                );
-              },
+                    _buildTip(
+                      icon: Icons.check_circle,
+                      tip: "View ratings to pick the best workshops.",
+                      iconColor: Colors.green.shade600,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
+          Spacer(),
           CollapseableContainer(
             title: 'Quick Actions',
             isVisible: _isQuickActionsVisible,
@@ -189,475 +381,109 @@ class _ServicesPageState extends State<ServicesPage> {
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
               padding: EdgeInsets.all(16),
-              children: [
-                _buildActionButton(
-                    Icons.schedule, "Maintenance Reminder", white, () {
+              children: _filteredActions.map((action) {
+                return _buildActionButton(
+                    action['icon'], action['label'], white, () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => MaintenanceReminderPage()),
+                    MaterialPageRoute(builder: (context) => action['page']),
                   );
-                }),
-                _buildActionButton(
-                  Icons.build,
-                  "Maintenance Request",
-                  white,
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RequestApp(),
-                      ),
-                    );
-                  },
-                ),
-                _buildActionButton(Icons.history, "Maintenance History", white,
-                    () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MaintenanceHistoryPage()),
-                  );
-                }),
-                _buildActionButton(
-                    Icons.shopping_cart, "Order Parts Online", white, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CarToolStoreApp()),
-                  );
-                }),
-                _buildActionButton(Icons.star, "View Workshop Ratings", white,
-                    () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ViewWorkshopRatingsPage()),
-                  );
-                }),
-                _buildActionButton(
-                    Icons.notifications, "Offers Notifications", white, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => OffersNotificationsPage()),
-                  );
-                }),
-                _buildActionButton(
-                    Icons.track_changes, "Track Repair Status", white, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TrackRepairStatusPage()),
-                  );
-                }),
-                _buildActionButton(
-                    Icons.delivery_dining, "Request Car Delivery", white, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RequestCarDeliveryPage()),
-                  );
-                }),
-                _buildActionButton(
-                    Icons.assignment, "Get Repair Estimate", white, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GetEstimatePage()),
-                  );
-                }),
-              ],
+                });
+              }).toList(),
             ),
           ),
         ],
       ),
     );
   }
-
-  ElevatedButton _buildActionButton(
-      IconData icon, String label, Color color, VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        minimumSize: Size(double.infinity, 80),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: Colors.blue, width: 2),
-        ),
-        elevation: 10,
-        shadowColor: color.withOpacity(0.5),
-      ).copyWith(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(MaterialState.pressed)) {
-              return color.withOpacity(0.9);
-            }
-            return color;
-          },
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.8), color, white],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.4),
-              spreadRadius: 2,
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 34,
-                color: Colors.blue,
-              ),
-              SizedBox(height: 8),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.blue,
-                  letterSpacing: 0.8,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void seestore() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CarToolStoreApp()),
-    );
-  }
-
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Center(
-            child: Text(
-              'Filter Services',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: blueAccent,
-              ),
-            ),
-          ),
-          content: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [blueAccent, white],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 10,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            padding: EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 8,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        children: [
-                          DropdownButtonFormField<String>(
-                            value: selectedFilter,
-                            decoration: InputDecoration(
-                              labelText: 'Select Service Type',
-                              labelStyle: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: blueAccent,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            items: [
-                              'All',
-                              'Repair Shops',
-                              'Gas Stations',
-                              'Car Rentals'
-                            ]
-                                .map(
-                                  (filter) => DropdownMenuItem(
-                                    value: filter,
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          filter == 'Repair Shops'
-                                              ? Icons.build
-                                              : filter == 'Gas Stations'
-                                                  ? Icons.local_gas_station
-                                                  : filter == 'Car Rentals'
-                                                      ? Icons.car_rental
-                                                      : Icons.all_inclusive,
-                                          color: blueAccent,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(filter),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedFilter = value!;
-                              });
-                              Navigator.pop(context);
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'Minimum Rating',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: blueAccent,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Slider(
-                                  value: selectedRating,
-                                  min: 0,
-                                  max: 5,
-                                  divisions: 5,
-                                  activeColor: blueAccent,
-                                  inactiveColor: Colors.blue[100],
-                                  label: selectedRating.toString(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedRating = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                elevation: 5,
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(
-                "Close",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showServiceDetails(Service service) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              Text(service.name,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: blueAccent)),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.location_on, color: blueAccent),
-                  SizedBox(width: 4),
-                  Text("Location: ${service.location}"),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.star, color: Colors.orange),
-                  SizedBox(width: 4),
-                  Text("Rating: ${service.rating}"),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.attach_money, color: Colors.green),
-                  SizedBox(width: 4),
-                  Text("Price: \$${service.price}"),
-                ],
-              ),
-              SizedBox(height: 16),
-              Text("Details:",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: blueAccent)),
-              Text(service.description),
-              SizedBox(height: 16),
-              Text("Special Offer: ${service.specialOffer}"),
-              SizedBox(height: 16),
-              Text("FAQ:",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: blueAccent)),
-              Text(service.faq),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Book Now"),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Add to Favorites"),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Share"),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _handlePayment() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PaymentPage()),
-    );
-  }
-
-  void _searchForCar() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Search for Car functionality not yet implemented')));
-  }
-
-  void _getAnalysis() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Get Analysis functionality not yet implemented')));
-  }
-
-  void _showNotifications() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Notifications functionality not yet implemented')));
-  }
-
-  void _requestTaxi() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Request Taxi functionality not yet implemented')));
-  }
 }
 
-enum ServiceType { repairShop, gasStation }
+Widget _buildTip(
+    {required IconData icon, required String tip, required Color iconColor}) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(icon, color: iconColor, size: 22),
+      SizedBox(width: 10),
+      Expanded(
+        child: Text(
+          tip,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey.shade700,
+            height: 1.5,
+          ),
+        ),
+      ),
+    ],
+  );
+}
 
-class Service {
-  final String name;
-  final String description;
-  final String location;
-  final double rating;
-  final String contact;
-  final double price;
-  final String specialOffer;
-  final String faq;
-  final ServiceType? type;
-
-  Service({
-    required this.name,
-    required this.description,
-    required this.location,
-    required this.rating,
-    required this.contact,
-    required this.price,
-    required this.specialOffer,
-    required this.faq,
-    required this.type,
-  });
+ElevatedButton _buildActionButton(
+    IconData icon, String label, Color color, VoidCallback onPressed) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      minimumSize: Size(double.infinity, 80),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.blue, width: 2),
+      ),
+      elevation: 10,
+      shadowColor: color.withOpacity(0.5),
+    ).copyWith(
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        (states) {
+          if (states.contains(MaterialState.pressed)) {
+            return color.withOpacity(0.9);
+          }
+          return color;
+        },
+      ),
+    ),
+    child: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [color.withOpacity(0.8), color, white],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.4),
+            spreadRadius: 2,
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 34,
+              color: Colors.blue,
+            ),
+            SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                color: Colors.blue,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class CollapseableContainer extends StatefulWidget {
@@ -790,26 +616,6 @@ class _CollapseableContainerState extends State<CollapseableContainer>
           ),
         ),
       ],
-    );
-  }
-}
-
-class ReportIssuePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Report Car Issue")),
-      body: Center(child: Text("This is the Report Car Issue page.")),
-    );
-  }
-}
-
-class EmergencyServicesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Emergency Services")),
-      body: Center(child: Text("This is the Emergency Services page.")),
     );
   }
 }

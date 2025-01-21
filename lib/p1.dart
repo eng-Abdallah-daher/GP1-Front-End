@@ -160,6 +160,160 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 16),
+            TextFormField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: _textFieldFillColor,
+                  hintText: 'Select Gender',
+                  prefixIcon: Icon(Icons.person, color: _iconColor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                controller: TextEditingController(text: selectedGender),
+                onTap: () async {
+                  String? selectedGendero = await showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 20,
+                        backgroundColor: _primaryColor,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Select Gender",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: _textColor,
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              Divider(
+                                color: _accentColor,
+                                thickness: 2,
+                              ),
+                              SizedBox(height: 20),
+                              SimpleDialogOption(
+                                onPressed: () {
+                                  Navigator.pop(context, 'Male');
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 18, horizontal: 32),
+                                  decoration: BoxDecoration(
+                                    color: _accentColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: _accentColor.withOpacity(0.3),
+                                        offset: Offset(0, 4),
+                                        blurRadius: 8,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    'Male',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700,
+                                      color: _accentColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 18),
+                              SimpleDialogOption(
+                                onPressed: () {
+                                  Navigator.pop(context, 'Female');
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 18, horizontal: 32),
+                                  decoration: BoxDecoration(
+                                    color: _buttonColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: _buttonColor.withOpacity(0.3),
+                                        offset: Offset(0, 4),
+                                        blurRadius: 8,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    'Female',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700,
+                                      color: _buttonColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+
+                  if (selectedGendero != null) {
+                    setState(() {
+                      selectedGender = selectedGendero;
+                    });
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a gender';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+  controller: birthDateController,
+  decoration: InputDecoration(
+    filled: true,
+    fillColor: _textFieldFillColor,
+    hintText: 'Enter Your Birth Date',
+    prefixIcon: Icon(Icons.calendar_today, color: _iconColor),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+  keyboardType: TextInputType.datetime,
+  onTap: () async {
+    FocusScope.of(context).requestFocus(FocusNode()); // to hide keyboard
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (selectedDate != null) {
+      birthDateController.text = "${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}/${selectedDate.year}";
+    }
+  },
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your birth date';
+    }
+    return null;
+  },
+),
               SizedBox(
                 height: 8,
               ),

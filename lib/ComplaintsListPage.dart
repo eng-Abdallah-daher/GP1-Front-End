@@ -43,19 +43,21 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
               itemBuilder: (context, index) {
                 if (complaints[index].ownerid == global_user.id)
                   return Card(
-                    elevation: 5,
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    elevation: 12,
+                    margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(18),
                     ),
+                    color: Colors.blue.shade100,
                     child: ListTile(
-                      contentPadding: EdgeInsets.all(16),
+                      contentPadding: EdgeInsets.all(24),
                       title: Text(
                         complaints[index].rate.toString(),
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 24,
+                          color: Colors.deepOrangeAccent,
+                          letterSpacing: 1.5,
                         ),
                       ),
                       subtitle: Column(
@@ -63,18 +65,20 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                         children: [
                           Text(
                             'Description: ${complaints[index].description}',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Submitted By: ${complaints[index].userName}',
                             style: TextStyle(
-                                fontSize: 14, color: Colors.grey[700]),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                              height: 1.5,
+                            ),
                           ),
+                          SizedBox(height: 10),
+                         
                         ],
                       ),
                     ),
                   );
+
                 else
                   return SizedBox(
                     height: 0,
