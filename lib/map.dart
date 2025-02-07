@@ -84,7 +84,7 @@ class _MapScreenState extends State<MapScreen> {
   String placeDetails = ''; 
   bool _isListening = false;
   String _lastWords = '';
-  final background = 'Screenshot 2024-08-15 143537.png';
+ 
   stt.SpeechToText _speech = stt.SpeechToText();
 
   @override
@@ -118,7 +118,7 @@ void _getCurrentLocation() async {
         point: currentLocation!,
         builder: (ctx) => Icon(
           Icons.my_location,
-          color: Colors.blue,
+          color: blue,
           size: 40,
         ),
       ));
@@ -197,7 +197,7 @@ l=location;
                 point: currentLocation!,
                 builder: (ctx) => Icon(
                   Icons.my_location,
-                  color: Colors.blue,
+                  color: blue,
                   size: 40,
                 ),
               ),
@@ -279,7 +279,7 @@ l=location;
                 point: currentLocation!,
                 builder: (ctx) => Icon(
                   Icons.my_location,
-                  color: Colors.blue,
+                  color: blue,
                   size: 40,
                 ),
               ),
@@ -372,7 +372,7 @@ l=location;
               point: currentLocation!,
               builder: (ctx) => Icon(
                 Icons.my_location,
-                color: Colors.blue,
+                color: blue,
                 size: 40,
               ),
             ),
@@ -436,7 +436,7 @@ l=location;
         title: Container(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: white,
             borderRadius: BorderRadius.circular(30.0),
             boxShadow: [
               BoxShadow(
@@ -449,7 +449,7 @@ l=location;
           ),
           child: Row(
             children: [
-              Icon(Icons.map, color: Colors.blueAccent),
+              Icon(Icons.map, color: blueAccent),
               Expanded(
                 child: TypeAheadField<String>(
                   textFieldConfiguration: TextFieldConfiguration(
@@ -474,9 +474,7 @@ l=location;
                 icon: Icon(_isListening ? Icons.mic : Icons.mic_none),
                 onPressed: _isListening ? _stopListening : _startListening,
               ),
-              CircleAvatar(
-                backgroundImage: AssetImage('../images/' + background),
-              ),
+             
             ],
           ),
         ),
@@ -520,7 +518,7 @@ l=location;
             polylines: [
               Polyline(
                 points: pathCoordinates,
-                color: Colors.blue,
+                color: blue,
                 strokeWidth: 4.0,
               ),
             ],
@@ -535,7 +533,7 @@ l=location;
               'Place Details',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                    color: blueAccent,
                   ),
             ),
             SizedBox(height: 16.0),
@@ -674,7 +672,7 @@ l=location;
                 point: currentLocation!,
                 builder: (ctx) => Icon(
                   Icons.my_location,
-                  color: Colors.blue,
+                  color: blue,
                   size: 40,
                 ),
               ));

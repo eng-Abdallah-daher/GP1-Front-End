@@ -43,7 +43,7 @@ void m() async{
       user.isServiceActive = !user.isServiceActive;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(user.isServiceActive ? "Service activated" : "Service Deactivated"),
-          backgroundColor: Colors.blue,
+          backgroundColor: blue,
         ));
     }catch(e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -68,7 +68,7 @@ void m() async{
             padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: white,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -81,14 +81,14 @@ void m() async{
               child: TextField(
                 onChanged: searchUsers,
                 style: TextStyle(fontSize: 16),
-                cursorColor: Colors.blueAccent,
+                cursorColor: blueAccent,
                 decoration: InputDecoration(
                   labelText: "Search Users",
                   labelStyle: TextStyle(color: Colors.grey.shade600),
-                  prefixIcon: Icon(Icons.search, color: Colors.blueAccent),
+                  prefixIcon: Icon(Icons.search, color: blueAccent),
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                  fillColor: Colors.white,
+                  fillColor: white,
                   filled: true,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -96,7 +96,7 @@ void m() async{
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: blueAccent, width: 2),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -125,7 +125,7 @@ void m() async{
                       borderRadius: BorderRadius.circular(16),
                       gradient: LinearGradient(
                         colors: [
-                          Colors.white,
+                          white,
                           Colors.blueGrey.shade50
                         ], 
                         begin: Alignment.topLeft,
@@ -202,7 +202,7 @@ void m() async{
                                   user.isServiceActive
                                       ? "Stop Service"
                                       : "Enable Service",
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: white),
                                 ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: user.isServiceActive
@@ -222,9 +222,9 @@ void m() async{
                             ElevatedButton(
                               onPressed: () => showUpdateDialog(user),
                               child: Text("Update",
-                                  style: TextStyle(color: Colors.white)),
+                                  style: TextStyle(color: white)),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
+                                backgroundColor: blueAccent,
                                 textStyle: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 14),
                                 padding: EdgeInsets.symmetric(
@@ -240,7 +240,7 @@ void m() async{
                             ElevatedButton(
                               onPressed: () => showDeleteDialog(user),
                               child: Text("Delete",
-                                  style: TextStyle(color: Colors.white)),
+                                  style: TextStyle(color: white)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.redAccent,
                                 textStyle: TextStyle(
@@ -281,14 +281,14 @@ void m() async{
           ),
           title: Row(
             children: [
-              Icon(Icons.edit, color: Colors.blueAccent),
+              Icon(Icons.edit, color: blueAccent),
               SizedBox(width: 8),
               Text(
                 "Update User",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.blueAccent,
+                  color: blueAccent,
                 ),
               ),
             ],
@@ -342,7 +342,7 @@ void m() async{
                   user.phone = phoneController.text;
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("User Updated Successfully"),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: blue,
                     ));
                   
                 }catch(e){  
@@ -357,7 +357,7 @@ void m() async{
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: blueAccent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -446,7 +446,7 @@ void m() async{
                           });
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text("User Deleted Successfully"),
-                                  backgroundColor: Colors.blue,
+                                  backgroundColor: blue,
                                 ));
                           }catch(Exception){
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -458,7 +458,7 @@ void m() async{
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
-                          foregroundColor: Colors.white,
+                          foregroundColor: white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -499,12 +499,12 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
-        prefixIcon: Icon(icon, color: Colors.blueAccent),
+        prefixIcon: Icon(icon, color: blueAccent),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+          borderSide: BorderSide(color: blueAccent, width: 2),
         ),
       ),
     );

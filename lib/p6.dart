@@ -23,11 +23,11 @@ class p6 extends StatelessWidget {
 
 const Color _primaryColor = Colors.blueGrey;
 const Color _secondaryColor = Colors.black87;
-const Color _buttonColor = Colors.orangeAccent;
+const Color _buttonColor =Colors.lightBlueAccent;
 const Color _textColor = Colors.white;
 const Color _textFieldFillColor = Colors.white70;
 const Color _iconColor = Colors.blueGrey;
-const Color _accentColor = Colors.orangeAccent;
+const Color _accentColor = Colors.lightBlueAccent;
 
 const MaterialColor _primarySwatch = MaterialColor(
   0xFF37474F,
@@ -51,6 +51,7 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [_primaryColor, _secondaryColor],
@@ -67,17 +68,10 @@ class NotificationsPage extends StatelessWidget {
                 Center(
                   child: Column(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(50.0),
-                        child: Image.asset(
-                          'images/logo6.png',
-                          width: 500,
-                        ),
-                      ),
-                      SizedBox(height: 3),
+                    
                       Text(isuser ?
-                        'Step 6: Notifications':
-                        'Step 7: Notifications',
+                        'Step 5: Notifications':
+                        'Step 6: Notifications',
                         style: TextStyle(
                           fontSize: 34,
                           color: _textColor,
@@ -85,7 +79,13 @@ class NotificationsPage extends StatelessWidget {
                           letterSpacing: 2,
                         ),
                       ),
-                      SizedBox(height: 3),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: Image.asset(
+                          'images/logo6.png',
+                          width: 500,
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -7,6 +7,7 @@ class ComplaintsListPage extends StatefulWidget {
 }
 
 class _ComplaintsListPageState extends State<ComplaintsListPage> {
+  List<Complaint> filteredcomplaints = [];
   @override
   void initState() {
     
@@ -15,6 +16,12 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
   }
   void m() async{
      await getcomplaints();
+   
+
+     filteredcomplaints=complaints.where((element) => element.ownerid==global_user.id,).toList();
+       for (int i = 0; i < filteredcomplaints.length; i++) {
+      print(filteredcomplaints[i].ownerid);
+    }
      setState(() {
        
      });
@@ -29,9 +36,9 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
           'Complaints & Feedback List',
           style: TextStyle(color: white, fontSize: 18),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
       ),
-      body: complaints.isEmpty
+      body: filteredcomplaints.isEmpty
           ? Center(
               child: Text(
                 'No Complaints Available',
@@ -39,9 +46,9 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
               ),
             )
           : ListView.builder(
-              itemCount: complaints.length,
+              itemCount: filteredcomplaints.length,
               itemBuilder: (context, index) {
-                if (complaints[index].ownerid == global_user.id)
+               
                   return Card(
                     elevation: 12,
                     margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -52,7 +59,7 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                     child: ListTile(
                       contentPadding: EdgeInsets.all(24),
                       title: Text(
-                        complaints[index].rate.toString(),
+                        filteredcomplaints[index].rate.toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 24,
@@ -64,7 +71,7 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Description: ${complaints[index].description}',
+                            'Description: ${filteredcomplaints[index].description}',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -79,10 +86,7 @@ class _ComplaintsListPageState extends State<ComplaintsListPage> {
                     ),
                   );
 
-                else
-                  return SizedBox(
-                    height: 0,
-                  );
+                
               },
             ),
     );

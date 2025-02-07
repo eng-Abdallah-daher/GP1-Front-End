@@ -50,11 +50,17 @@ class _MaintenanceReminderPageState extends State<MaintenanceReminderPage> {
         centerTitle: true,
       ),
       backgroundColor: white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body:Center(
+        child: 
+      Container( 
+        width:   MediaQuery.of(context).size.width > 600 ? 500 : double.infinity,
+        child: 
+       Padding(
+  padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 24.0 : 16.0),
         child: Form(
           key: _formKey,
           child: ListView(
+
             children: [
               Text(
                 "Set Up Your Maintenance Reminder",
@@ -170,7 +176,7 @@ addMaintenanceRecord(id: maintenanceRecords.length,userId: global_user.id, date:
             ],
           ),
         ),
-      ),
+      ),))
     );
   }
 

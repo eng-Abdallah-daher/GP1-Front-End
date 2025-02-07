@@ -1,3 +1,4 @@
+import 'package:CarMate/EmailSender.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +38,7 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
       appBar: AppBar(
         title: Text(
           'Delivery Requests',
-          style: TextStyle(fontSize: 24, color: Colors.white),
+          style: TextStyle(fontSize: 24, color: white),
         ),
         backgroundColor: Colors.blue[900],
         actions: [
@@ -47,7 +48,7 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
                 _selectedStatusFilter = value;
               });
             },
-            icon: Icon(Icons.filter_alt, size: 28, color: Colors.white),
+            icon: Icon(Icons.filter_alt, size: 28, color: white),
             itemBuilder: (context) => [
               PopupMenuItem(value: 'All', child: Text('All')),
               PopupMenuItem(value: 'Pending', child: Text('Pending')),
@@ -105,14 +106,14 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
                   label: Text(
                     request.status,
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                        color: white, fontWeight: FontWeight.bold),
                   ),
                   backgroundColor: _getStatusColor(request.status),
                 ),
               ],
             ),
             SizedBox(height: 10),
-            _buildDetailRow(Icons.phone, Colors.blue, request.phone),
+            _buildDetailRow(Icons.phone, blue, request.phone),
             SizedBox(height: 10),
             _buildDetailRow(
                 Icons.location_on, Colors.deepPurple, request.address),
@@ -137,6 +138,7 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
                           request.status = 'Completed';
                         }
                       });
+                      EmailSender.sendEmail(users.where((element) => element.id==request.userid,).toList()[0].email, "Delivery Request", "You new delivery request status is " + request.status);
                      }catch(e){
 
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -152,7 +154,7 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
                       request.status == 'Pending'
                           ? Icons.check_circle
                           : Icons.check_circle_outline,
-                      color: Colors.white,
+                      color: white,
                     ),
                     label: Text(
                       request.status == 'Pending'
@@ -161,7 +163,7 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[700],
-                      foregroundColor: Colors.white,
+                      foregroundColor: white,
                       padding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       shape: RoundedRectangleBorder(
@@ -199,7 +201,7 @@ class _OwnerDeliveryRequestsPageState extends State<OwnerDeliveryRequestsPage> {
       case 'Completed':
         return Colors.green;
       case 'Confirmed':
-        return Colors.blue;
+        return blue;
       default:
         return Colors.grey;
     }

@@ -1,13 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:CarMate/chats.dart';
 import 'package:CarMate/glopalvars.dart';
-import 'package:CarMate/mapstart.dart';
 import 'package:CarMate/searchpage.dart';
-import 'package:flutter/material.dart';
 import 'package:CarMate/servicepage.dart';
 import 'package:CarMate/morepage.dart';
 import 'package:CarMate/sospage.dart';
 import 'package:CarMate/map.dart';
 import 'package:CarMate/posts.dart';
+
 class usermainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -24,6 +24,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  
+  int numberofmessages=0;
   int _selectedIndex = index;
 
   bool flag = true;
@@ -32,18 +34,25 @@ class _HomeScreenState extends State<HomeScreen> {
     ServicesPage(),
     SOSPage(),
     MorePage(),
-    CarMateMapApp(),
+    MapPage(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      if (index == 0) {
-        flag = true;
-        setState(() {});
-        shownewposts();
-      }
+  void _onItemTapped(int index) async{
+   
+
+    setState(()  {
+     
       _selectedIndex = index;
     });
+     if (_selectedIndex == 0) {
+      await getposts();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => usermainpage(),
+        ),
+      );
+    }
     setState(() {});
   }
 
@@ -80,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.network(
+          Image.asset(
             imagePath,
             height: 29,
             width: 29,
@@ -96,7 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
+@override
+  void initState() {
+  
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(22),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: black.withOpacity(0.2),
                           blurRadius: 7,
                           offset: Offset(0, 4),
                         ),
@@ -136,21 +149,61 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   : BoxDecoration(),
               child: _selectedIndex == 0
-                  ? IconButton(
-                      icon: Icon(
-                        flag ? Icons.message : Icons.people_alt_sharp,
-                        size: 25,
-                        color: white,
-                      ),
-                      onPressed: () {
-                        flag = !flag;
-                        setState(() {});
-                      },
-                      splashRadius: 50,
-                      splashColor: white.withOpacity(0.5),
-                      highlightColor: white.withOpacity(0.3),
-                      padding: EdgeInsets.all(1),
-                    )
+                  ? Stack(
+  children: [
+    IconButton(
+      icon: Icon(
+        flag ? Icons.message : Icons.people_alt_sharp,
+        size: 25,
+        color: white,
+      ),
+      onPressed: () {
+        flag = !flag;
+        getAllChats();
+        setState(() {});
+      },
+      splashRadius: 50,
+      splashColor: white.withOpacity(0.5),
+      highlightColor: white.withOpacity(0.3),
+      padding: EdgeInsets.all(1),
+    ),
+ if(flag&&(getuserchats()
+                                .where(
+                                  (element) =>
+                                      (element.messages.isNotEmpty
+                                          ? element.messages.last.senderId !=
+                                              global_user.id
+                                          : false) &&
+                                      (element.messages.isNotEmpty
+                                          ? element.messages.last.isread ==
+                                              false
+                                          : false),
+                                )
+                                .isNotEmpty))
+    Positioned(
+      right: -2,
+      top: -2,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          '${getuserchats().where(
+                                      (element) => (element.messages.isNotEmpty?element.messages.last.senderId !=
+                                              global_user.id:false)&&(element.messages.isNotEmpty?element.messages.last.isread==false:false),
+                                    ).length}',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ),
+  ],
+)
                   : null),
           SizedBox(width: 10),
           Container(
@@ -161,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: black.withOpacity(0.2),
                   blurRadius: 7,
                   offset: Offset(0, 4),
                 ),
@@ -222,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ServicesPage(),
           SOSPage(),
           MorePage(),
-          CarMateMapApp(),
+          MapPage(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -268,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void shownewposts() {}
+  
 }
 
 class HomePage extends StatelessWidget {

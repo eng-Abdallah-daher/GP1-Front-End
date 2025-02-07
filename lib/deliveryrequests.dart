@@ -28,15 +28,15 @@ void m()async{
         title: Text(
           'Delivery Requests',
           style: TextStyle(
-            color: Colors.white,
+            color: white,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: blue,
         elevation: 5,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: deliveryRequests.isEmpty
@@ -73,14 +73,14 @@ void m()async{
         decoration: BoxDecoration(
           color: Colors.blue[50],
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Colors.blueAccent, width: 1),
+          border: Border.all(color: blueAccent, width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(Icons.local_shipping, color: Colors.blue, size: 24),
+                Icon(Icons.local_shipping, color: blue, size: 24),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -119,7 +119,7 @@ void m()async{
                   child: Text(
                     request.status,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -133,7 +133,7 @@ void m()async{
                 children: [
                   ElevatedButton.icon(
                     onPressed: () => _deleteRequest(index),
-                    icon: Icon(Icons.delete, color: Colors.white),
+                    icon: Icon(Icons.delete, color: white),
                     label: Text('Delete',style: TextStyle(color: white),),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -148,12 +148,12 @@ void m()async{
                       request.status == 'Confirmed')
                     ElevatedButton.icon(
                       onPressed: () => _updateRequest(index),
-                      icon: Icon(Icons.edit, color: Colors.white),
+                      icon: Icon(Icons.edit, color: white),
                       label: Text('Update',
                         style: TextStyle(color: white),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: blue,
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 20),
                         shape: RoundedRectangleBorder(
@@ -176,7 +176,7 @@ void m()async{
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.blue, size: 20),
+          Icon(icon, color: blue, size: 20),
           SizedBox(width: 8),
           Expanded(
             child: RichText(
@@ -202,7 +202,7 @@ void m()async{
       case 'Pending':
         return Colors.orange;
       case 'Confirmed':
-        return Colors.blue;
+        return blue;
       case 'Completed':
         return Colors.green;
       default:
@@ -219,7 +219,7 @@ void m()async{
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Request deleted successfully'),
-        backgroundColor: Colors.blue,
+        backgroundColor: blue,
       ),
     );
     }catch(e){
@@ -267,13 +267,13 @@ void m()async{
                     fillColor: Colors.blue[50],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderSide: BorderSide(color: blueAccent),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide: BorderSide(color: blue, width: 2),
                     ),
-                    prefixIcon: Icon(Icons.phone, color: Colors.blue),
+                    prefixIcon: Icon(Icons.phone, color: blue),
                   ),
                   controller: TextEditingController(text: request.phone),
                   onChanged: (value) => newPhone = value,
@@ -287,13 +287,13 @@ void m()async{
                     fillColor: Colors.blue[50],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderSide: BorderSide(color: blueAccent),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide: BorderSide(color: blue, width: 2),
                     ),
-                    prefixIcon: Icon(Icons.location_on, color: Colors.blue),
+                    prefixIcon: Icon(Icons.location_on, color: blue),
                   ),
                   controller: TextEditingController(text: request.address),
                   onChanged: (value) => newAddress = value,
@@ -307,13 +307,13 @@ void m()async{
                     fillColor: Colors.blue[50],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderSide: BorderSide(color: blueAccent),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide: BorderSide(color: blue, width: 2),
                     ),
-                    prefixIcon: Icon(Icons.info, color: Colors.blue),
+                    prefixIcon: Icon(Icons.info, color: blue),
                   ),
                   controller: TextEditingController(text: request.instructions),
                   onChanged: (value) => newInstructions = value,
@@ -336,7 +336,7 @@ void m()async{
               child: Text(
                 'Cancel',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -369,7 +369,7 @@ try{
                  setState(() {});
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: blue,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -379,7 +379,7 @@ try{
               child: Text(
                 'Update',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: white,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -14,8 +14,18 @@ class AddTowingServicePage extends StatefulWidget {
 
 class _AddTowingServicePageState extends State<AddTowingServicePage> {
 
-
-  final MapController _mapController = MapController();
+@override
+  void initState() {
+    m();
+    super.initState();
+  }
+  void m() async{
+    await getTowingServices();
+    setState(() {
+      
+    });
+    }
+      final MapController _mapController = MapController();
   LatLng? _selectedLatLng;
 
   Future<String> _getPlaceDetails(LatLng latLng) async {
@@ -60,7 +70,7 @@ class _AddTowingServicePageState extends State<AddTowingServicePage> {
           );
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text("Towing Service Added Successfully"),
-            backgroundColor: Colors.blue,
+            backgroundColor: blue,
           ));
           
         } catch (e) {
@@ -90,7 +100,7 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
             child: Text(
               'Add Towing Service',
               style: TextStyle(
-                color: Colors.white,
+                color: white,
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0,
               ),
@@ -134,7 +144,7 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
-              child: Text('Cancel', style: TextStyle(color: Colors.white)),
+              child: Text('Cancel', style: TextStyle(color: white)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -151,7 +161,7 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
-              child: Text('Add', style: TextStyle(color: Colors.white)),
+              child: Text('Add', style: TextStyle(color: white)),
             ),
           ],
         );
@@ -168,7 +178,7 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
     return TextField(
       controller: controller,
       keyboardType: inputType,
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: white),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.blue[300]),
@@ -253,8 +263,8 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
                       _mapController.zoom + 1,
                     );
                   },
-                  child: Icon(Icons.add, color: Colors.white, size: 30.0),
-                  backgroundColor: Colors.blue,
+                  child: Icon(Icons.add, color: white, size: 30.0),
+                  backgroundColor: blue,
                 ),
               ),
               SizedBox(height: 20.0),
@@ -269,8 +279,8 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
                       _mapController.zoom - 1,
                     );
                   },
-                  child: Icon(Icons.remove, color: Colors.white, size: 30.0),
-                  backgroundColor: Colors.blue,
+                  child: Icon(Icons.remove, color: white, size: 30.0),
+                  backgroundColor: blue,
                 ),
               ),
             ],
@@ -283,17 +293,17 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
  Widget _buildSearchBar() {
     return TypeAheadField<String>(
       textFieldConfiguration: TextFieldConfiguration(
-        style: TextStyle(fontSize: 16.0, color: Colors.white),
+        style: TextStyle(fontSize: 16.0, color: white),
         decoration: InputDecoration(
           hintText: 'Search Places',
-          hintStyle: TextStyle(color: Colors.white70),
+          hintStyle: TextStyle(color: white),
           filled: true,
           fillColor: Colors.blue[900],
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0),
             borderSide: BorderSide.none,
           ),
-          prefixIcon: Icon(Icons.search, color: Colors.white),
+          prefixIcon: Icon(Icons.search, color: white),
         ),
       ),
       suggestionsBoxDecoration: SuggestionsBoxDecoration(
@@ -315,7 +325,7 @@ void _showAddTowingDialog(BuildContext context, String placeDetails) {
             padding: const EdgeInsets.all(12.0),
             child: Text(
               suggestion,
-              style: TextStyle(color: Colors.white, fontSize: 14.0),
+              style: TextStyle(color: white, fontSize: 14.0),
             ),
           ),
         );

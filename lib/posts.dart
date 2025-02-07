@@ -190,6 +190,36 @@ class _PostCardState extends State<PostCard> {
                       onPressed: () {
                         String reason = reasonController.text.trim();
                         if (reason.isNotEmpty) {
+                          if(reportedPosts.isEmpty){
+                            User owner=users.where((element) => element.id==widget.post.ownerId,).toList()[0];
+addReport(id:0, ownerName:owner.name , ownerProfileImage: owner.profileImage, postImage: widget.post.postImage, description: widget.post.description, createdAt: widget.post.createdAt.toString(), postid: widget.post.id);
+reportedPosts.add(Postreport(postid: widget.post.id, id: 0, ownerName: owner.name, ownerProfileImage: owner.profileImage, postImage: widget.post.postImage, description: widget.post.description, createdAt: widget.post.createdAt.toString()));
+                            
+                          }else{
+                                      User owner = users
+                                .where(
+                                  (element) =>
+                                      element.id == widget.post.ownerId,
+                                )
+                                .toList()[0];
+                            addReport(
+                                id: reportedPosts[reportedPosts.length-1].id+1,
+                                ownerName: owner.name,
+                                ownerProfileImage: owner.profileImage,
+                                postImage: widget.post.postImage,
+                                description: widget.post.description,
+                                createdAt: widget.post.createdAt.toString(),
+                                postid: widget.post.id);
+                            reportedPosts.add(Postreport(
+                                postid: widget.post.id,
+                                id: reportedPosts[reportedPosts.length - 1].id +1,
+                                ownerName: owner.name,
+                                ownerProfileImage: owner.profileImage,
+                                postImage: widget.post.postImage,
+                                description: widget.post.description,
+                                createdAt: widget.post.createdAt.toString()));
+                     
+                          }
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -291,6 +321,7 @@ class _PostCardState extends State<PostCard> {
                       ),
                       child: Text('Save', style: TextStyle(fontSize: 18)),
                       onPressed: () {
+                        updatepost(widget.post.id, controller.text);
                         Navigator.pop(context, controller.text);
                       },
                     ),
@@ -405,7 +436,7 @@ class _PostCardState extends State<PostCard> {
             (widget.post.ownerId == global_user.id)
                     ?    ListTile(
                 leading: Icon(Icons.edit, color: blue),
-                title: Text('Edit Post'),
+                title: Text('Edit Post',style: TextStyle(color: black),),
                 onTap: () {
                   Navigator.pop(context);
                   _editPost(context);
@@ -422,7 +453,7 @@ class _PostCardState extends State<PostCard> {
              (widget.post.ownerId == global_user.id)
                     ?   ListTile(
                 leading: Icon(Icons.delete, color: Colors.red),
-                title: Text('Delete Post'),
+                title: Text('Delete Post',style: TextStyle(color: black),),
                 onTap: () {
                   Navigator.pop(context);
                   deletepost(widget.post.id);
@@ -435,7 +466,9 @@ class _PostCardState extends State<PostCard> {
                     ? Divider() : SizedBox(height: 0,),
               ListTile(
                 leading: Icon(Icons.report, color: Colors.orange),
-                title: Text('Report Post'),
+                title: Text('Report Post',
+                  style: TextStyle(color: black),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   _reportPost();
@@ -468,7 +501,15 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Center(child: 
+    Container(
+  
+       width: MediaQuery.of(context).size.width > 600 ? 500 : double.infinity,
+       
+      child: 
+    Card(
+      
+      color: white,
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       elevation: 3,
       shape: RoundedRectangleBorder(
@@ -478,6 +519,7 @@ class _PostCardState extends State<PostCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
+            
             padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
@@ -712,7 +754,7 @@ class _PostCardState extends State<PostCard> {
           ),
         ],
       ),
-    );
+    )));
 
 
   }
@@ -781,7 +823,7 @@ void _showReactionsMenu(BuildContext context) {
           Text(
             label,
             style: TextStyle(
-              color: Colors.white,
+              color: white,
               fontSize: 14,
               fontWeight: FontWeight.bold,
             ),

@@ -50,6 +50,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
   }
 
   void m() async {
+      await getusers();
     await getUserSignUpRequests();
     for (int i = 0; i < userRequests.length; i++) {
       fetchPlaceDetails(i);
@@ -58,10 +59,10 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
   }
 
   void _acceptRequest(int index) {
-    print(index);
+    
 
     UserSignUpRequest acceptedRequest = userRequests[index];
-    print(acceptedRequest.name);
+    
     addUser(
         users[users.length - 1].id + 1,
         userRequests[index].latitude,
@@ -73,7 +74,10 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
         "",
         userRequests[index].description,
         "owner",
-        userRequests[index].location);
+        userRequests[index].location,
+        userRequests[index].birth,
+        userRequests[index].gender
+        );
 
     setState(() {
       deleteUserSignUpRequest(acceptedRequest.requestid);
@@ -86,7 +90,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
           children: [
             Icon(
               Icons.check_circle,
-              color: Colors.white,
+              color: white,
               size: 24,
             ),
             SizedBox(width: 10),
@@ -96,7 +100,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: white,
                 ),
               ),
             ),
@@ -143,11 +147,11 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: white,
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.close, color: Colors.white),
+                              icon: Icon(Icons.close, color: white),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
@@ -187,7 +191,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: white,
                               ),
                             ),
                           ),
@@ -211,7 +215,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white, size: 24),
+          Icon(icon, color: white, size: 24),
           SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -222,7 +226,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white70,
+                    color: white,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -231,7 +235,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
-                    color: Colors.white,
+                    color: white,
                   ),
                 ),
               ],
@@ -254,7 +258,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
       SnackBar(
         content: Row(
           children: [
-            Icon(Icons.delete, color: Colors.white),
+            Icon(Icons.delete, color: white),
             SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -262,7 +266,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: white,
                 ),
               ),
             ),
@@ -346,7 +350,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Colors.blueAccent,
+          color: blueAccent,
         ),
       ),
     );
@@ -360,12 +364,12 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
         children: [
           Text(
             "$label: ",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            style: TextStyle(fontWeight: FontWeight.bold, color: black),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: TextStyle(fontSize: 16, color: black),
             ),
           ),
         ],
@@ -412,7 +416,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
           child: Text(
             "Accept",
             style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 16, fontWeight: FontWeight.bold, color: white),
           ),
         ),
         ElevatedButton(
@@ -428,7 +432,7 @@ class _UserRequestsPageState extends State<UserRequestsPage> {
           child: Text(
             "Delete",
             style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                fontSize: 16, fontWeight: FontWeight.bold, color: white),
           ),
         ),
       ],

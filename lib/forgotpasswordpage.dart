@@ -46,14 +46,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       'Forgot Password',
                       style: TextStyle(
                           fontSize: 34,
-                          color: Colors.white,
+                          color: white,
                           fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 16),
                     Text(
                       'Enter your email address to reset your password.',
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.7), fontSize: 16),
+                          color: white.withOpacity(0.7), fontSize: 16),
                     ),
                   ],
                 ),
@@ -63,7 +63,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 controller: emailController,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white70,
+                  fillColor: white,
                   hintText: 'Email Address',
                   prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
                   border: OutlineInputBorder(
@@ -116,16 +116,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   }
                 },
                 child: Text('Send Reset Link',
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                    style: TextStyle(fontSize: 18, color: white)),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent),
+                    backgroundColor: Color.fromARGB(255, 0, 67, 112)),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "remember password?",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: white),
                   ),
                   TextButton(
                     onPressed: () {
@@ -139,7 +139,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       'Sign in',
                       style: TextStyle(
                         decoration: TextDecoration.underline,
-                        color: Colors.orangeAccent,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -182,14 +182,14 @@ class _EnterCodePageState extends State<EnterCodePage> {
                       'Enter Verification Code',
                       style: TextStyle(
                           fontSize: 34,
-                          color: Colors.white,
+                          color: white,
                           fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 16),
                     Text(
                       'Enter the code sent to your email.',
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.7), fontSize: 16),
+                          color: white.withOpacity(0.7), fontSize: 16),
                     ),
                   ],
                 ),
@@ -199,7 +199,7 @@ class _EnterCodePageState extends State<EnterCodePage> {
                 controller: codeController,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white70,
+                  fillColor: white,
                   hintText: 'Verification Code',
                   prefixIcon: Icon(Icons.lock, color: Colors.blueGrey),
                   border: OutlineInputBorder(
@@ -230,9 +230,9 @@ class _EnterCodePageState extends State<EnterCodePage> {
                   }
                 },
                 child: Text('Verify Code',
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                    style: TextStyle(fontSize: 18, color: white)),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent),
+                    backgroundColor: Color.fromARGB(255, 0, 67, 112)),
               ),
               SizedBox(height: 40),
             ],
@@ -271,14 +271,14 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       'Set New Password',
                       style: TextStyle(
                           fontSize: 34,
-                          color: Colors.white,
+                          color: white,
                           fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 16),
                     Text(
                       'Enter your new password and confirm it.',
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.7), fontSize: 16),
+                          color: white.withOpacity(0.7), fontSize: 16),
                     ),
                   ],
                 ),
@@ -289,7 +289,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 obscureText: true,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white70,
+                  fillColor: white,
                   hintText: 'New Password',
                   prefixIcon: Icon(Icons.lock, color: Colors.blueGrey),
                   border: OutlineInputBorder(
@@ -303,7 +303,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 obscureText: true,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white70,
+                  fillColor: white,
                   hintText: 'Confirm New Password',
                   prefixIcon: Icon(Icons.lock, color: Colors.blueGrey),
                   border: OutlineInputBorder(
@@ -332,9 +332,9 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                   }
                 },
                 child: Text('Set New Password',
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                    style: TextStyle(fontSize: 18, color: white)),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent),
+                    backgroundColor: Color.fromARGB(255, 0, 67, 112)),
               ),
               SizedBox(height: 40),
             ],

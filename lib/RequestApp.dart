@@ -1,5 +1,5 @@
 import 'package:CarMate/glopalvars.dart';
-import 'package:CarMate/user.dart';
+import 'package:CarMate/usermainpage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,6 +30,7 @@ class _PlacesPageState extends State<PlacesPage> {
 m();
   }
   void m() async {
+      await getusers();
        await getMaintenanceRequests();
        setState(() {
          
@@ -76,7 +77,7 @@ m();
               onChanged: _filterUsers,
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.black,
+                color: black,
               ),
               decoration: InputDecoration(
                 hintText: "Search for a place...",
@@ -86,36 +87,37 @@ m();
                 ),
                 prefixIcon: Icon(
                   Icons.search,
-                  color: Colors.blue,
+                  color: blue,
                 ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: white,
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide(
-                    color: Colors.blueAccent,
+                    color: blueAccent,
                     width: 2,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide(
-                    color: Colors.blueAccent,
+                    color: blueAccent,
                     width: 2,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide(
-                    color: Colors.blue,
+                    color: blue,
                     width: 2,
                   ),
                 ),
               ),
             ),
           ),
+          
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(16),
@@ -125,7 +127,7 @@ m();
                 if (user.role == "normal") {
                   return Container();
                 }
-                return Card(
+                return Center(child: Container(child:  Card(
                   elevation: 6,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   shape: RoundedRectangleBorder(
@@ -182,6 +184,7 @@ m();
                       ),
                     ),
                   ),
+                ),width: MediaQuery.of(context).size.width>600?MediaQuery.of(context).size.width*0.5: MediaQuery.of(context).size.width ,),
                 );
               },
             ),
@@ -267,7 +270,7 @@ class _SelectTimePageState extends State<SelectTimePage> {
   controller: descriptionController,
   decoration: InputDecoration(
     filled: true,
-    fillColor: Colors.white,
+    fillColor: white,
     hintText: 'Description',
     prefixIcon: Icon(Icons.description, color: Colors.lightBlue),
     border: OutlineInputBorder(

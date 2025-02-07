@@ -1,6 +1,7 @@
 import 'package:CarMate/AddBookingPage.dart';
 import 'package:CarMate/EditBookingPage.dart';
 import 'package:CarMate/EmailSender.dart';
+import 'package:CarMate/cardpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
@@ -22,19 +23,22 @@ class _ManageBookingsPageState extends State<ManageBookingsPage> {
  m();
   }
 void m() async{
-getSales();
-    await getbookings();
-    filteredBookings = bookings;
-    setState(() {
-      
-    });
+  await getbookings();
+   filteredBookings = bookings.where((element) => element.ownerid==global_user.id,).toList();
+ 
+    setState(() {});
+     getSales();
+    getusers();
+     
+   
 }
   void _filterBookings(String query) {
     setState(() {
       searchQuery = query;
       filteredBookings = bookings
           .where((booking) =>
-              booking.customerName.toLowerCase().contains(query.toLowerCase()))
+              booking.customerName.toLowerCase().contains(query.toLowerCase())&&
+              booking.ownerid==global_user.id)
           .toList();
     });
   }
@@ -50,7 +54,7 @@ getSales();
             letterSpacing: 1.2,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: white,
         centerTitle: true,
         elevation: 8,
         shadowColor: Colors.black54,
@@ -61,7 +65,7 @@ getSales();
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white,
+                  white,
                   Colors.lightBlue.shade200,
                 ],
                 begin: Alignment.topCenter,
@@ -78,7 +82,7 @@ getSales();
                   onChanged: _filterBookings,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.8),
+                    fillColor: white.withOpacity(0.8),
                     labelText: 'Search Bookings',
                     labelStyle: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -117,7 +121,7 @@ getSales();
                         setState(() {
                           _searchController.clear();
                           searchQuery = '';
-                          filteredBookings = bookings;
+                          filteredBookings = bookings.where((element) => element.ownerid==global_user.id,).toList();
                         });
                       },
                     ),
@@ -132,24 +136,24 @@ getSales();
                 Expanded(
                   child: filteredBookings.isNotEmpty
                       ? ListView.builder(
-                          itemCount: filteredBookings.where((element) => (element.ownerid==global_user.id),).length,
+                          itemCount: filteredBookings.length,
                           itemBuilder: (context, index) {
                             final booking = filteredBookings[index];
 
                          return booking.status =="Confirmed" ? Card(
-                              color: Colors.white.withOpacity(0.9),
+                              color: white.withOpacity(0.9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               elevation: 10,
                               margin: EdgeInsets.symmetric(vertical: 10),
-                              shadowColor: Colors.blue.withOpacity(0.5),
+                              shadowColor: blue.withOpacity(0.5),
                               child: ListTile(
                                 contentPadding: EdgeInsets.all(16),
                                 leading: CircleAvatar(
-                                  backgroundColor: Colors.blueAccent,
+                                  backgroundColor: blueAccent,
                                   child: Icon(Icons.calendar_today,
-                                      color: Colors.white),
+                                      color: white),
                                 ),
                                 title: Text(
                                   booking.customerName,
@@ -180,19 +184,7 @@ getSales();
                                 trailing: Wrap(
                                   spacing: 10,
                                   children: [
-                                    _buildIconButton(
-                                      Icons.notifications_active,
-                                      Colors.blue.shade600,
-                                      'Send Notification',
-                                      () => _sendNotification(
-                                          context, booking.customerName),
-                                    ),
-                                    _buildIconButton(
-                                      Icons.edit,
-                                      Colors.orange.shade700,
-                                      'Edit Booking',
-                                      () => _manageBooking(context, booking),
-                                    ),
+                                  
                                     if (booking.status == 'Confirmed')
                                       _buildIconButton(
                                         Icons.done,
@@ -224,8 +216,8 @@ getSales();
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.blue.shade700,
-        icon: Icon(Icons.add, color: Colors.white),
-        label: Text('Add Booking', style: TextStyle(color: Colors.white)),
+        icon: Icon(Icons.add, color: white),
+        label: Text('Add Booking', style: TextStyle(color: white)),
         onPressed: () {
           Navigator.push(
             context,
@@ -245,7 +237,7 @@ getSales();
       case 'Pending':
         return Colors.orange;
       case 'Completed':
-        return Colors.blue;
+        return blue;
       default:
         return Colors.grey;
     }
@@ -293,12 +285,12 @@ getSales();
             borderRadius: BorderRadius.circular(20),
           ),
           elevation: 10,
-          backgroundColor: Colors.white,
+          backgroundColor: white,
           child: Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.lightBlueAccent.shade100, Colors.white],
+                colors: [Colors.lightBlueAccent.shade100, white],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -337,7 +329,7 @@ getSales();
                   decoration: InputDecoration(
                     hintText: 'Enter cost',
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: white,
                     contentPadding: EdgeInsets.symmetric(
                       vertical: 14,
                       horizontal: 20,
@@ -364,7 +356,7 @@ getSales();
                       icon: Icon(Icons.cancel, color: Colors.red.shade700),
                       label: Text('Cancel'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: white,
                         side: BorderSide(color: Colors.red.shade700, width: 2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -374,9 +366,17 @@ getSales();
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
+                        if (global_user.role == "owner" &&
+                            global_user.accountnumber == '0') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreditCardPage()));
+                        }else{
                         final cost =
                             double.tryParse(_costController.text.trim());
                         if (cost != null && cost >= 0) {
+                        
                        try{
                            setState(() {
                             booking.status = 'Completed';
@@ -430,9 +430,9 @@ getSales();
                               backgroundColor: Colors.red.shade700,
                             ),
                           );
-                        }
+                        }}
                       },
-                      icon: Icon(Icons.done, color: Colors.white),
+                      icon: Icon(Icons.done, color: white),
                       label: Text('Complete',style: TextStyle(color: white),),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue.shade700,

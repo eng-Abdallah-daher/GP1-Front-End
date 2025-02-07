@@ -73,11 +73,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               Center(
                 child: Column(
                   children: [
-                    Image.asset(
-                      'images/map.png',
-                      width: 300,
-                    ),
-                    SizedBox(height: 8),
+                    
+                    
                     Text(
                       'Step 2: Public Personal Information',
                       style: TextStyle(
@@ -86,6 +83,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         fontWeight: FontWeight.bold,
                         letterSpacing: 2,
                       ),
+                    ),
+                    
+                    Image.asset(
+                      'images/map.png',
+                      width: 300,
                     ),
                     Text(
                       'Provide your personal information',

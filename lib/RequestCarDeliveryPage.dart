@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.blue.withOpacity(0.4),
+              color: blue.withOpacity(0.4),
               blurRadius: 10,
               spreadRadius: 1,
               offset: Offset(5, 5),
@@ -156,7 +156,10 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
         elevation: 0,
         iconTheme: IconThemeData(color: blueAccent),
       ),
-      body: SingleChildScrollView(
+      body:  Align(
+          alignment: Alignment.topCenter,
+        
+        child: Container(child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -190,6 +193,10 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
           ),
         ),
       ),
+       width:
+                MediaQuery.of(context).size.width > 600 ? 500 : double.infinity,
+          ),
+      )
     );
   }
 
@@ -301,7 +308,7 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.blue.withOpacity(0.4),
+              color: blue.withOpacity(0.4),
               blurRadius: 10,
               spreadRadius: 1,
               offset: Offset(5, 5),
@@ -342,7 +349,7 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.blue.withOpacity(0.4),
+              color: blue.withOpacity(0.4),
               blurRadius: 10,
               spreadRadius: 1,
               offset: Offset(5, 5),
@@ -377,8 +384,12 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
   }
 
   void m() async {
+      await getusers();
     await getbookings();
     await getDeliveryRequests();
+    setState(() {
+      
+    });
   }
 
   Future<void> _checkBiometrics() async {
@@ -518,7 +529,7 @@ class _RequestCarDeliveryPageState extends State<RequestCarDeliveryPage> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content:
               Text('Your delivery request has been submitted successfully!'),
-          backgroundColor: Colors.blue,
+          backgroundColor: blue,
           duration: Duration(seconds: 3),
         ));
       } catch (e) {

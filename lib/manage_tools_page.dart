@@ -63,13 +63,13 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
         labelStyle: TextStyle(color: Colors.black54),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
+          borderSide: BorderSide(color: blueAccent, width: 2.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(color: Colors.blue, width: 2.0),
+          borderSide: BorderSide(color: blue, width: 2.0),
         ),
-        suffixIcon: Icon(Icons.search, color: Colors.blueAccent),
+        suffixIcon: Icon(Icons.search, color: blueAccent),
       ),
       onChanged: (value) {
         setState(() {
@@ -104,7 +104,7 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: Icon(Icons.edit, color: Colors.blue),
+                  icon: Icon(Icons.edit, color: blue),
                   onPressed: () {
                     _navigateToEditTool(context, items.indexOf(tool));
                   },
@@ -123,7 +123,7 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
             gradient: LinearGradient(
               colors: [
                 const Color.fromARGB(255, 195, 233, 251).withOpacity(0.8),
-                Colors.blue.withOpacity(0.7),
+                blue.withOpacity(0.7),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -177,8 +177,8 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.cancel, color: Colors.white),
-              label: Text('Cancel', style: TextStyle(color: Colors.white)),
+              icon: Icon(Icons.cancel, color: white),
+              label: Text('Cancel', style: TextStyle(color: white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
@@ -191,8 +191,8 @@ class _ManageToolsPageState extends State<ManageToolsPage> {
                 _deleteTool(index);
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.delete, color: Colors.white),
-              label: Text('Delete', style: TextStyle(color: Colors.white)),
+              icon: Icon(Icons.delete, color: white),
+              label: Text('Delete', style: TextStyle(color: white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 shape: RoundedRectangleBorder(

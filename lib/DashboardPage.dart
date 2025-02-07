@@ -22,6 +22,7 @@ class _DashboardPageState extends State<DashboardPage> {
   void m () async{
       
 await getItems();
+
     await getSales();
     topSellingTools = getTopSellingTools();
     setState(() {
@@ -38,7 +39,7 @@ await getItems();
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: white,
           ),
         ),
         backgroundColor: Color(0xFF1E90FF),
@@ -46,7 +47,7 @@ await getItems();
         elevation: 4,
         actions: [
           IconButton(
-            icon: Icon(Icons.settings_outlined, color: Colors.white),
+            icon: Icon(Icons.settings_outlined, color: white),
             tooltip: 'Update Tools',
             onPressed: () {
               Navigator.push(
@@ -79,7 +80,7 @@ await getItems();
                               .toString(),
                             
                           Icons.build,
-                          Colors.blue,
+                          blue,
                         ),
                       ),
                       SizedBox(width: 10),
@@ -151,7 +152,7 @@ await getItems();
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white,
+                      color: white,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.4),
@@ -185,7 +186,7 @@ await getItems();
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                      color: white,
                     ),
                   ),
                 ],
@@ -211,6 +212,8 @@ await getItems();
   Widget _buildTopSellingToolsList() {
     return Column(
       children: topSellingTools.map((tool) {
+        if (tool['itemid'] == -1){ return SizedBox(height: 0,);}
+    
         return Card(
           elevation: 4,
           margin: EdgeInsets.symmetric(vertical: 8),
@@ -231,11 +234,11 @@ await getItems();
                     height: 50,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blue.withOpacity(0.1),
+                      color: blue.withOpacity(0.1),
                     ),
                     child: Icon(
                       Icons.build,
-                      color: Colors.blue,
+                      color: blue,
                       size: 30,
                     ),
                   ),
@@ -286,7 +289,7 @@ await getItems();
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: Colors.blueAccent,
+              color: blueAccent,
             ),
           ),
           content: SingleChildScrollView(
@@ -324,7 +327,7 @@ await getItems();
           actions: [
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: blueAccent,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -332,7 +335,7 @@ await getItems();
               ),
               child: Text(
                 'Close',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: white),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -351,11 +354,11 @@ await getItems();
     required Function onPressed,
   }) {
     return ElevatedButton.icon(
-      icon: Icon(icon, size: 28, color: Colors.white),
+      icon: Icon(icon, size: 28, color: white),
       label: Text(
         title,
         style: TextStyle(
-          color: Colors.white,
+          color: white,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),

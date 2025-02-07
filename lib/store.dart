@@ -1,5 +1,5 @@
 import 'package:CarMate/glopalvars.dart';
-import 'package:CarMate/user.dart';
+import 'package:CarMate/usermainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:CarMate/cartpage.dart';
 import 'dart:async';
@@ -113,18 +113,20 @@ class _MainPageState extends State<MainPage> {
         int currentIndex = currentImageIndex[tool.name] ?? 0;
 
         return AlertDialog(
+          
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
           backgroundColor: Colors.lightBlue[200],
           content: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: MediaQuery.of(context).size.width>600?MediaQuery.of(context).size.width * 0.5: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.6,
             child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
+                  
                   child: PageView.builder(
                     itemCount: tool.imagePaths.length,
                     onPageChanged: (index) {
@@ -135,6 +137,7 @@ class _MainPageState extends State<MainPage> {
                     },
                     itemBuilder: (context, index) {
                       return ClipRRect(
+                        
                         borderRadius: BorderRadius.circular(15),
                         child: Image.network(
                           tool.imagePaths[index],
@@ -351,7 +354,7 @@ updateItem(tool.id, tool.name, tool.availableQuantity, tool.price);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+          icon: Icon(Icons.arrow_back, color: white, size: 30),
           onPressed: () {
             Navigator.pushReplacement(
               context,
@@ -499,137 +502,151 @@ updateItem(tool.id, tool.name, tool.availableQuantity, tool.price);
                         'No tools available!',
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
-                    )
-                  : ListView.builder(
-                      itemCount: filteredToolData.length,
-                      itemBuilder: (context, index) {
-                        if (filteredToolData[index].availableQuantity != 0) {
-                          return buildToolCard(filteredToolData[index]);
-                        }
-                      },
-                    ),
+                    ):
+                  GridView.builder(
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1, 
+    childAspectRatio: 3 / 2, 
+    crossAxisSpacing: 10, 
+    mainAxisSpacing: 10, 
+  ),
+  itemCount: filteredToolData.length,
+  itemBuilder: (context, index) {
+    if (filteredToolData[index].availableQuantity != 0) {
+      return buildToolCard(filteredToolData[index]);
+    } else {
+      return SizedBox.shrink(); 
+    }
+  },
+  padding: EdgeInsets.all(8), 
+),
             ),
           ],
         ),
       ),
+    );
+  }
+Widget buildToolCard(Item tool) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double imageSize = constraints.maxWidth > 600 ? 180 : 140;
+        return Card(
+          elevation: 12,
+          shadowColor: black.withOpacity(0.9),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Container(
+                  width: imageSize,
+                  height: imageSize,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: white.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          tool.imagePaths[currentImageIndex[tool.name]!]),
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tool.name,
+                        style: TextStyle(
+                          fontSize: constraints.maxWidth > 600 ? 26 : 22,
+                          fontWeight: FontWeight.bold,
+                          color: black,
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        '₪${tool.price.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: constraints.maxWidth > 600 ? 22 : 20,
+                          color: Colors.green[700],
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        tool.description,
+                        style: TextStyle(
+                          fontSize: constraints.maxWidth > 600 ? 18 : 16,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        'Available: ${tool.availableQuantity} in stock',
+                        style: TextStyle(
+                          fontSize: constraints.maxWidth > 600 ? 16 : 14,
+                          color: Colors.lightBlue[300],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Divider(
+                        color: Colors.grey[300],
+                        thickness: 1,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            showQuantityDialog(tool);
+                          },
+                          icon: Icon(
+                            Icons.add_shopping_cart,
+                            size: constraints.maxWidth > 600 ? 30 : 26,
+                            color: white,
+                          ),
+                          label: Text(
+                            'Add to Cart',
+                            style: TextStyle(
+                              fontSize: constraints.maxWidth > 600 ? 18 : 16,
+                              fontWeight: FontWeight.bold,
+                              color: white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 20),
+                            elevation: 12,
+                            shadowColor: black,
+                            backgroundColor: Colors.lightBlue[300],
+                            side: BorderSide(
+                              color: Colors.lightBlueAccent,
+                              width: 2,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget buildToolCard(Item tool) {
-    return Card(
-      elevation: 12,
-      shadowColor: black.withOpacity(0.9),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: white.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: Offset(2, 2),
-                  ),
-                ],
-                image: DecorationImage(
-                  image: NetworkImage(
-                      tool.imagePaths[currentImageIndex[tool.name]!]),
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
-            ),
-            SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    tool.name,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: black,
-                    ),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    '₪${tool.price.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.green[700],
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    tool.description,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    'Available: ${tool.availableQuantity} in stock',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.lightBlue[300],
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Divider(
-                    color: Colors.grey[300],
-                    thickness: 1,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        showQuantityDialog(tool);
-                      },
-                      icon: Icon(
-                        Icons.add_shopping_cart,
-                        size: 26,
-                        color: white,
-                      ),
-                      label: Text(
-                        'Add to Cart',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                        elevation: 12,
-                        shadowColor: black,
-                        backgroundColor: Colors.lightBlue[300],
-                        side: BorderSide(
-                          color: Colors.lightBlueAccent,
-                          width: 2,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

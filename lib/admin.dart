@@ -1,9 +1,13 @@
+import 'dart:ui_web';
+
 import 'package:CarMate/adminmap.dart';
 import 'package:CarMate/adminp1.dart';
 import 'package:CarMate/adminp2.dart';
 import 'package:CarMate/chats.dart';
 import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/managetowservices.dart';
 import 'package:CarMate/ownerpayment.dart';
+import 'package:CarMate/postreports.dart';
 import 'package:flutter/material.dart';
 
 class adminmainpage extends StatelessWidget {
@@ -69,6 +73,58 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         actions: [
           IconButton(
+            icon: Icon(Icons.car_crash_outlined,size: 45,color: blue,),
+            onPressed: () {
+
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TowingServicePage(),
+                  ),
+                );
+            }),
+           IconButton(
+  icon: Stack(
+    children: [
+      Icon(
+        color: blue,
+        Icons.report,
+        size: 45, 
+      ),
+      if (reportedPosts.length > 0)
+        Positioned(
+          right: 0,
+          top: 0,
+          child: CircleAvatar(
+            radius: 10,
+            backgroundColor: Colors.red,
+            child: Text(
+              '${reportedPosts.length}',
+              style: TextStyle(
+                color: white,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+    ],
+  ),
+  onPressed: () {
+   setState(() {
+      Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReportedPostsPage(),
+                  ),
+                );
+   });
+   setState(() {
+     
+   });
+  },
+)
+,
+          IconButton(
             icon: CircleAvatar(
               backgroundImage: NetworkImage(global_user.profileImage!),
               radius: 22,
@@ -133,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _buildButton(Icons.assignment, 'Requests', 0),
-                  _buildButton(Icons.people, 'Users', 1),
+                  _buildButton(Icons.people, 'Owners', 1),
                 ],
               ),
               Row(
@@ -154,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: CircleAvatar(
           radius: 40,
-          backgroundImage: NetworkImage('images/map.png'),
+          backgroundImage: AssetImage('images/map.png'),
           backgroundColor: Colors.transparent,
         ),
         backgroundColor: blue,

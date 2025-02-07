@@ -27,11 +27,11 @@ getposts();
   String? _selectedImage;
   bool _isHovering = false;
   List<String> suggestedImages = [
-    'images/logo.png',
-    'images/logo3.png',
-    'images/logo4.png',
-    'images/logo5.png',
-    'images/logo6.png',
+    'https://media.istockphoto.com/id/1373267042/vector/abstract-multicolored-blurred-gradient-background-soft-gradient-background-for-use-in.jpg?s=612x612&w=0&k=20&c=jDPwsgO2PL4HJWXwBR5UxHl3Oem-xiu9fbo_zgiG684=',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSkmBQQbiExuxyWu7U83io6qezHOPPUI9oeA&s',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ85neARAFrLS6qlxsmdlG3s35OUtS-c0KojA&s',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyoaYBFVC26UIb1YHh5sfRiMyqCRhPmn_5xg&s',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhXPwI31KEnjKpAJrs8RKg4omGjDGX3OIp5w&s',
   ];
   // void _pickImage() async {
   //   final picker = ImagePicker();
@@ -149,7 +149,7 @@ getposts();
                             gradient: LinearGradient(
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.7),
+                                black.withOpacity(0.7),
                               ],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
@@ -166,14 +166,14 @@ getposts();
                         controller: _postController,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                         decoration: InputDecoration(
                           hintText: 'Write your text here...',
                           hintStyle: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: white.withOpacity(0.7),
                           ),
                           border: InputBorder.none,
                         ),
@@ -210,7 +210,7 @@ getposts();
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
+                                    color: black.withOpacity(0.2),
                                     spreadRadius: 1,
                                     blurRadius: 6,
                                     offset: Offset(0, 3), 
@@ -222,7 +222,7 @@ getposts();
                                 child: Stack(
                                   children: [
                                     
-                                    Image.asset(
+                                    Image.network(
                                       imagePath,
                                       width: 60, 
                                       height: 60, 
@@ -256,14 +256,14 @@ getposts();
                                               vertical: 4, horizontal: 8),
                                           decoration: BoxDecoration(
                                             color:
-                                                Colors.white.withOpacity(0.7),
+                                                white.withOpacity(0.7),
                                             borderRadius:
                                                 BorderRadius.circular(12),
                                           ),
                                           child: Text(
                                             'Selected',
                                             style: TextStyle(
-                                                color: Colors.black,
+                                                color: black,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 10),
                                           ),
@@ -291,9 +291,9 @@ getposts();
                         30), 
                   ),
                   elevation: 8, 
-                  shadowColor: Colors.blueAccent.withOpacity(0.3),
+                  shadowColor: blueAccent.withOpacity(0.3),
                   side: BorderSide(
-                      color: Colors.blue,
+                      color: blue,
                       width: 2), 
                 ).copyWith(
                   backgroundColor: MaterialStateProperty.all(
@@ -303,8 +303,8 @@ getposts();
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.blueAccent,
-                        Colors.blue
+                        blueAccent,
+                        blue
                       ], 
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -319,7 +319,7 @@ getposts();
                       children: [
                         Icon(
                           Icons.upload, 
-                          color: Colors.white,
+                          color: white,
                           size: 24,
                         ),
                         SizedBox(width: 8),
@@ -329,7 +329,7 @@ getposts();
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color:
-                                Colors.white, 
+                                white, 
                           ),
                         ),
                       ],
@@ -402,9 +402,9 @@ print(e);
                     borderRadius: BorderRadius.circular(30), 
                   ),
                   elevation: 8, 
-                  shadowColor: Colors.blueAccent.withOpacity(0.3),
+                  shadowColor: blueAccent.withOpacity(0.3),
                   side: BorderSide(
-                      color: Colors.blue,
+                      color: blue,
                       width: 2), 
                 ).copyWith(
                   backgroundColor: MaterialStateProperty.all(
@@ -414,8 +414,8 @@ print(e);
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.blueAccent,
-                        Colors.blue
+                        blueAccent,
+                        blue
                       ], 
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,

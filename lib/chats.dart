@@ -84,7 +84,7 @@ inchat=true;
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: black.withOpacity(0.2),
                     blurRadius: 10,
                     offset: Offset(0, 5),
                   ),
@@ -124,7 +124,7 @@ inchat=true;
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.blueAccent.withOpacity(0.3),
+                        blueAccent.withOpacity(0.3),
                         Colors.lightBlueAccent.withOpacity(0.8),
                       ],
                       begin: Alignment.topLeft,
@@ -133,61 +133,101 @@ inchat=true;
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: black.withOpacity(0.2),
                         spreadRadius: 2,
                         blurRadius: 5,
                         offset: Offset(0, 3),
                       ),
                     ],
                   ),
-                  child: ListTile(
-                    onTap: () {
-                      fromsearch = true;
-                        print(index);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatPage(m: chat),
+                  child: Stack(
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          fromsearch = true;
+                           List<Message> mkread = chat.messages
+                              .where((element) =>
+                                  (element.senderId != global_user.id) &&
+                                  (element.isread == false)).toList();
+                          for (Message msg in mkread) {
+                            msg.isread = true;
+                            updatemessageread(chat.id, msg.id);
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatPage(m: chat),
+                            ),
+                          );
+                        },
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(
+                            isCurrentUser
+                                ? chat.u2.profileImage!
+                                : chat.u1.profileImage!,
+                          ),
+                          backgroundColor: blueAccent,
                         ),
-                      );
-                    },
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    leading: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(
-                        isCurrentUser
-                            ? chat.u2.profileImage!
-                            : chat.u1.profileImage!,
+                        title: Text(
+                          isCurrentUser ? chat.u2.name : chat.u1.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                            color: white,
+                          ),
+                        ),
+                        subtitle: Text(
+                          chat.messages.isEmpty
+                              ? "👋 No messages yet"
+                              : chat.messages.last.senderId == global_user.id
+                                  ? 'Me: ${chat.messages.last.content.startsWith('image:') ? "image" : chat.messages.last.content}'
+                                  : chat.messages.last.content
+                                          .startsWith('image:')
+                                      ? "image"
+                                      : chat.messages.last.content,
+                          style: TextStyle(
+                            fontWeight: chat.messages
+                                .where(
+                                  (element) =>
+                                      element.senderId != global_user.id,
+                                )
+                                .isEmpty? FontWeight.normal: FontWeight.bold,
+                            fontSize: 14,
+                            color: chat.messages.isEmpty ? black : white,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      backgroundColor: blueAccent,
-                    ),
-                    title: Text(
-                      isCurrentUser ? chat.u2.name : chat.u1.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                        color: white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      chat.messages.isEmpty
-                          ? "👋 No messages yet"
-                          : chat.messages.last.senderId == global_user.id
-                              ? 'Me: ${chat.messages.last.content.startsWith('image:')? "image" : chat.messages.last.content}'
-                              : chat.messages.last.content.startsWith('image:')
-                                  ? "image"
-                                  : chat.messages.last.content,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: chat.messages.isEmpty
-                            ? Colors.black
-                            : Colors.white70,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                     if(chat.messages.where((element) => element.senderId!=global_user.id,).isEmpty?false:chat.messages.where((element) => element.senderId!=global_user.id,).last.isread==false)
+                      Positioned(
+                          right: 16,
+                          top: 16,
+                          child: Container(
+                            padding: EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '${chat.messages
+                              .where((element) =>
+                                  (element.senderId != global_user.id) &&
+                                  (element.isread == false)).toList().length}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 );
+
               },
             ),
           ),

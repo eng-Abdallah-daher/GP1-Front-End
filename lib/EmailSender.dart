@@ -26,7 +26,7 @@ class EmailSender {
     }
   }
    static Future<void> sendEmailwithpdf(String shopName, String userName, String cost, String recipientEmail) async {
-    const String apiUrl = 'http://localhost:3000/api/send-email-with-pdf';
+    const String apiUrl = 'https://gp1-ghqa.onrender.com/api/send-email-with-pdf';
 
     try {
       final response = await http.post(

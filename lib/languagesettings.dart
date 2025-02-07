@@ -60,7 +60,7 @@ class _LanguageSettingsPageState extends State<LanguageSettingsPage> {
                 ),
                 padding: EdgeInsets.symmetric(vertical: 16),
                 backgroundColor: blueAccent,
-                shadowColor: Colors.black.withOpacity(0.5),
+                shadowColor: black.withOpacity(0.5),
                 elevation: 8,
               ).copyWith(
                 side: MaterialStateBorderSide.resolveWith((states) {

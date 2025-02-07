@@ -16,6 +16,7 @@ class _OffersListPageState extends State<OffersListPage> {
    m();
   }
   void m() async{
+      await getusers();
   await getOffers();
   fillteredoffers=offers.where((element) => element.posterid==global_user.id,).toList();
   setState(() {
@@ -30,7 +31,7 @@ class _OffersListPageState extends State<OffersListPage> {
           'Offers List',
           style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
         centerTitle: true,
         elevation: 10,
         shadowColor: Colors.black54,
@@ -59,7 +60,7 @@ class _OffersListPageState extends State<OffersListPage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       gradient: LinearGradient(
-                        colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                        colors: [blueAccent, Colors.lightBlueAccent],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -71,7 +72,7 @@ class _OffersListPageState extends State<OffersListPage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
-                          color: Colors.white,
+                          color: white,
                         ),
                       ),
                       subtitle: Column(
@@ -81,14 +82,14 @@ class _OffersListPageState extends State<OffersListPage> {
                             'Discount: ${fillteredoffers[index].discount}% off',
                             style: TextStyle(
                               fontSize: 18,
-                              color: Colors.white,
+                              color: white,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           SizedBox(height: 5),
                           Text(
                             'Description: ${fillteredoffers[index].description}',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            style: TextStyle(fontSize: 16, color: white),
                           ),
                           SizedBox(height: 5),
                           Text(
@@ -96,7 +97,7 @@ class _OffersListPageState extends State<OffersListPage> {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                                color: white),
                           ),
                           Text(
                             'Posted By: ${getusernaembyid(fillteredoffers[index].posterid)}',

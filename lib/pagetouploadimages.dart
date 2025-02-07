@@ -24,11 +24,11 @@ class EnsureImages extends StatelessWidget {
 
 const Color _primaryColor = Colors.blueGrey;
 const Color _secondaryColor = Colors.black87;
-const Color _buttonColor = Colors.orangeAccent;
+const Color _buttonColor = Colors.lightBlueAccent;
 const Color _textColor = Colors.white;
 const Color _textFieldFillColor = Colors.white70;
 const Color _iconColor = Colors.blueGrey;
-const Color _accentColor = Colors.orangeAccent;
+const Color _accentColor = Colors.lightBlueAccent;
 
 const MaterialColor _primarySwatch = MaterialColor(
   0xFF37474F,
@@ -202,19 +202,7 @@ class _MarketSignUpPageState extends State<MarketSignUpPage> {
                 ),
                 SizedBox(height: 20),
               ],
-              ElevatedButton(
-                onPressed: _allImagesUploaded()
-                    ? () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('All images uploaded!')));
-                      }
-                    : null,
-                child: Text('Submit Images'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _allImagesUploaded() ? _buttonColor : Colors.grey,
-                ),
-              ),
+             
             ],
           ),
         ),

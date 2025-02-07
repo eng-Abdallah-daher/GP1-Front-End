@@ -1,3 +1,4 @@
+import 'package:CarMate/glopalvars.dart';
 import 'package:CarMate/login.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,7 +146,7 @@ class _IntroPagesState extends State<IntroPages> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  shadowColor: Colors.black,
+                  shadowColor: black,
                   elevation: 10,
                 ),
                 child: Text(
@@ -153,7 +154,7 @@ class _IntroPagesState extends State<IntroPages> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: white,
                   ),
                 ),
               ),
@@ -252,7 +253,7 @@ class _IntroPagesState extends State<IntroPages> {
               child: FloatingActionButton(
                 backgroundColor: const Color.fromARGB(255, 89, 169, 239),
                 onPressed: _nextPage,
-                child: Icon(Icons.arrow_forward, size: 28, color: Colors.white),
+                child: Icon(Icons.arrow_forward, size: 28, color: white),
               ),
             ),
           Spacer(),
@@ -270,7 +271,7 @@ class _IntroPagesState extends State<IntroPages> {
                 onPressed: _completeIntro,
                 child: Text(
                   'Get Started',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
+                  style: TextStyle(fontSize: 20, color: white),
                 ),
               ),
             ),

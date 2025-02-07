@@ -8,7 +8,7 @@ class CustomizeThemePage extends StatefulWidget {
 }
 
 class _CustomizeThemePageState extends State<CustomizeThemePage> {
-  bool _darkMode = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,11 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
         backgroundColor: blueAccent,
         centerTitle: true,
       ),
-      body: Padding(
+      body:Center(child: 
+      Container(
+        width: MediaQuery.of(context).size.width>600? MediaQuery.of(context).size.width*0.8: MediaQuery.of(context).size.width,
+        child: 
+       Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,18 +80,22 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
             ),
             SwitchListTile(
               title: Text('Dark Mode'),
-              value: _darkMode,
+              value: darkMode,
               onChanged: (bool value) {
                 setState(() {
-                  _darkMode = value;
+
+                  darkMode = value;
+                  setColorsBasedOnMode(darkMode);
+
+
                 });
               },
               activeColor: blueAccent,
             ),
           ],
         ),
-      ),
-    );
+      ),)
+    ));
   }
 
   Widget _buildSectionHeader(String title) {
@@ -151,5 +159,23 @@ class _CustomizeThemePageState extends State<CustomizeThemePage> {
         );
       },
     );
+  }
+
+
+void setColorsBasedOnMode(bool isLightMode) {
+    if (!isLightMode) {
+      blue = Colors.blue;
+      black = Colors.black;
+      white = Colors.white;
+      lightBlue = Colors.lightBlue;
+      blueAccent = Colors.blueAccent;
+    } else {
+      blue = Colors.indigo[900] ?? Colors.indigo; 
+      black = Colors.white;
+      white = Colors.black87;
+      lightBlue = Colors.teal[800] ?? Colors.teal; 
+      blueAccent =
+          Colors.indigoAccent[700] ?? Colors.indigoAccent; 
+    }
   }
 }

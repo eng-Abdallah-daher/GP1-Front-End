@@ -74,7 +74,7 @@ class _ServicesPageState extends State<ServicesPage> {
 
     _filteredActions = List.from(_actions);
   }
-
+late ScrollController _scrollController=  ScrollController();
   void _showFilterDialog() {
     showDialog(
       context: context,
@@ -116,7 +116,7 @@ class _ServicesPageState extends State<ServicesPage> {
                     ...filterOptions.map((option) {
                       return CheckboxListTile(
                         activeColor: Colors.blue.shade700,
-                        checkColor: Colors.white,
+                        checkColor: white,
                         title: Row(
                           children: [
                             Icon(
@@ -161,7 +161,7 @@ class _ServicesPageState extends State<ServicesPage> {
                           _applyFilters();
                         });
                       },
-                      icon: Icon(Icons.clear, color: Colors.white),
+                      icon: Icon(Icons.clear, color: white),
                       label: Text(
                         "Clear",
                         style: TextStyle(color: white),
@@ -180,7 +180,7 @@ class _ServicesPageState extends State<ServicesPage> {
                         Navigator.pop(context);
                         _applyFilters();
                       },
-                      icon: Icon(Icons.check, color: Colors.white),
+                      icon: Icon(Icons.check, color: white),
                       label: Text(
                         "Apply",
                         style: TextStyle(color: white),
@@ -222,7 +222,14 @@ class _ServicesPageState extends State<ServicesPage> {
   }
 
   void _applyFilters() {
+      
     setState(() {
+        _scrollController.jumpTo(_scrollController.position.minScrollExtent);
+        _scrollController.animateTo(
+        0.0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
       if (_selectedFilters.isEmpty) {
         _filteredActions = List.from(_actions);
       } else {
@@ -236,26 +243,24 @@ class _ServicesPageState extends State<ServicesPage> {
         }
       }
     });
+   
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Services'),
-        backgroundColor: Colors.blue,
-      ),
+     
       body: Column(
         children: [
         Padding(
-            padding: const EdgeInsets.only(top: 16,left: 16),
+            padding: const EdgeInsets.only(top: 8.0,left: 16),
             child: Row(
               mainAxisAlignment:
-                  MainAxisAlignment.start, // Aligns the button to the left
+                  MainAxisAlignment.start, 
               children: [
                 Container(
                   width: 250,
-                  height: 50, // Set the width for the button
+                  height: 70, 
                   child: ElevatedButton(
                     
                     onPressed: _showFilterDialog,
@@ -266,10 +271,10 @@ class _ServicesPageState extends State<ServicesPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       elevation: 8,
-                      shadowColor: Colors.blueAccent.withOpacity(0.4),
+                      shadowColor: blueAccent.withOpacity(0.4),
                     ).copyWith(
                       side: MaterialStateProperty.all(
-                        BorderSide(color: Colors.blueAccent, width: 2),
+                        BorderSide(color: blueAccent, width: 2),
                       ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (states) {
@@ -283,7 +288,7 @@ class _ServicesPageState extends State<ServicesPage> {
                     child: Ink(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.blueAccent, Colors.lightBlueAccent],
+                          colors: [blueAccent, Colors.lightBlueAccent],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
@@ -294,14 +299,14 @@ class _ServicesPageState extends State<ServicesPage> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.filter_list, color: Colors.white),
+                            Icon(Icons.filter_list, color: white),
                             SizedBox(width: 8),
                             Text(
                               'Filter Services',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: white,
                               ),
                             ),
                           ],
@@ -316,7 +321,7 @@ class _ServicesPageState extends State<ServicesPage> {
 
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -331,14 +336,14 @@ class _ServicesPageState extends State<ServicesPage> {
                 ),
                 SizedBox(height: 12),
                 Text(
-                  "Explore a variety of car maintenance and repair services tailored to your needs. From reminders to ordering parts, we have you covered.",
+                  "Explore a variety of car maintenance and repair services tailored to your needs.",
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey.shade800,
                     height: 1.6,
                   ),
                 ),
-                SizedBox(height: 24),
+                SizedBox(height: 8),
                 Text(
                   "Quick Tips:",
                   style: TextStyle(
@@ -347,7 +352,7 @@ class _ServicesPageState extends State<ServicesPage> {
                     color: Colors.blue.shade700,
                   ),
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: 8),
                 Column(
                   children: [
                     _buildTip(
@@ -365,33 +370,43 @@ class _ServicesPageState extends State<ServicesPage> {
               ],
             ),
           ),
-          Spacer(),
-          CollapseableContainer(
-            title: 'Quick Actions',
-            isVisible: _isQuickActionsVisible,
-            onToggle: () {
-              setState(() {
-                _isQuickActionsVisible = !_isQuickActionsVisible;
-              });
-            },
+       Spacer(),
+        SingleChildScrollView(
+        controller: _scrollController,
+        child: CollapseableContainer(
+          title: 'Quick Actions',
+          isVisible: _isQuickActionsVisible,
+          onToggle: () {
+            setState(() {
+              _isQuickActionsVisible = !_isQuickActionsVisible;
+            });
+          },
+          child: SizedBox(
+            height: 1100,
             child: GridView.count(
-              crossAxisCount: 2,
+              crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
               padding: EdgeInsets.all(16),
-              children: _filteredActions.map((action) {
-                return _buildActionButton(
-                    action['icon'], action['label'], white, () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => action['page']),
+              children: [
+                ..._filteredActions.map((action) {
+                  return _buildActionButton(
+                    action['icon'],
+                    action['label'],
+                    white,
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => action['page']),
+                      );
+                    },
                   );
-                });
-              }).toList(),
+                }).toList(),
+              ],
             ),
-          ),
+          ),),)
         ],
       ),
     );
@@ -428,7 +443,7 @@ ElevatedButton _buildActionButton(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: Colors.blue, width: 2),
+        side: BorderSide(color: blue, width: 2),
       ),
       elevation: 10,
       shadowColor: color.withOpacity(0.5),
@@ -466,7 +481,7 @@ ElevatedButton _buildActionButton(
             Icon(
               icon,
               size: 34,
-              color: Colors.blue,
+              color: blue,
             ),
             SizedBox(height: 8),
             Text(
@@ -475,7 +490,7 @@ ElevatedButton _buildActionButton(
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
-                color: Colors.blue,
+                color: blue,
                 letterSpacing: 0.8,
               ),
             ),

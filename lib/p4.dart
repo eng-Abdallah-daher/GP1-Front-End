@@ -23,7 +23,7 @@ class p4 extends StatelessWidget {
 
 const Color _primaryColor = Colors.blueGrey;
 const Color _secondaryColor = Colors.black87;
-const Color _buttonColor = Colors.orangeAccent;
+const Color _buttonColor = Colors.lightBlueAccent;
 const Color _textColor = Colors.white;
 const Color _textFieldFillColor = Colors.white70;
 const Color _iconColor = Colors.blueGrey;
@@ -74,11 +74,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                 Center(
                   child: Column(
                     children: [
-                      Image.asset(
-                        'images/logo4.png',
-                        height: 220,
-                      ),
-                      SizedBox(height: 16),
+                  
                       Text(
                         isuser ?'Step 4: Terms and Conditions':
                         'Step 5: Terms and Conditions',
@@ -89,7 +85,12 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                           letterSpacing: 2,
                         ),
                       ),
-                      SizedBox(height: 8),
+                        Image.asset(
+                        '../images/logo4.png',
+                        height: 320,
+                        width: 320,
+                      ),
+                    
                     ],
                   ),
                 ),
@@ -109,7 +110,10 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                       value: acceptTerms,
                       onChanged: (bool? value) {
                         setState(() {
-                          acceptTerms = value ?? false;
+                        acceptTerms = value ?? false;
+                         setState(() {
+                           
+                         });
                         });
                       },
                     ),
@@ -132,7 +136,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
                   child: Text(
                     'View Terms and Conditions',
                     style: TextStyle(
-                      color: _accentColor,
+                      color: Colors.lightBlueAccent,
                       decoration: TextDecoration.underline,
                     ),
                   ),

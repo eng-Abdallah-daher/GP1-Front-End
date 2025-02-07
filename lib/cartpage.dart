@@ -1,3 +1,4 @@
+import 'package:CarMate/cardpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +12,20 @@ class _CartPageState extends State<CartPage> {
 
   @override
   void initState() {
+  
     getCarts();
-
+    m();
     super.initState();
     calculateTotal();
   }
-
+void m() async{
+  await getSalesRequests();
+  await getItems();
+  setState(() {
+    
+  });
+  
+}
   void calculateTotal() {
     total = 0;
     for (int i = 0; i < cart.localitems.length; i++) {
@@ -35,7 +44,7 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white, size: 30),
+          icon: Icon(Icons.arrow_back, color: blue, size: 30),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -56,7 +65,7 @@ class _CartPageState extends State<CartPage> {
             margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.lightBlueAccent, blueAccent],
+                colors: [lightBlue, blueAccent],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -64,7 +73,7 @@ class _CartPageState extends State<CartPage> {
             ),
             child: Center(
               child: Text(
-                'Buy 35.00€ more to enjoy FREE SHIPPING!',
+                'Buy 35.00₪ more to enjoy FREE SHIPPING!',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -150,13 +159,18 @@ class _CartPageState extends State<CartPage> {
                   ),
                   child: ElevatedButton(
                     onPressed: () async{
+                    
+                         if ( global_user.accountnumber == '0') {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => CreditCardPage()));
+      }else{
                       await getSalesRequests();
                       if (cart.localitems.isNotEmpty) {
                       
                       try{
                           for (int i = 0; i < cart.localitems.length; i++) {
                          if(salesrequests.isEmpty){
-                             
+                          
                               addSaleRequest(SaleRequest(
                                   id:0,
                                   ownerid: cart.localitems[i].ownerid,
@@ -175,7 +189,7 @@ class _CartPageState extends State<CartPage> {
                                   price: cart.localitems[i].price,
                                   date: DateTime.now()));
                          }else{
-                             
+                               
                               addSaleRequest(SaleRequest(
                                   id: salesrequests[salesrequests.length - 1]
                                           .id +
@@ -232,7 +246,7 @@ class _CartPageState extends State<CartPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Your cart is empty!')),
                         );
-                      }
+                      }}
                     },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 5),

@@ -45,7 +45,7 @@ getAssignedTasks();
               },
               icon: Icon(
                 Icons.add,
-                color: Colors.white,
+                color: white,
                 size: 30,
               ))
         ],
@@ -64,7 +64,7 @@ getAssignedTasks();
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
-                  image: NetworkImage("images/emps.png"),
+                  image: AssetImage("images/emps.png"),
                   fit: BoxFit.fitWidth,
                 ),
                 boxShadow: [
@@ -103,7 +103,7 @@ employees.add(Employee(id: employees.length, name: name, position: position,owne
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text("Employee $name added as $position!"),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: blue,
                     ),
                   );
                   _nameController.clear();

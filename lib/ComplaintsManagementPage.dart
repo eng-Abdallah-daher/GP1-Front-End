@@ -1,4 +1,5 @@
 import 'package:CarMate/glopalvars.dart';
+import 'package:CarMate/viewratings.dart';
 import 'package:flutter/material.dart';
 
 class ComplaintsManagementPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class _ComplaintsManagementPageState extends State<ComplaintsManagementPage> {
   }
   void m() async{
     await  getcomplaints();
+    await  getusers();
     setState(() {
       
     });
@@ -40,7 +42,7 @@ try{
 addRating(complaints.length, descriptionController.text,
             global_user.name, widget.ownerid, rating);
           
-addRate(global_user.id, widget.ownerid);
+
 
       complaints.add(Complaint(
         userid: global_user.id,
@@ -50,26 +52,33 @@ addRate(global_user.id, widget.ownerid);
         ownerid: widget.ownerid,
         rate: rating,
       ));
-      global_user.rates.add(widget.ownerid);
+      
       for (int i = 1; i < users.length; i++) {
         if (users[i].id == widget.ownerid) {
           
-          users[i].rates.add(rating);
+          
 
           break;
         }
       }
+      getcomplaints();
          ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Complaint submitted successfully!'),
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context);
-
       descriptionController.clear();
 
-      rating = 0;}catch(e){
+        rating = 0;
+       Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewWorkshopRatingsPage(),
+          ),
+        );
+
+      }catch(e){
         ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to submit complaint, please try again later'),
@@ -87,7 +96,7 @@ addRate(global_user.id, widget.ownerid);
     return Scaffold(
       appBar: AppBar(
         title: Text('Submit Complaints & Feedback'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
       
       ),
       body: Padding(
@@ -100,7 +109,7 @@ addRate(global_user.id, widget.ownerid);
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
+                color: blueAccent,
               ),
             ),
             SizedBox(height: 20),
@@ -121,8 +130,8 @@ addRate(global_user.id, widget.ownerid);
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      color: Colors.white,
-      shadowColor: Colors.black.withOpacity(0.2),
+      color: white,
+      shadowColor: black.withOpacity(0.2),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: TextField(
@@ -131,12 +140,12 @@ addRate(global_user.id, widget.ownerid);
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: black,
           ),
           decoration: InputDecoration(
             labelText: 'Description',
             labelStyle: TextStyle(
-              color: Colors.blueAccent,
+              color: blueAccent,
               fontWeight: FontWeight.bold,
             ),
             hintText: 'Describe the issue in detail...',
@@ -149,14 +158,14 @@ addRate(global_user.id, widget.ownerid);
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.blueAccent.withOpacity(0.5),
+                color: blueAccent.withOpacity(0.5),
                 width: 2,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.blueAccent,
+                color: blueAccent,
                 width: 2,
               ),
             ),
@@ -182,7 +191,7 @@ addRate(global_user.id, widget.ownerid);
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
+            color: blueAccent,
           ),
         ),
         SizedBox(height: 10),
@@ -207,8 +216,8 @@ addRate(global_user.id, widget.ownerid);
     return ElevatedButton(
       onPressed: addComplaint,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent,
-        foregroundColor: Colors.white,
+        backgroundColor: blueAccent,
+        foregroundColor: white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

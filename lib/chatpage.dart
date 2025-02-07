@@ -68,6 +68,8 @@ bool? isonline;
     if (messageText.isNotEmpty) {
       setState(() {
         chat.messages.add(Message(
+          isread: false,
+          id: chat.messages[chat.messages.length - 1].id+1,
           senderId: global_user.id,
           content: messageText,
           createdAt: DateTime.now(),
@@ -104,9 +106,11 @@ bool? isonline;
           source = urlofimage;
               _sendMessage('Image: ${source}');
               sendmsg(
+                msgid: chat.messages.isEmpty ? 0: chat.messages[chat.messages.length - 1].id + 1,
               chatId: chat.id,
               senderId: global_user.id,
               text: 'image:${source}');
+                    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
         });
       } else {
         try {
@@ -151,7 +155,7 @@ bool? isonline;
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue, Colors.blue],
+          colors: [blue, blue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -184,7 +188,7 @@ bool? isonline;
                     ? widget.m.u2.name
                     : widget.m.u1.name,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: white,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -209,7 +213,7 @@ bool? isonline;
             ? widget.m.u2.name
             : widget.m.u1.name + "'s Chat Page"),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
       ),
       body: Column(
         children: [
@@ -241,13 +245,13 @@ bool? isonline;
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: isUserMessage
-                              ? Colors.blueAccent
+                              ? blueAccent
                               : Colors.grey[300],
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
                               color: isUserMessage
-                                  ? Colors.blueAccent.withOpacity(0.3)
+                                  ? blueAccent.withOpacity(0.3)
                                   : Colors.grey[600]!.withOpacity(0.3),
                               spreadRadius: 3,
                               blurRadius: 10,
@@ -270,13 +274,13 @@ bool? isonline;
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: isUserMessage
-                              ? Colors.blueAccent
+                              ? blueAccent
                               : Colors.grey[300],
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
                               color: isUserMessage
-                                  ? Colors.blueAccent.withOpacity(0.3)
+                                  ? blueAccent.withOpacity(0.3)
                                   : Colors.grey[600]!.withOpacity(0.3),
                               spreadRadius: 3,
                               blurRadius: 8,
@@ -293,7 +297,7 @@ bool? isonline;
                               message.content,
                               style: TextStyle(
                                 color:
-                                    isUserMessage ? Colors.white : Colors.black,
+                                    isUserMessage ? white : black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -340,14 +344,15 @@ bool? isonline;
                 IconButton(
                   icon: Icon(Icons.image),
                   onPressed: _pickImage,
-                  color: Colors.blue,
+                  color: blue,
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
-                  color: Colors.blue,
+                  color: blue,
                   onPressed: () {
                     try {
                       sendmsg(
+                        msgid: chat.messages.isEmpty? 0: chat.messages[chat.messages.length - 1].id + 1,
                           chatId: chat.id,
                           senderId: global_user.id,
                           text: _controller.text);

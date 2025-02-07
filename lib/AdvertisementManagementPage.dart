@@ -28,7 +28,7 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
   void addOffer2() {
     setState(() {
 
-     try{
+   
        addOffer(
           global_user.id,
           double.parse(discountController.text),
@@ -56,14 +56,6 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
         ));
       
 
-     }catch(e){
-
-       
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Failed to add Offer!"),
-          backgroundColor: Colors.red,
-        ));
-     }
     });
   }
 
@@ -90,7 +82,7 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: 22, color: white),
         ),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: lightBlue,
         actions: [
           IconButton(
             icon: Icon(Icons.list),
@@ -157,7 +149,7 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
                 ),
                 child: Text(
                   'Select Valid Until Date',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: white),
                 ),
               ),
             ),
@@ -184,7 +176,7 @@ class _OfferManagementPageState extends State<OfferManagementPage> {
                 ),
                 child: Text(
                   'Add Offer',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: white),
                 ),
               ),
             ),

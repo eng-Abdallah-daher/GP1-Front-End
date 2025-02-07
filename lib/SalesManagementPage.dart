@@ -1,3 +1,4 @@
+import 'package:CarMate/cardpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:CarMate/ownermainpage.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: Colors.blueAccent,
+                  color: blueAccent,
                 ),
               ),
               content: SingleChildScrollView(
@@ -70,7 +71,7 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                             child: Text(
                               '${tool.name} (Available: ${tool.availableQuantity})',
                               style: TextStyle(
-                                color: Colors.black,
+                                color: black,
                                 fontSize: 16,
                               ),
                             ),
@@ -82,16 +83,16 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                             quantity = 1;
                           });
                         },
-                        dropdownColor: Colors.white,
+                        dropdownColor: white,
                         icon: Icon(Icons.arrow_drop_down,
-                            color: Colors.blueAccent),
+                            color: blueAccent),
                       ),
                       SizedBox(height: 16),
                       TextField(
                         decoration: InputDecoration(
                           labelText: 'Quantity',
                           labelStyle: TextStyle(
-                            color: Colors.blueAccent,
+                            color: blueAccent,
                           ),
                           errorText: errorMessage,
                           border: OutlineInputBorder(
@@ -128,7 +129,7 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: Colors.black,
+                            color: black,
                           ),
                         ),
                         SizedBox(height: 8),
@@ -155,8 +156,8 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
               actions: [
                 TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    foregroundColor: Colors.white,
+                    backgroundColor: blueAccent,
+                    foregroundColor: white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -169,6 +170,13 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                     ),
                   ),
                   onPressed: () {
+                    if (global_user.role == "owner" &&
+                        global_user.accountnumber == '0') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreditCardPage()));
+                    }else{
                     if (selectedTool != null &&
                         quantity > 0 &&
                         errorMessage == null) {
@@ -176,7 +184,8 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
                        final tool =
                           items.firstWhere((tool) => tool.name == selectedTool);
                       setState(() {
-                        addSale(id: sales[sales.length - 1].id + 1,ownerId: global_user.id, itemId: tool.id, quantity: quantity, price: quantity * tool.price, date: DateTime.now());
+                        print(quantity * tool.price);
+                        addSale(id: sales[sales.length - 1].id + 1,ownerId: global_user.id, itemId: tool.id, quantity: quantity, price: (quantity * tool.price), date: DateTime.now());
                         sales.add(Sale(
                           id: sales[sales.length - 1].id + 1,
                             ownerid: global_user.id,
@@ -187,7 +196,8 @@ class _SalesManagementPageState extends State<SalesManagementPage> {
 
                         tool.availableQuantity -= quantity;
                         
-updateItemQuantity(tool.id, tool.availableQuantity);
+// updateItemQuantity(tool.id, tool.availableQuantity);
+updateItem(tool.id, tool.name, tool.availableQuantity, tool.price);
                         if (tool.availableQuantity == 0) {
                           deleteAnItem(tool.id);
                           items.remove(tool);
@@ -214,13 +224,13 @@ updateItemQuantity(tool.id, tool.availableQuantity);
                       setState(() {
                         errorMessage = 'Please correct the errors above.';
                       });
-                    }
+                    }}
                   },
                 ),
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.redAccent,
-                    foregroundColor: Colors.white,
+                    foregroundColor: white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -257,7 +267,7 @@ updateItemQuantity(tool.id, tool.availableQuantity);
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Colors.blueAccent,
+              color: blueAccent,
             ),
           ),
           content: SingleChildScrollView(
@@ -269,7 +279,7 @@ updateItemQuantity(tool.id, tool.availableQuantity);
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.black,
+                    color: black,
                   ),
                 ),
                 Text(
@@ -285,7 +295,7 @@ updateItemQuantity(tool.id, tool.availableQuantity);
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.black,
+                    color: black,
                   ),
                 ),
                 Text(
@@ -301,7 +311,7 @@ updateItemQuantity(tool.id, tool.availableQuantity);
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.black,
+                    color: black,
                   ),
                 ),
                 Text(
@@ -317,8 +327,8 @@ updateItemQuantity(tool.id, tool.availableQuantity);
           actions: [
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white,
+                backgroundColor: blueAccent,
+                foregroundColor: white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -351,7 +361,7 @@ updateItemQuantity(tool.id, tool.availableQuantity);
             icon: Icon(Icons.add),
             onPressed: () => {
               if (items
-                  .where((sale) => sale.ownerid == global_user.id)
+                  .where((sale) => (sale.ownerid == global_user.id))
                   .toList()
                   .isEmpty)
                 {
@@ -372,20 +382,20 @@ updateItemQuantity(tool.id, tool.availableQuantity);
           : ListView.builder(
               itemCount: sales.length,
               itemBuilder: (context, index) {
-                if (sales[index].ownerid == global_user.id)
+                if ((sales[index].ownerid == global_user.id)&&(sales[index].itemid!=-1))
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                     elevation: 6,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
-                      side: BorderSide(color: Colors.blueAccent, width: 1),
+                      side: BorderSide(color: blueAccent, width: 1),
                     ),
                     shadowColor: Colors.black.withOpacity(0.3),
                     child: InkWell(
                       onTap: () =>
                           _showSaleDetailsDialog(context, sales[index]),
                       borderRadius: BorderRadius.circular(15.0),
-                      splashColor: Colors.blue.withOpacity(0.3),
+                      splashColor: blue.withOpacity(0.3),
                       child: Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Row(
@@ -399,7 +409,7 @@ updateItemQuantity(tool.id, tool.availableQuantity);
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
+                                    color: blueAccent,
                                   ),
                                 ),
                                 SizedBox(height: 8),

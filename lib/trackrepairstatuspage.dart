@@ -159,7 +159,7 @@ class _TrackRepairStatusPageState extends State<TrackRepairStatusPage> {
                 width: 0,
               );
             } else if (bookings[index].userid != global_user.id)
-              return null;
+              return SizedBox(height: 0,);
             else
               return _buildRepairStatusCard(bookings[index]);
           },
@@ -184,8 +184,8 @@ class _TrackRepairStatusPageState extends State<TrackRepairStatusPage> {
             _buildHeader(repairStatus),
             SizedBox(height: 10),
             _buildStatusText(repairStatus),
-            SizedBox(height: 10),
-            _buildCompletionTime(repairStatus),
+            SizedBox(height: repairStatus.status=="Confirmed"? 10 : 0),
+          repairStatus.status=="Confirmed"?  _buildCompletionTime(repairStatus) : SizedBox(height: 0,),
             SizedBox(height: 15),
             _buildActionButton(repairStatus),
           ],
@@ -391,7 +391,7 @@ class RepairStatusDetailPage extends StatelessWidget {
           ),
           SizedBox(height: 10),
           Text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            repairStatus.description,
             style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
           ),
         ],

@@ -77,12 +77,8 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                 Center(
                   child: Column(
                     children: [
-                      Image.asset(
-                        'images/car.png',
-                        height: 220,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
+                      
+                        Text(
                         'Step 3: Account Security Information',
                         style: TextStyle(
                           fontSize: 34,
@@ -91,7 +87,12 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                           letterSpacing: 2,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      
+                    
+                      Image.asset(
+                        'images/car.png',
+                        height: 220,
+                      ),
                       Text(
                         'Provide your personal information',
                         style: TextStyle(

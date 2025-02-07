@@ -3,7 +3,7 @@ import 'package:CarMate/forgotpasswordpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:CarMate/ownermainpage.dart';
 import 'package:CarMate/signup.dart';
-import 'package:CarMate/user.dart';
+import 'package:CarMate/usermainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -27,14 +27,15 @@ class CarServiceLoginApp extends StatelessWidget {
     );
   }
 }
+const Color _primaryColor = Colors.blueGrey;      
+const Color _secondaryColor = Colors.black87;  
+const Color _buttonColor = Color.fromARGB(255, 0, 67, 112); 
+const Color _textColor = Colors.white;           
+ Color _textFieldFillColor = Colors.grey[300]!; 
+const Color _iconColor = Colors.indigo;            
+const Color _accentColor = Colors.purpleAccent;   
 
-const Color _primaryColor = Colors.blueGrey;
-const Color _secondaryColor = Colors.black87;
-const Color _buttonColor = Colors.orangeAccent;
-const Color _textColor = Colors.white;
-const Color _textFieldFillColor = Colors.white70;
-const Color _iconColor = Colors.blueGrey;
-const Color _accentColor = Colors.orangeAccent;
+
 
 const MaterialColor _primarySwatch = MaterialColor(
   0xFF37474F,
@@ -69,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    
     handlePageCloseOrLeave();
     super.initState();
      m();
@@ -137,7 +139,12 @@ class _LoginScreenState extends State<LoginScreen> {
               end: Alignment.bottomRight,
             ),
           ),
-          child: Padding(
+          child:  Align(
+              alignment: Alignment.topCenter,
+              child: Container(width:  MediaQuery.of(context).size.width > 600
+                    ? MediaQuery.of(context).size.width * 0.5
+                    : null,
+                    child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -147,8 +154,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       Image.asset(
-                        'images/c2.Gif',
-                        width: 400,
+                        'images/carmate.png',
+                        width: 450,
+                        height: 200,
                       ),
                       SizedBox(height: 8),
                       Text(
@@ -216,12 +224,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    getAllChats();
                       bool loged = false;
 if(_emailController.text=="admin"&&_passwordController.text=="admin"){
   global_user=users[0];
+  await fetchReports();
+  await  getAllChats();
   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => adminmainpage()));
-  updateUserStatus(global_user.email, false);
+  updateUserStatus(global_user.email, true);
 loged=true;
 }
                     for (int i = 1; i < users.length; i++) {
@@ -233,6 +244,7 @@ loged=true;
                           global_user = users[i];
                           if (users[i].role == "owner") {
                             if(users[i].isServiceActive){
+                              await getAllChats();
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -251,8 +263,16 @@ loged=true;
                             }
                          
                           } else {
-                            getCarts();
+                          await  getCarts();
+                          for(int i = 0; i <carts.length; i++) {
+                            if(carts[i].user_id == users[i].id){
+                             cart=carts[i];
+                              break;
+                            }
+                          }
                             getTowingServices();
+                            getcomplaints();
+                            await getAllChats();
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -346,7 +366,7 @@ loged=true;
                         'Sign up',
                         style: TextStyle(
                           decoration: TextDecoration.underline,
-                          color: _accentColor,
+                          color: _textColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -355,7 +375,8 @@ loged=true;
                 ),
               ],
             ),
-          ),
+          ),),
+          )
         ),
       ),
     );

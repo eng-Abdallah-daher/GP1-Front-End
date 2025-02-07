@@ -1,3 +1,4 @@
+import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -35,7 +36,7 @@ class _MapPageState extends State<Delivaryrequestmap> {
           point: currentLocation!,
           builder: (ctx) => Icon(
             Icons.my_location,
-            color: Colors.blue,
+            color: blue,
             size: 40,
           ),
         ),
@@ -56,17 +57,17 @@ class _MapPageState extends State<Delivaryrequestmap> {
   Widget _buildSearchBar() {
     return TypeAheadField<String>(
       textFieldConfiguration: TextFieldConfiguration(
-        style: TextStyle(fontSize: 16.0, color: Colors.white),
+        style: TextStyle(fontSize: 16.0, color: white),
         decoration: InputDecoration(
           hintText: 'Search Places',
-          hintStyle: TextStyle(color: Colors.white70),
+          hintStyle: TextStyle(color: white),
           filled: true,
           fillColor: Colors.blue[900],
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0),
             borderSide: BorderSide.none,
           ),
-          prefixIcon: Icon(Icons.search, color: Colors.white),
+          prefixIcon: Icon(Icons.search, color: white),
         ),
       ),
       suggestionsBoxDecoration: SuggestionsBoxDecoration(
@@ -88,7 +89,7 @@ class _MapPageState extends State<Delivaryrequestmap> {
             padding: const EdgeInsets.all(12.0),
             child: Text(
               suggestion,
-              style: TextStyle(color: Colors.white, fontSize: 14.0),
+              style: TextStyle(color: white, fontSize: 14.0),
             ),
           ),
         );
@@ -195,7 +196,7 @@ class _MapPageState extends State<Delivaryrequestmap> {
                 size: 28,
               ),
               backgroundColor: Colors.blue[900],
-              foregroundColor: Colors.white,
+              foregroundColor: white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),

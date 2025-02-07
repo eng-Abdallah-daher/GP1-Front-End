@@ -40,7 +40,7 @@ class _AddBookingPageState extends State<AddBookingPage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.white,
+              white,
               Colors.lightBlue.shade100,
             ],
             begin: Alignment.topCenter,
@@ -55,8 +55,8 @@ class _AddBookingPageState extends State<AddBookingPage> {
               _buildTextField(),
               SizedBox(height: 20),
               _buildDateSelector(),
-              SizedBox(height: 20),
-              _buildStatusDropdown(),
+           
+
               SizedBox(height: 30),
               _buildAddBookingButton(),
             ],
@@ -152,7 +152,7 @@ class _AddBookingPageState extends State<AddBookingPage> {
         fillColor: Colors.lightBlue.shade50,
         contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       ),
-      dropdownColor: Colors.white,
+      dropdownColor: white,
       style: TextStyle(color: Colors.blue.shade700, fontSize: 16),
       icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
     );
@@ -173,7 +173,7 @@ class _AddBookingPageState extends State<AddBookingPage> {
                   ownerid: global_user.id,
                   customerName: _customerNameController.text,
                   appointmentDate: _selectedDate!,
-                  status: _status,
+                  status: "Confirmed",
                 ));
 
                 addBooking(
@@ -184,7 +184,7 @@ class _AddBookingPageState extends State<AddBookingPage> {
                     _selectedDate!,
                     DateTime.now(),
                     _customerNameController.text,
-                    _status);
+                    "Confirmed");
              }else{
                 bookings.add(Booking(
                   description: "",
@@ -194,7 +194,7 @@ class _AddBookingPageState extends State<AddBookingPage> {
                   ownerid: global_user.id,
                   customerName: _customerNameController.text,
                   appointmentDate: _selectedDate!,
-                  status: _status,
+                  status: "Confirmed",
                 ));
 
                 addBooking(
@@ -205,7 +205,7 @@ class _AddBookingPageState extends State<AddBookingPage> {
                     _selectedDate!,
                     DateTime.now(),
                     _customerNameController.text,
-                    _status);
+                    "Confirmed");
              }
          
 

@@ -112,7 +112,7 @@ class _usersearchPageState extends State<usersearchPage> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              color: black,
                             ),
                           ),
                           subtitle: Text(

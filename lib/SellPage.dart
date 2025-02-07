@@ -1,3 +1,4 @@
+import 'package:CarMate/cardpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,7 @@ class _SalesPageState extends State<SalesPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
         centerTitle: true,
         elevation: 5,
         leading: IconButton(
@@ -94,7 +95,7 @@ class _SalesPageState extends State<SalesPage> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blueAccent, Colors.lightBlueAccent],
+          colors: [blueAccent, Colors.lightBlueAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -115,7 +116,7 @@ class _SalesPageState extends State<SalesPage> {
             Row(
               children: [
                 Icon(Icons.shopping_bag,
-                    color: Colors.white, size: screenWidth * 0.07),
+                    color: white, size: screenWidth * 0.07),
                 SizedBox(width: screenWidth * 0.02),
                 Expanded(
                   child: Text(
@@ -123,7 +124,7 @@ class _SalesPageState extends State<SalesPage> {
                     style: TextStyle(
                       fontSize: screenWidth * 0.045,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: white,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -134,19 +135,19 @@ class _SalesPageState extends State<SalesPage> {
             Text(
               'Quantity: ${sale.quantity}',
               style: TextStyle(
-                  fontSize: screenWidth * 0.04, color: Colors.white70),
+                  fontSize: screenWidth * 0.04, color: white),
             ),
             Text(
               'Price: \$${sale.price.toStringAsFixed(2)}',
               style: TextStyle(
-                  fontSize: screenWidth * 0.04, color: Colors.white70),
+                  fontSize: screenWidth * 0.04, color: white),
             ),
             Text(
               'Date: ${sale.formattedDate}',
               style: TextStyle(
                   fontSize: screenWidth * 0.035,
                   fontStyle: FontStyle.italic,
-                  color: Colors.white60),
+                  color: white),
             ),
             Spacer(),
             Row(
@@ -219,9 +220,14 @@ class _SalesPageState extends State<SalesPage> {
   }
 
   void _approveRequest(BuildContext context, SaleRequest sale) {
-  try{
+     if (global_user.role == "owner" && global_user.accountnumber == '0') {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => CreditCardPage()));
+      }else{
+        try{
+   
       setState(() {
-        print(sale.id);
+     
 deleteSalesRequest(sale.id);
       salesrequests.remove(sale);
       
@@ -238,8 +244,8 @@ deleteSalesRequest(sale.id);
         backgroundColor: Colors.greenAccent,
         duration: Duration(seconds: 2),
       ),
-    );
-  }catch(e){
+    );}
+  catch(e){
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -250,7 +256,7 @@ deleteSalesRequest(sale.id);
         duration: Duration(seconds: 2),
       ),
     );
-  }
+  }}
   }
 
   void _rejectRequest(BuildContext context, SaleRequest sale) {
@@ -266,7 +272,7 @@ try{
             'Request for ${getitemnamebyid(sale.itemid)} rejected.',
             style: TextStyle(fontSize: 16),
           ),
-          backgroundColor: Colors.blue,
+          backgroundColor: blue,
           duration: Duration(seconds: 2),
         ),
       );

@@ -76,7 +76,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Booking updated successfully!'),
-            backgroundColor: Colors.blue,
+            backgroundColor: blue,
             duration: Duration(seconds: 2),
           ),
         );
@@ -129,7 +129,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: blueAccent, width: 2),
                   ),
                 ),
               ),

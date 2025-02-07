@@ -22,6 +22,7 @@ class _OwnerPaymentPageState extends State<OwnerPaymentPage> {
     super.initState();
   }
 void m ()async{
+  
   await fetchPaymentRecords();
   setState(() {
     
@@ -165,7 +166,7 @@ Widget _buildDropdownButton<T>({
             offset: Offset(0, 6),
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.8), width: 2),
+        border: Border.all(color: white.withOpacity(0.8), width: 2),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
@@ -174,7 +175,7 @@ Widget _buildDropdownButton<T>({
           items: items,
           icon: Icon(
             Icons.arrow_drop_down_circle_rounded,
-            color: Colors.white,
+            color: white,
             size: 28,
           ),
           dropdownColor: Colors.blue.shade50,
@@ -223,7 +224,7 @@ Widget _buildDropdownButton<T>({
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue, Color.fromARGB(255, 194, 218, 237)],
+            colors: [blue, Color.fromARGB(255, 194, 218, 237)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -240,12 +241,12 @@ Widget _buildDropdownButton<T>({
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: white,
             ),
           ),
           subtitle: Text(
             user.email,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: white),
           ),
           trailing: IconButton(
             icon: Icon(

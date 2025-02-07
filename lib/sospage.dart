@@ -66,7 +66,7 @@ class _SOSPageState extends State<SOSPage> {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        splashColor: Colors.blue.withOpacity(0.2),
+        splashColor: blue.withOpacity(0.2),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

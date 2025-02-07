@@ -19,9 +19,15 @@ class _CommentsPageState extends State<CommentsPage> {
   final TextEditingController commentController = TextEditingController();
 @override
   void initState() {
-    
+    m();
     super.initState();
     
+  }
+  void m() async{
+      await getusers();
+      setState(() {
+        
+      });
   }
   final String commenterAvatar = global_user.profileImage!;
   final String commenterName = global_user.name; 
@@ -728,7 +734,7 @@ void _showEditReplyDialog(Comment reply,Comment com) {
                 colors: [
                   
                   white,
-                   Colors.lightBlue,
+                   lightBlue,
                 ], 
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,

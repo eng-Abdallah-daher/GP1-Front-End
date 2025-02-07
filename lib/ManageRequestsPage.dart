@@ -19,6 +19,7 @@ class _ManageRequestsPageState extends State<ManageRequestsPage> {
 m();
   }
   void m() async{
+      await getusers();
        await getbookings();
     await getMaintenanceRequests();
     setState(() {
@@ -50,7 +51,7 @@ m();
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 22,
-              color: Colors.blueAccent,
+              color: blueAccent,
             ),
           ),
           content: SingleChildScrollView(
@@ -177,7 +178,7 @@ m();
                 "Accept Request",
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white,
+                  color: white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -315,7 +316,7 @@ index=1;
                   return null;
                 }
                 return Card(
-                  color: Colors.white.withOpacity(0.9),
+                  color: white.withOpacity(0.9),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -326,7 +327,7 @@ index=1;
                     contentPadding: EdgeInsets.all(16),
                     leading: CircleAvatar(
                       backgroundColor: Colors.lightBlue.shade600,
-                      child: Icon(Icons.build, color: Colors.white),
+                      child: Icon(Icons.build, color: white),
                     ),
                     title: Text(
                       'Customer : ${getnameofuser(request.user_id)}',

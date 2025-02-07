@@ -9,9 +9,9 @@ class UpdatePersonalInfoPage extends StatefulWidget {
 class _UpdatePersonalInfoPageState extends State<UpdatePersonalInfoPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String _name = '';
+  String _name = global_user.name;
   
-  String _phoneNumber = '';
+  String _phoneNumber = global_user.phone;
   
 
   void _saveChanges() {
@@ -25,7 +25,7 @@ global_user.name = _name;
       global_user.phone = _phoneNumber;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Personal info updated successfully!'),
-        backgroundColor: Colors.blue,),
+        backgroundColor: blue,),
         
       );
 

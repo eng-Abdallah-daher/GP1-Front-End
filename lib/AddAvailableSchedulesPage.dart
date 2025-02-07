@@ -18,7 +18,14 @@ class _AddAvailableSchedulesPageState extends State<AddAvailableSchedulesPage> {
   DateTime? _selectedDateTime;
   
   int _taskIdCounter = 1;
-
+@override
+  void initState() {
+    m();
+    super.initState();
+  }
+  void m() async{
+    await getEmployees();
+  }
   @override
   void dispose() {
     getAssignedTasks();
@@ -36,10 +43,7 @@ class _AddAvailableSchedulesPageState extends State<AddAvailableSchedulesPage> {
       setState(() {
         int p=0;
         if(availableSchedule.isNotEmpty){
- p = int.parse(
-                  availableSchedule[availableSchedule.length - 1].taskId) +
-              1;
-        }
+ p = int.parse(availableSchedule[availableSchedule.length - 1].taskId) + 1; }
         addTaskToSchedule(AssignedTask(
           taskId: p.toString(),
           date: date,
@@ -197,7 +201,7 @@ Widget _buildSchedulesList() {
                         child: Text(
                           schedule.taskId.toString(),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: white,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
@@ -304,7 +308,7 @@ Widget _buildSchedulesList() {
         centerTitle: true,
         elevation: 10.0,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -338,7 +342,7 @@ Widget _buildSchedulesList() {
               SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: _saveSchedule,
-                icon: Icon(Icons.add, color: Colors.white),
+                icon: Icon(Icons.add, color: white),
                 label: Text(
                   "Add Schedule",
                   style: TextStyle(

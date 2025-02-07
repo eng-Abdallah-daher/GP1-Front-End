@@ -53,7 +53,7 @@ void m() async{
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: black,
                 ),
               ),
               SizedBox(height: 10),
@@ -78,7 +78,7 @@ void m() async{
                       ),
                       child: Text(
                         "Cancel",
-                        style: TextStyle(color: Colors.black, fontSize: 16),
+                        style: TextStyle(color: black, fontSize: 16),
                       ),
                     ),
                   ),
@@ -120,7 +120,7 @@ void m() async{
                       ),
                       child: Text(
                         "Delete",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(color: white, fontSize: 16),
                       ),
                     ),
                   ),
@@ -154,7 +154,7 @@ void m() async{
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: black,
                 ),
               ),
               SizedBox(height: 20),
@@ -191,7 +191,7 @@ void m() async{
                       ),
                       child: Text(
                         "Cancel",
-                        style: TextStyle(color: Colors.black, fontSize: 16),
+                        style: TextStyle(color: black, fontSize: 16),
                       ),
                     ),
                   ),
@@ -225,7 +225,7 @@ void m() async{
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: blue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -233,7 +233,7 @@ void m() async{
                       ),
                       child: Text(
                         "Update",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(color: white, fontSize: 16),
                       ),
                     ),
                   ),
@@ -313,7 +313,7 @@ void m() async{
                                   radius: 30,
                                   backgroundColor: blue,
                                   child: Icon(Icons.person,
-                                      color: Colors.white, size: 28),
+                                      color: white, size: 28),
                                 ),
                                 SizedBox(width: 15),
                                 Expanded(

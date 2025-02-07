@@ -1,15 +1,16 @@
 import 'dart:io';
 import 'package:CarMate/AboutUsPage.dart';
+import 'package:CarMate/PrivacyPolicyPage.dart';
 import 'package:CarMate/chatpage.dart';
 import 'package:CarMate/customizetheme.dart';
 import 'package:CarMate/login.dart';
 import 'package:CarMate/glopalvars.dart';
-import 'package:CarMate/languagesettings.dart';
+// import 'package:CarMate/languagesettings.dart';
 import 'package:flutter/material.dart';
 import 'package:CarMate/updateinfo.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:CarMate/changepassword.dart';
-import 'package:CarMate/notifactionsettings.dart';
+// import 'package:CarMate/notifactionsettings.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -32,12 +33,19 @@ class MorePage extends StatefulWidget {
 }
 
 class _MorePageState extends State<MorePage> {
-
-    @override
+  @override
   void initState() {
     super.initState();
-    
+    m();
   }
+
+  void m() {
+    print(global_rate);
+    getglobal_rate();
+    print(global_rate);
+    setState(() {});
+  }
+
   File? _image;
 
   // Future<void> _pickImage() async {
@@ -50,7 +58,7 @@ class _MorePageState extends State<MorePage> {
   //     });
   //   }
   // }
-    Future<void>  _pickImage() async {
+  Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -58,7 +66,7 @@ class _MorePageState extends State<MorePage> {
       setState(() {
         _image = File(pickedFile.path);
       });
-    
+
       if (kIsWeb) {
         final reader = html.FileReader();
 
@@ -70,9 +78,9 @@ class _MorePageState extends State<MorePage> {
         reader.onLoadEnd.listen((_) async {
           final fileUrl = reader.result as String;
           await uploadImageAndGetOptimizedUrl(fileUrl);
-           _image = File(urlofimage);
-           updateUserprofileimage(global_user.email, urlofimage);
-           global_user.profileImage=urlofimage;
+          _image = File(urlofimage);
+          updateUserprofileimage(global_user.email, urlofimage);
+          global_user.profileImage = urlofimage;
         });
       } else {
         try {
@@ -122,10 +130,10 @@ class _MorePageState extends State<MorePage> {
       child: Row(
         children: [
           GestureDetector(
-            onTap: ()async{
+            onTap: () async {
               await _pickImage();
-              print("\nuserimage:\n"+urlofimage+ "\nuserimage:\n");
-              global_user.profileImage=_image!.path;
+              print("\nuserimage:\n" + urlofimage + "\nuserimage:\n");
+              global_user.profileImage = _image!.path;
             },
             child: CircleAvatar(
               radius: 40,
@@ -177,7 +185,7 @@ class _MorePageState extends State<MorePage> {
                 context,
                 icon: Icons.account_circle,
                 title: 'Update Personal Info',
-                subtitle: 'Change name, email, or phone',
+                subtitle: 'Change name, or phone',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -199,19 +207,19 @@ class _MorePageState extends State<MorePage> {
                   );
                 },
               ),
-              _buildListTile(
-                context,
-                icon: Icons.notifications,
-                title: 'Notification Settings',
-                subtitle: 'Customize your notifications',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NotificationSettingsPage()),
-                  );
-                },
-              ),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.notifications,
+              //   title: 'Notification Settings',
+              //   subtitle: 'Customize your notifications',
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => NotificationSettingsPage()),
+              //     );
+              //   },
+              // ),
               SizedBox(height: 16),
               _buildSectionHeader('App Settings'),
               _buildListTile(
@@ -227,89 +235,94 @@ class _MorePageState extends State<MorePage> {
                   );
                 },
               ),
-              _buildListTile(
-                context,
-                icon: Icons.language,
-                title: 'Language Settings',
-                subtitle: 'Select your preferred language',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LanguageSettingsPage()),
-                  );
-                },
-              ),
-              SizedBox(height: 16),
-              _buildSectionHeader('Support and Help'),
-             global_user.role=="owner" ?   _buildListTile(
-                context,
-                icon: Icons.help_outline,
-                title: 'Contact Us',
-                subtitle: 'make a chat with the admin',
-                onTap: () {
-                  bool loged = false;
-for(int i=0;i<chats.length;i++){
-  if((chats[i].u1 == global_user.id &&
-                        chats[i].u2 == users[0].id)||(chats[i].u2 == global_user.id &&
-                            chats[i].u1 == users[0].id)){
-                              loged = true;
-                                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ChatPage(m: chats[i])),
-                      );
-                      break;
-
-  }
-  
-}
-if(!loged){
-try{
-    createChat(chats[chats.length-1].id+1, global_user.id, users[0].id);
-  chats.add(Chat(lastMessage: DateTime.now(), id: chats[chats.length - 1].id + 1, messages: [], u1: global_user, u2: users[0]));
-                 
-                  Navigator.push(
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.language,
+              //   title: 'Language Settings',
+              //   subtitle: 'Select your preferred language',
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => LanguageSettingsPage()),
+              //     );
+              //   },
+              // ),
+              SizedBox(height: global_user.role == "owner" ? 16 : 0),
+              global_user.role == "owner"
+                  ? _buildSectionHeader('Support and Help')
+                  : SizedBox(
+                      height: 0,
+                    ),
+              global_user.role == "owner"
+                  ? _buildListTile(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                         ChatPage(m: chats[chats.length-1])
-                      ),
-                    );
-}catch(e){
+                      icon: Icons.help_outline,
+                      title: 'Contact Us',
+                      subtitle: 'make a chat with the admin',
+                      onTap: () async{
+                        await getAllChats();
+                   
+                     List<Chat> chatList =getuserchats().where((element) => (element.u2.id == -1&&element.u1.id==global_user.id)||
+                                (element.u1.id == -1 &&
+                                    element.u2.id == global_user.id)).toList();
+                        if (chatList.isEmpty) {
+                          try {
+                            createChat(chats[chats.length - 1].id + 1,
+                                global_user.id, users[0].id);
+                            chats.add(Chat(
+                                lastMessage: DateTime.now(),
+                                id: chats[chats.length - 1].id + 1,
+                                messages: [],
+                                u1: global_user,
+                                u2: users[0]));
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChatPage(m: chats[chats.length - 1])),
+                            );
+                          } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                  content: Text(
-                                      "failed to create a new chat!"),backgroundColor: Colors.red,),
+                                content: Text("failed to create a new chat!"),
+                                backgroundColor: Colors.red,
+                              ),
                             );
-}
-                
-}
-
-                },
-              ): SizedBox(height: 0,),
-              _buildListTile(
-                context,
-                icon: Icons.help_outline,
-                title: 'FAQs',
-                subtitle: 'Find answers to common questions',
-                onTap: () {},
-              ),
-              _buildListTile(
-                context,
-                icon: Icons.contact_support,
-                title: 'Customer Support',
-                subtitle: 'Email or call for assistance',
-                onTap: () {},
-              ),
-              _buildListTile(
-                context,
-                icon: Icons.report,
-                title: 'Report an Issue',
-                subtitle: 'Let us know about any problems',
-                onTap: () {},
-              ),
+                          }
+                        }else{
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatPage(m: chatList[0])),
+                          );
+                        }
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.help_outline,
+              //   title: 'FAQs',
+              //   subtitle: 'Find answers to common questions',
+              //   onTap: () {},
+              // ),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.contact_support,
+              //   title: 'Customer Support',
+              //   subtitle: 'Email or call for assistance',
+              //   onTap: () {},
+              // ),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.report,
+              //   title: 'Report an Issue',
+              //   subtitle: 'Let us know about any problems',
+              //   onTap: () {},
+              // ),
               SizedBox(height: 16),
               _buildSectionHeader('About the App'),
               _buildListTile(
@@ -336,7 +349,13 @@ try{
                 icon: Icons.policy,
                 title: 'Terms and Privacy',
                 subtitle: 'Review terms and privacy policies',
-                onTap: () {},
+                onTap: () {
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PrivacyPolicyPage()),
+                  );
+                },
               ),
               SizedBox(height: 16),
               _buildSectionHeader('Reviews and Ratings'),
@@ -344,16 +363,135 @@ try{
                 context,
                 icon: Icons.star_rate,
                 title: 'Rate the App',
-                subtitle: 'Share your feedback and rating',
-                onTap: () {},
+                subtitle: 'Share your feedback and rating ,${global_rate}',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      int _rating = global_user.rate;
+                      return StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return AlertDialog(
+                            backgroundColor: blueAccent,
+                            title: Text(
+                              'Rate the App',
+                              style: TextStyle(
+                                color: white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(5, (index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _rating = index + 1;
+                                        });
+                                      },
+                                      child: Icon(
+                                        index < _rating
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: index < _rating
+                                            ? Colors.yellow
+                                            : white,
+                                        size: 40,
+                                      ),
+                                    );
+                                  }),
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  'Rating: $_rating',
+                                  style: TextStyle(
+                                    color: white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _rating = 0;
+                                    global_user.rate = 0;
+                                    updateRate(global_user.id, 0);
+                                  });
+                                  getglobal_rate();
+                                  setState(() {});
+                                  Navigator.pop(context);
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 14, horizontal: 30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Clear Rate',
+                                  style: TextStyle(
+                                    color: white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  if (_rating >= 1 && _rating <= 5) {
+                                    print('Rating Submitted: $_rating');
+
+                                    global_user.rate = _rating;
+                                    updateRate(global_user.id, _rating);
+                                    getglobal_rate();
+                                    setState(() {});
+                                  } else {
+                                    print('Invalid Rating');
+                                  }
+                                  Navigator.pop(context);
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 14, horizontal: 30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    color: white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
               ),
-              _buildListTile(
-                context,
-                icon: Icons.comment,
-                title: 'Read User Reviews',
-                subtitle: 'See what others are saying',
-                onTap: () {},
-              ),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.comment,
+              //   title: 'Read User Reviews',
+              //   subtitle: 'See what others are saying',
+              //   onTap: () {},
+              // ),
               SizedBox(height: 16),
               _buildSectionHeader('Social Links'),
               _buildListTile(
@@ -383,38 +521,38 @@ try{
                   await launch("https://instagram.com");
                 },
               ),
-              SizedBox(height: 16),
-              _buildSectionHeader('Updates and Offers'),
-              _buildListTile(
-                context,
-                icon: Icons.local_offer,
-                title: 'Exclusive Offers',
-                subtitle: 'Check out our latest deals',
-                onTap: () {},
-              ),
-              _buildListTile(
-                context,
-                icon: Icons.new_releases,
-                title: 'App Updates',
-                subtitle: 'Learn about new features',
-                onTap: () {},
-              ),
-              SizedBox(height: 16),
-              _buildSectionHeader('Activity Log'),
-              _buildListTile(
-                context,
-                icon: Icons.history,
-                title: 'Emergency Requests',
-                subtitle: 'View past emergency help requests',
-                onTap: () {},
-              ),
-              _buildListTile(
-                context,
-                icon: Icons.search,
-                title: 'Search History',
-                subtitle: 'See your search activity',
-                onTap: () {},
-              ),
+            
+            
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.local_offer,
+              //   title: 'Exclusive Offers',
+              //   subtitle: 'Check out our latest deals',
+              //   onTap: () {},
+              // ),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.new_releases,
+              //   title: 'App Updates',
+              //   subtitle: 'Learn about new features',
+              //   onTap: () {},
+              // ),
+              // SizedBox(height: 16),
+              // _buildSectionHeader('Activity Log'),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.history,
+              //   title: 'Emergency Requests',
+              //   subtitle: 'View past emergency help requests',
+              //   onTap: () {},
+              // ),
+              // _buildListTile(
+              //   context,
+              //   icon: Icons.search,
+              //   title: 'Search History',
+              //   subtitle: 'See your search activity',
+              //   onTap: () {},
+              // ),
               SizedBox(height: 16),
               _buildSectionHeader('Logout'),
               _buildListTile(
@@ -423,6 +561,7 @@ try{
                 title: 'Logout',
                 subtitle: 'Sign out of your account',
                 onTap: () {
+                  updateUserStatus(global_user.email, false);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

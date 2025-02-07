@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:CarMate/SellPage.dart';
+import 'package:CarMate/cardpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -104,14 +105,14 @@ setState(() {
         selectedImages.every((image) => image != null)) {
 try{
         setState(() {
-addNewItem(global_user.id, items.length, nameController.text,
+addNewItem(global_user.id, items.isEmpty ? 0: items[items.length - 1].id + 1, nameController.text,
             double.parse(priceController.text), DescriptionController.text,
             selectedImages.map((file) => file!.path).toList(),
             int.parse(quantityController.text));
         
         items.add(Item(
           ownerid: global_user.id,
-          id: items.length,
+          id: items.isEmpty ? 0 : items[items.length - 1].id + 1,
           description: DescriptionController.text,
           imagePaths: selectedImages.map((file) => file!.path).toList(),
          
@@ -181,7 +182,7 @@ addNewItem(global_user.id, items.length, nameController.text,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.blueAccent.withOpacity(0.9),
+                  blueAccent.withOpacity(0.9),
                   Colors.lightBlueAccent.withOpacity(0.9)
                 ],
                 begin: Alignment.topLeft,
@@ -199,7 +200,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: white,
                     ),
                   ),
                   SizedBox(height: 10),
@@ -218,10 +219,10 @@ addNewItem(global_user.id, items.length, nameController.text,
                     decoration: InputDecoration(
                       labelText:
                           'Quantity to Sell (Max: ${item.availableQuantity})',
-                      labelStyle: TextStyle(color: Colors.white70),
+                      labelStyle: TextStyle(color: white),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.white),
+                        borderSide: BorderSide(color: white),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -230,10 +231,10 @@ addNewItem(global_user.id, items.length, nameController.text,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.white, width: 1),
+                        borderSide: BorderSide(color: white, width: 1),
                       ),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: white),
                     onChanged: (value) {
                       int quantityToSell = int.tryParse(value) ?? 0;
 
@@ -267,67 +268,89 @@ addNewItem(global_user.id, items.length, nameController.text,
                     children: [
                       TextButton(
                         onPressed: () async{
-                           await getSales();
+                          if (global_user.role == "owner" &&
+                              global_user.accountnumber == '0') {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreditCardPage()));
+                          }else{
                           int quantityToSell =
                               int.tryParse(sellQuantityController.text) ?? 0;
 
                          try {
                            if (quantityToSell > 0) {
                               if (quantityToSell >= item.availableQuantity) {
+                              
                                 setState(() {
-                                  addSale(
-                                    id: sales[sales.length-1].id+1,
-                                      ownerId: item.ownerid,
-                                      itemId: item.id,
-                                      quantity: item.availableQuantity,
-                                      price: item.price,
-                                      date: DateTime.now());
-                                      
-                                  deleteItem(item);
-                               
+                              if(sales.isEmpty){
 
-                                  sales.add(Sale(
-                                    id: sales[sales.length - 1].id + 1,
-                                      ownerid: item.ownerid,
-                                      itemid: item.id,
-                                      price: item.price,
-                                      quantity: item.availableQuantity,
-                                      date: DateTime.now()));
+                                    addSale(
+                                        id:0,
+                                        ownerId: item.ownerid,
+                                        itemId: item.id,
+                                        quantity: item.availableQuantity,
+                                        price: item.price,
+                                        date: DateTime.now());
+
+                                    deleteItem(item);
+
+                                    sales.add(Sale(
+                                        id: 0,
+                                        ownerid: item.ownerid,
+                                        itemid: item.id,
+                                        price: item.price,
+                                        quantity: item.availableQuantity,
+                                        date: DateTime.now()));
+                              }else{
+                                    addSale(
+                                        id: sales[sales.length - 1].id + 1,
+                                        ownerId: item.ownerid,
+                                        itemId: item.id,
+                                        quantity: item.availableQuantity,
+                                        price: item.price* quantityToSell,
+                                        date: DateTime.now());
+
+                                    deleteItem(item);
+
+                                    sales.add(Sale(
+                                        id: sales[sales.length - 1].id + 1,
+                                        ownerid: item.ownerid,
+                                        itemid: item.id,
+                                        price: item.price,
+                                        quantity: item.availableQuantity,
+                                        date: DateTime.now()));
+                              }
                                 });
                                 Navigator.of(context).pop();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  content:
-                                      Text('Sold ${item.name}! Item removed.'),
-                                ));
+                                
                               } else {
+                                 item.availableQuantity -= quantityToSell;
+                                addSale(
+                                    ownerId: item.ownerid,
+                                    itemId: item.id,
+                                    quantity: quantityToSell,
+                                    price: item.price* quantityToSell,
+                                    date: DateTime.now(),
+                                    id: sales[sales.length - 1].id + 1);
+
+                                sales.add(Sale(
+                                    id: sales[sales.length - 1].id + 1,
+                                    ownerid: item.ownerid,
+                                    itemid: item.id,
+                                    price: item.price,
+                                    quantity: quantityToSell,
+                                    date: DateTime.now()));
+                                updateItem(item.id, item.name,
+                                    item.availableQuantity, item.price);
                                 setState(() {
                                  
-                                  item.availableQuantity -= quantityToSell;
-                                   addSale(
-                                      ownerId: item.ownerid,
-                                      itemId: item.id,
-                                      quantity: quantityToSell,
-                                      price: item.price,
-                                      date: DateTime.now(),
-                                      id: sales[sales.length - 1].id + 1);
-                              
-                                   sales.add(Sale(
-                                      id: sales[sales.length - 1].id + 1,
-                                      ownerid: item.ownerid,
-                                      itemid: item.id,
-                                      price: item.price,
-                                      quantity: quantityToSell,
-                                      date: DateTime.now()));
-                                         updateItem(item.id, item.name, item.availableQuantity, item.price);
+                                 
                                  
                                 });
                                 
                                 Navigator.of(context).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        'Sold $quantityToSell ${item.name}(s)!'),
-                                    backgroundColor: Colors.green)); 
+                                   
                             
                               }
                             } else {
@@ -337,15 +360,12 @@ addNewItem(global_user.id, items.length, nameController.text,
                               ));
                             }
                          }catch (e){
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Invalid quantity to sell.'),
-                              backgroundColor: Colors.red,
-                            ));
-                         }
+                           
+                         }}
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.lightBlue[200],
-                          foregroundColor: Colors.white,
+                          foregroundColor: white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -429,7 +449,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                    color: blueAccent,
                   ),
                 ),
                 SizedBox(height: 16),
@@ -438,24 +458,24 @@ addNewItem(global_user.id, items.length, nameController.text,
                   decoration: InputDecoration(
                     labelText: 'Item Name',
                     labelStyle:
-                        TextStyle(color: Colors.blueAccent, fontSize: 16),
+                        TextStyle(color: blueAccent, fontSize: 16),
                     hintText: 'Enter item name',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     prefixIcon:
-                        Icon(Icons.shopping_cart, color: Colors.blueAccent),
+                        Icon(Icons.shopping_cart, color: blueAccent),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderSide: BorderSide(color: blueAccent),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.lightBlueAccent, width: 2),
+                          BorderSide(color: lightBlue, width: 2),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 2),
+                          BorderSide(color: blueAccent, width: 2),
                     ),
                   ),
                   style: TextStyle(fontSize: 16),
@@ -466,24 +486,24 @@ addNewItem(global_user.id, items.length, nameController.text,
                   decoration: InputDecoration(
                     labelText: 'Item Description',
                     labelStyle:
-                        TextStyle(color: Colors.blueAccent, fontSize: 16),
+                        TextStyle(color: blueAccent, fontSize: 16),
                     hintText: 'Enter item Description',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     prefixIcon:
-                        Icon(Icons.shopping_cart, color: Colors.blueAccent),
+                        Icon(Icons.shopping_cart, color: blueAccent),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderSide: BorderSide(color: blueAccent),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.lightBlueAccent, width: 2),
+                          BorderSide(color: lightBlue, width: 2),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 2),
+                          BorderSide(color: blueAccent, width: 2),
                     ),
                   ),
                   style: TextStyle(fontSize: 16),
@@ -495,24 +515,24 @@ addNewItem(global_user.id, items.length, nameController.text,
                   decoration: InputDecoration(
                     labelText: 'Quantity',
                     labelStyle:
-                        TextStyle(color: Colors.blueAccent, fontSize: 16),
+                        TextStyle(color: blueAccent, fontSize: 16),
                     hintText: 'Enter quantity',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     prefixIcon: Icon(Icons.format_list_numbered,
-                        color: Colors.blueAccent),
+                        color: blueAccent),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderSide: BorderSide(color: blueAccent),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.lightBlueAccent, width: 2),
+                          BorderSide(color: lightBlue, width: 2),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 2),
+                          BorderSide(color: blueAccent, width: 2),
                     ),
                   ),
                   style: TextStyle(fontSize: 16),
@@ -524,24 +544,24 @@ addNewItem(global_user.id, items.length, nameController.text,
                   decoration: InputDecoration(
                     labelText: 'Price',
                     labelStyle:
-                        TextStyle(color: Colors.blueAccent, fontSize: 16),
+                        TextStyle(color: blueAccent, fontSize: 16),
                     hintText: 'Enter price',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     prefixIcon:
-                        Icon(Icons.attach_money, color: Colors.blueAccent),
+                        Icon(Icons.attach_money, color: blueAccent),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blueAccent),
+                      borderSide: BorderSide(color: blueAccent),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.lightBlueAccent, width: 2),
+                          BorderSide(color: lightBlue, width: 2),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                          BorderSide(color: Colors.blueAccent, width: 2),
+                          BorderSide(color: blueAccent, width: 2),
                     ),
                   ),
                   style: TextStyle(fontSize: 16),
@@ -558,17 +578,17 @@ addNewItem(global_user.id, items.length, nameController.text,
                            setState(() { pickImage(i);
                              });
                           },
-                          icon: Icon(Icons.image, color: Colors.white),
+                          icon: Icon(Icons.image, color: white),
                           label: Text(
                             'Choose Image ${i + 1}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: white,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: blueAccent,
                             padding: EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -587,7 +607,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.blueAccent,
+                                color: blueAccent,
                                 width: 2,
                               ),
                               borderRadius: BorderRadius.circular(12),
@@ -607,7 +627,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             border: Border.all(
-                              color: Colors.blueAccent,
+                              color: blueAccent,
                               width: 2,
                             ),
                             borderRadius: BorderRadius.circular(12),
@@ -660,7 +680,7 @@ addNewItem(global_user.id, items.length, nameController.text,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                    color: blueAccent,
                   ),
                 ),
                 SizedBox(height: 10),

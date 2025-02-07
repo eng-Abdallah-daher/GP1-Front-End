@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     OwnerServicesPage(),
     DashboardPage(),
     MorePage(),
-    CarMateMapApp(),
+    MapPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -147,20 +147,72 @@ class _HomeScreenState extends State<HomeScreen> {
               child: flag2
                   ? null
                   : (_selectedIndex == 0
-                      ? IconButton(
-                          icon: Icon(
-                            flag ? Icons.message : Icons.people_alt_sharp,
-                            size: 25,
-                            color: white,
-                          ),
-                          onPressed: () {
-                            flag = !flag;
-                            setState(() {});
-                          },
-                          splashRadius: 50,
-                          splashColor: white.withOpacity(0.5),
-                          highlightColor: white.withOpacity(0.3),
-                          padding: EdgeInsets.all(1),
+                      ? Stack(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                flag ? Icons.message : Icons.people_alt_sharp,
+                                size: 25,
+                                color: white,
+                              ),
+                              onPressed: () {
+                                flag = !flag;
+                                getAllChats();
+                                setState(() {});
+                              },
+                              splashRadius: 50,
+                              splashColor: white.withOpacity(0.5),
+                              highlightColor: white.withOpacity(0.3),
+                              padding: EdgeInsets.all(1),
+                            ),
+                            if (flag &&
+                                (getuserchats()
+                                    .where(
+                                      (element) =>
+                                          (element.messages.isNotEmpty
+                                              ? element
+                                                      .messages.last.senderId !=
+                                                  global_user.id
+                                              : false) &&
+                                          (element.messages.isNotEmpty
+                                              ? element.messages.last.isread ==
+                                                  false
+                                              : false),
+                                    )
+                                    .isNotEmpty))
+                              Positioned(
+                                right: -2,
+                                top: -2,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(
+                                    '${getuserchats().where(
+                                          (element) =>
+                                              (element.messages.isNotEmpty
+                                                  ? element.messages.last
+                                                          .senderId !=
+                                                      global_user.id
+                                                  : false) &&
+                                              (element.messages.isNotEmpty
+                                                  ? element.messages.last
+                                                          .isread ==
+                                                      false
+                                                  : false),
+                                        ).length}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         )
                       : null)),
           SizedBox(width: 10),
@@ -271,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
           OwnerServicesPage(),
           DashboardPage(),
           MorePage(),
-          CarMateMapApp(),
+          MapPage(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(

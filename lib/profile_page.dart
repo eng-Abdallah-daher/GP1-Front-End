@@ -2,6 +2,7 @@ import 'package:CarMate/chatpage.dart';
 import 'package:CarMate/commentpage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
    User user;
@@ -32,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: fromsearch
           ? AppBar(
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: white),
                 onPressed: () {
                   Navigator.of(context).pop();
                   fromsearch = false;
@@ -44,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: white,
                   letterSpacing: 1.2,
                   shadows: [
                     Shadow(
@@ -56,12 +57,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               centerTitle: true,
-              backgroundColor: Colors.blueAccent,
+              backgroundColor: blueAccent,
               elevation: 4,
               flexibleSpace: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue, Colors.lightBlueAccent],
+                    colors: [blue, Colors.lightBlueAccent],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -72,14 +73,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: EdgeInsets.only(right: 16),
                   child: Icon(
                     Icons.person,
-                    color: Colors.white,
+                    color: white,
                     size: 28,
                   ),
                 ),
               ],
             )
           : null,
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -136,14 +137,19 @@ class _ProfilePageState extends State<ProfilePage> {
       style: TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: white,
       ),
     );
   }
 
   List<Post> getUserPosts() {
-    return posts.where((post) => post.ownerId == widget.user.id).toList();
+    return posts
+        .where((post) => post.ownerId == widget.user.id)
+        .toList()
+        .reversed
+        .toList();
   }
+
 
   Widget _buildPostsSection() {
     List<Post> userPosts = getUserPosts();
@@ -178,19 +184,23 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Card(
+      color: white,
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
+        
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
+            
             padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
                 GestureDetector(
+                  
                   onTap: () {},
                   child: CircleAvatar(
                     backgroundImage:
@@ -202,6 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 SizedBox(width: 12),
                 Expanded(
+                  
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -397,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage> {
           widget.user.locatoin!,
           style: TextStyle(
             fontSize: 18,
-            color: Colors.white,
+            color: white,
           ),
         ),
       ],
@@ -412,7 +423,7 @@ class _ProfilePageState extends State<ProfilePage> {
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/gradient.png'),
+            image: AssetImage('images/darkblue.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -435,7 +446,7 @@ class _ProfilePageState extends State<ProfilePage> {
               colors: [
                 Colors.orange,
                 Colors.orange,
-                Colors.white,
+                white,
               ],
               stops: [0.3, 0.6, 0.0],
             ),
@@ -443,7 +454,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         CircleAvatar(
           radius: 51,
-          backgroundColor: Colors.white,
+          backgroundColor: white,
           child: CircleAvatar(
             radius: 50,
             backgroundImage: NetworkImage(widget.user.profileImage!),
@@ -464,19 +475,19 @@ class _ProfilePageState extends State<ProfilePage> {
               Icon(
                 Icons.circle,
                 size: 10,
-                color: Colors.blue,
+                color: blue,
               ),
               SizedBox(width: 10),
               Icon(
                 Icons.circle,
                 size: 10,
-                color: Colors.blue,
+                color: blue,
               ),
               SizedBox(width: 10),
               Icon(
                 Icons.circle,
                 size: 10,
-                color: Colors.blue,
+                color: blue,
               ),
               SizedBox(width: 10),
               Text(
@@ -533,19 +544,28 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         Text(
           title,
-          style: TextStyle(fontSize: 16, color: Colors.black),
+          style: TextStyle(fontSize: 16, color: black),
            textAlign: TextAlign.center,
         ),
       ],
     );
   }
-
+  Future<void> _callNumber(String phoneNumber) async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unable to make the call.')),
+      );
+    }
+  }
   Widget _buildActionButtons() {
     return SizedBox(
       width: double.infinity,
       child: Row(
         children: [
-          _buildActionButton(Icons.call, () {}),
+      _buildActionButton(Icons.call, ()async {await _callNumber(widget.user.phone);}),
           SizedBox(
             width: 160,
           ),
@@ -576,13 +596,13 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [Colors.blueAccent, Colors.lightBlue],
+                colors: [blueAccent, Colors.lightBlue],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.blue.withOpacity(0.4),
+                  color: blue.withOpacity(0.4),
                   spreadRadius: 2,
                   blurRadius: 8,
                   offset: Offset(0, 4),
@@ -593,7 +613,7 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
-                onTap: () {
+                onTap: () async{
                   if (icon == Icons.message) {
                     for (int i = 0; i < chats.length; i++) {
                       if (chats[i].u1.id == global_user.id &&
@@ -619,13 +639,26 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
 
                    try{
-                     createChat(chats[chats.length - 1].id + 1, global_user.id, widget.user.id);
-                    chats.add(Chat(
-                        lastMessage: DateTime.now(),
-                        id: chats[chats.length - 1].id + 1,
-                        messages: [],
-                        u1: global_user,
-                        u2: widget.user));
+                     await getAllChats();
+                     if(chats.isEmpty){
+                      createChat(0,
+                            global_user.id, widget.user.id);
+                        chats.add(Chat(
+                            lastMessage: DateTime.now(),
+                            id: 0,
+                            messages: [],
+                            u1: global_user,
+                            u2: widget.user));
+                     }else{
+                      createChat(chats[chats.length - 1].id + 1,
+                            global_user.id, widget.user.id);
+                        chats.add(Chat(
+                            lastMessage: DateTime.now(),
+                            id: chats[chats.length - 1].id + 1,
+                            messages: [],
+                            u1: global_user,
+                            u2: widget.user));
+                     }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -644,7 +677,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Icon(
                     icon,
-                    color: Colors.white,
+                    color: white,
                     size: 28,
                   ),
                 ),
@@ -674,44 +707,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildContactRow(IconData icon, String info) {
     return Row(
       children: [
-        Icon(icon, color: Colors.blue),
+        Icon(icon, color: blue),
         SizedBox(width: 10),
-        Text(info, style: TextStyle(fontSize: 16)),
+        Text(info, style: TextStyle(fontSize: 16,color: black)),
       ],
-    );
-  }
-
-  Widget _buildFollowButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          backgroundColor: Colors.blue,
-        ),
-        child: Text(
-          "Follow",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialMediaButtons() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildSocialIconButton('images/logo.png'),
-          SizedBox(width: 20),
-          _buildSocialIconButton('images/logo.png'),
-        ],
-      ),
     );
   }
 

@@ -34,12 +34,12 @@ class _PerformanceAndProfitPageState extends State<PerformanceAndProfitPage> {
       appBar: AppBar(
         title: Text(
           'Performance Review',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: blue,
       ),
       body: Container(
-        color: Colors.white,
+        color: white,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +91,7 @@ class _PerformanceAndProfitPageState extends State<PerformanceAndProfitPage> {
               child: monthlyProfits.isEmpty
                   ? Center(
                       child: Text(
-                        'No data available for the selected year.',
+                        'No data blueilable for the selected year.',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.blue.shade800,
@@ -113,7 +113,7 @@ class _PerformanceAndProfitPageState extends State<PerformanceAndProfitPage> {
                               barRods: [
                                 BarChartRodData(
                                   toY: value,
-                                  color: Colors.blue,
+                                  color: blue,
                                   width: 16,
                                 ),
                               ],

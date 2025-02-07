@@ -19,12 +19,13 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
 
   @override
   void initState() {
-    getTowingServices();
+    
     super.initState();
     _initializeLocation();
   }
 
   Future<void> _initializeLocation() async {
+    await getTowingServices();
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
@@ -71,12 +72,12 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Emergency Towing'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.lightBlueAccent.withOpacity(0.8)],
+            colors: [white, Colors.lightBlueAccent.withOpacity(0.8)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -91,7 +92,7 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
+                  color: blueAccent,
                 ),
               ),
               SizedBox(height: 10),
@@ -108,11 +109,11 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    backgroundColor: Colors.blueAccent,
+                    backgroundColor: blueAccent,
                   ),
                   child: Text(
                     'Request Towing',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: white, fontSize: 18),
                   ),
                 ),
               ),
@@ -145,24 +146,24 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
+                        color: blueAccent,
                       ),
                     ),
                     subtitle: Text(
                       service.address,
-                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      style: TextStyle(fontSize: 14, color: black),
                     ),
                     trailing: ElevatedButton(
                       onPressed: () => _callNumber(service.phone),
                       child: Text(
                         'Call',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
+                        backgroundColor: blueAccent,
                       ),
                     ),
                   ),
@@ -284,7 +285,7 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [blue, Colors.lightBlueAccent],
+                        colors: [blue, lightBlue],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -316,7 +317,7 @@ class _EmergencyTowingPageState extends State<EmergencyTowingPage> {
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [blue, Colors.lightBlueAccent],
+                        colors: [blue, lightBlue],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),

@@ -113,7 +113,7 @@ try{
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Tool updated successfully!'),
-        backgroundColor: Colors.blue,
+        backgroundColor: blue,
         duration: Duration(seconds: 2),
       ),
     );
@@ -140,7 +140,7 @@ try{
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.blueAccent,
+              color: blueAccent,
             ),
           ),
           content: Padding(
@@ -160,7 +160,7 @@ try{
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: blueAccent,
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -169,7 +169,7 @@ try{
               child: Text(
                 'OK',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: white,
                   fontSize: 16,
                 ),
               ),
@@ -193,14 +193,14 @@ try{
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.blueAccent),
+        labelStyle: TextStyle(color: blueAccent),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.blueAccent),
+          borderSide: BorderSide(color: blueAccent),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+          borderSide: BorderSide(color: blueAccent, width: 2),
         ),
       ),
       style: TextStyle(fontSize: 16, color: Colors.black87),
@@ -216,11 +216,11 @@ try{
       child: Text(
         title,
         style: TextStyle(
-            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            fontSize: 18, fontWeight: FontWeight.bold, color: white),
       ),
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 12),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

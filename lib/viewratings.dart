@@ -2,6 +2,7 @@ import 'package:CarMate/ComplaintsListPage.dart';
 import 'package:CarMate/ComplaintsManagementPage.dart';
 import 'package:CarMate/glopalvars.dart';
 import 'package:CarMate/updateview.dart';
+import 'package:CarMate/usermainpage.dart';
 import 'package:flutter/material.dart';
 class ViewWorkshopRatingsPage extends StatefulWidget {
   @override
@@ -25,6 +26,18 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            index=1;
+             Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => usermainpage(),
+              ),
+            );
+          },
+        ),
           actions: [
           IconButton(
             icon: Icon(Icons.list),
@@ -55,7 +68,11 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
           itemCount: users.length,
           itemBuilder: (context, index) {
             if ((users[index].role == "owner")&&(users[index].isServiceActive)) {
-              return _buildWorkshopRatingCard(context, users[index]);
+              return Center(child: Container(
+                  width: MediaQuery.of(context).size.width > 600
+                      ? 500
+                      : double.infinity,
+                  child: _buildWorkshopRatingCard(context, users[index]),),);
             } else {
               return SizedBox(height: 0);
             }
@@ -141,14 +158,16 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
 
   void _onArrowTap(BuildContext context, User rating) async{
     
-   
+   await getusers();
+   await getcomplaints();
     if (global_user.israted(rating.id)) { 
-      await getcomplaints();
+    
         Complaint p = complaints
           .where((element) =>
               (element.ownerid == rating.id) &&
               (element.userid == global_user.id))
           .toList()[0];
+        
  showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -197,7 +216,7 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
                   child: Text(
                     "Close",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: white,
                       fontSize: 16,
                     ),
                   ),
@@ -210,13 +229,15 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
                   onPressed: () async {
                     await getcomplaints();
                     Navigator.of(context).pop();
-                  
+                  setState(() {
+                    
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ComplaintsupdatePage(c: p),
                       ),
                     );
+                  });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade800,
@@ -228,7 +249,7 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
                   child: Text(
                     "Edit Review",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: white,
                       fontSize: 16,
                     ),
                   ),
@@ -240,8 +261,8 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
                 child: ElevatedButton(
                   onPressed: ()  {
                      removeComplaint(p.id);
-                      removeComplaintfromuser(global_user.id,p.ownerid);
-                  global_user.rates.removeWhere((element) => element==p.ownerid,);
+                      
+                 
                        Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -265,7 +286,7 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
                   child: Text(
                     "Remove Review",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: white,
                       fontSize: 16,
                     ),
                   ),
@@ -278,14 +299,23 @@ class _ViewWorkshopRatingsPageState extends State<ViewWorkshopRatingsPage> {
 
 
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ComplaintsManagementPage(
-            ownerid: rating.id,
+      
+      setState(() {
+          Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ComplaintsManagementPage(
+              ownerid: rating.id,
+            ),
           ),
-        ),
-      );
+        );
+        
+      });
+      await getcomplaints();
+      setState(() {
+        
+      });
+    
     }
   }
 }

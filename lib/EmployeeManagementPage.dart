@@ -42,7 +42,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
           style: TextStyle(
             fontSize: 19,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: white,
           ),
         ),
         centerTitle: true,
@@ -60,7 +60,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
               },
               icon: Icon(
                 Icons.settings_outlined,
-                color: Colors.white,
+                color: white,
                 size: 30,
               )),
           IconButton(
@@ -76,14 +76,14 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
               },
               icon: Icon(
                 Icons.add,
-                color: Colors.white,
+                color: white,
                 size: 30,
               ))
         ],
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.blueAccent, Colors.lightBlue],
+              colors: [blueAccent, lightBlue],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -99,7 +99,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
               controller: _searchController,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: white,
                 hintText: 'Search Employee by Name',
                 hintStyle: TextStyle(
                   color: Colors.grey[500],
@@ -108,7 +108,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                 ),
                 prefixIcon: Icon(
                   Icons.search,
-                  color: Colors.blueAccent,
+                  color: blueAccent,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -118,7 +118,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                     EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                  borderSide: BorderSide(color: blueAccent, width: 2),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -134,7 +134,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                 ),
               ),
               style: TextStyle(
-                color: Colors.black,
+                color: black,
                 fontSize: 16,
               ),
               onChanged: (query) {
@@ -180,7 +180,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
         );
       },
       child: Card(
-        color: Colors.white,
+        color: white,
         elevation: 10,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -193,7 +193,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Colors.blueAccent,
+              color: blueAccent,
             ),
           ),
           subtitle: Text(
@@ -209,7 +209,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue, Colors.lightBlueAccent],
+                    colors: [blue, lightBlue],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -218,7 +218,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
-                    foregroundColor: Colors.white,
+                    foregroundColor: white,
                     elevation: 0,
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
@@ -254,7 +254,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.blueAccent,
+              color: blueAccent,
             ),
             textAlign: TextAlign.center,
           ),
@@ -287,20 +287,20 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                       ),
                       child: ListTile(
                         leading: Icon(Icons.calendar_today_rounded,
-                            color: Colors.white),
+                            color: white),
                         title: Text(
                           '${entry.date} at ${entry.time}',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: white,
                           ),
                         ),
                         subtitle: Text(
                           'Task: ${entry.task}',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white70,
+                            color: white,
                           ),
                         ),
                         onTap: () {
@@ -321,7 +321,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blueAccent, Colors.lightBlue],
+                    colors: [blueAccent, lightBlue],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -331,7 +331,7 @@ class _EmployeeManagementPageState extends State<EmployeeManagementPage> {
                 child: Text(
                   'Close',
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                      color: white, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -376,12 +376,12 @@ class TaskDetailPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue.shade50, Colors.white],
+            colors: [Colors.blue.shade50, white],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -415,7 +415,7 @@ class TaskDetailPage extends StatelessWidget {
                           gradient: LinearGradient(
                             colors: [
                               Colors.blue.shade100,
-                              Colors.blue.shade300
+                             Colors. blue.shade300
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -435,7 +435,7 @@ class TaskDetailPage extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: white,
                             ),
                           ),
                           subtitle: Text(
@@ -455,7 +455,7 @@ class TaskDetailPage extends StatelessWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Task removed successfully!'),
-        backgroundColor: Colors.blue,
+        backgroundColor: blue,
         duration: Duration(seconds: 2),
       ),
     );

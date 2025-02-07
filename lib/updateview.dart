@@ -39,7 +39,7 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
     setState(() {
       try {
       updatecomplaint(widget.c.id, rating, descriptionController.text);
-      
+      getcomplaints();
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -66,7 +66,7 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('update Complaints & Feedback'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: blueAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -78,7 +78,7 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
+                color: blueAccent,
               ),
             ),
             SizedBox(height: 20),
@@ -99,8 +99,8 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      color: Colors.white,
-      shadowColor: Colors.black.withOpacity(0.2),
+      color: white,
+      shadowColor: black.withOpacity(0.2),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: TextField(
@@ -109,12 +109,12 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: black,
           ),
           decoration: InputDecoration(
             labelText: 'Description',
             labelStyle: TextStyle(
-              color: Colors.blueAccent,
+              color: blueAccent,
               fontWeight: FontWeight.bold,
             ),
             hintText: 'Describe the issue in detail...',
@@ -127,14 +127,14 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.blueAccent.withOpacity(0.5),
+                color: blueAccent.withOpacity(0.5),
                 width: 2,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.blueAccent,
+                color: blueAccent,
                 width: 2,
               ),
             ),
@@ -160,7 +160,7 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
+            color: blueAccent,
           ),
         ),
         SizedBox(height: 10),
@@ -185,8 +185,8 @@ class _ComplaintsupdatePageState extends State<ComplaintsupdatePage> {
     return ElevatedButton(
       onPressed: updateComplaint,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent,
-        foregroundColor: Colors.white,
+        backgroundColor: blueAccent,
+        foregroundColor: white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

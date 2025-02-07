@@ -29,14 +29,14 @@ class AboutUsPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info, color: Colors.white, size: 28),
+                    Icon(Icons.info, color: white, size: 28),
                     SizedBox(width: 10),
                     Text(
                       'About Us',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: white,
                       ),
                     ),
                   ],
